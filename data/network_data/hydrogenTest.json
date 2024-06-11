@@ -1,36 +1,31 @@
 {
-  "size_is_int": 0,
-  "decommission": 0,
   "size_min": 0,
   "size_max": 10000,
+  "size_is_int": 0,
+  "decommission": 0,
   "Economics": {
     "comment": "CAPEX coefficients are in EUR, EUR/MW or EUR/MW/km, OPEX_variable in EUR/MWh total output, OPEX_fixed in % of CAPEX_annual",
-    "gamma1": 1000,
-    "gamma2": 5.1079,
-    "gamma3": 0,
-    "gamma4": 0,
-    "OPEX_variable": 0.00025145,
+    "CAPEX_model": 2,
+    "gamma1": 1,
+    "gamma2": 1000,
+    "OPEX_variable": 0,
     "OPEX_fixed": 0,
-    "discount_rate": 0.1,
-    "lifetime": 40,
+    "discount_rate": 0,
+    "lifetime": 1,
     "decommission_cost": 0
   },
   "NetworkPerf": {
-    "carrier": "CO2",
+    "carrier": "hydrogen",
     "bidirectional": 0,
-    "loss": 1.25E-7,
+    "loss": 0.5,
     "min_transport": 0,
-    "loss2emissions": 1,
+    "loss2emissions": 0,
     "emissionfactor": 0,
     "energyconsumption": {
       "electricity": {
-        "cons_model": 2,
-        "p": 475,
-        "c": 0.000234,
-        "T": 300,
-        "eta": 0.65,
-        "gam": 1.289,
-        "LHV": 0.001
+        "cons_model": 1,
+        "k_flow": 1,
+        "k_flowDistance": 0
       }
     }
   }
