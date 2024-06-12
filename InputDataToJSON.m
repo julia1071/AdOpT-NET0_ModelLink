@@ -77,7 +77,7 @@ for netw_name = 1:size(all_netw,1)
     netw_out.size_is_int = 0;
     netw_out.decommission = 0;
 
-    %     netw_out.TechnologyPerf = performance;
+    %     netw_out.Performance = performance;
     encoded = jsonencode(netw_out, "PrettyPrint",true)
     JSONFILE_name= strcat(save_path, all_netw{netw_name}, '.json');
     fid=fopen(JSONFILE_name,'w');
@@ -169,7 +169,7 @@ for tec_name = 1:size(all_tecs,1)
 
                     tec_out.decommission = 0;
                     tec_out.Economics = econ_out;
-                    tec_out.TechnologyPerf = performance;
+                    tec_out.Performance = performance;
                     tec_out.Units = units;
         
                     folder = 'PowerGeneration';
@@ -226,7 +226,7 @@ for tec_name = 1:size(all_tecs,1)
 
             tec_out.decommission = 0;
             tec_out.Economics = econ_out;
-            tec_out.TechnologyPerf = performance;
+            tec_out.Performance = performance;
             tec_out.Units = units;
 
             folder = 'HeatGeneration';
@@ -235,7 +235,7 @@ for tec_name = 1:size(all_tecs,1)
             save_data(tec_out, tec_out.tec_type, folder)
 
 
-            tec_out.TechnologyPerf.performance.T_in = 10;
+            tec_out.Performance.performance.T_in = 10;
             tec_out.tec_type = "HeatPump_GroundSourced";
             save_data(tec_out, tec_out.tec_type, folder)
 
@@ -292,7 +292,7 @@ for tec_name = 1:size(all_tecs,1)
 
             tec_out.decommission = 0;
             tec_out.Economics = econ_out;
-            tec_out.TechnologyPerf = performance;
+            tec_out.Performance = performance;
             tec_out.Units = units;
             
             folder = 'CO2Capture';
@@ -362,7 +362,7 @@ for tec_name = 1:size(all_tecs,1)
             
             tec_out.decommission = 0;
             tec_out.Economics = econ_out;
-            tec_out.TechnologyPerf = performance;
+            tec_out.Performance = performance;
             tec_out.Units = units;
             
             idx = strcmp(all_tecs{tec_name}, {'battery', 'HWTS','PCM', 'NGS', 'CO2S', 'H2S', 'storageEthy'});
@@ -418,7 +418,7 @@ for tec_name = 1:size(all_tecs,1)
 
             tec_out.decommission = 0;
             tec_out.Economics = econ_out;
-            tec_out.TechnologyPerf = performance;
+            tec_out.Performance = performance;
             tec_out.Units = units;
 
             idx = strcmp(all_tecs{tec_name}, {'PV', 'ST', 'WT_1500', 'WT_2500', 'WT_4000', 'WT_OS_6000', 'WT_OS_9500', 'WT_OS_11000'});
@@ -493,7 +493,7 @@ for tec_name = 1:size(all_tecs,1)
 
             tec_out.decommission = 0;
             tec_out.Economics = econ_out;
-            tec_out.TechnologyPerf = performance;
+            tec_out.Performance = performance;
             tec_out.Units = units;
             idx = strcmp(all_tecs{tec_name}, {'boiler', 'boilerH2', 'boilerIND', ...
                 'Biomass Gasification', 'STurbine', 'Furnace_NG', ...
@@ -590,7 +590,7 @@ for tec_name = 1:size(all_tecs,1)
 
             tec_out.decommission = 0;
             tec_out.Economics = econ_out;
-            tec_out.TechnologyPerf = performance;
+            tec_out.Performance = performance;
             tec_out.Units = units;
             idx = strcmp(all_tecs{tec_name}, {'steamcracker','steamcracker_E', ...
                 'steamcracker_compression', 'steamcracker_compressionE',  ...
