@@ -11,7 +11,11 @@ if execute == 1:
     # Specify the path to your input data
     casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster"
     datapath = "Z:/PyHub/PyHub_data/CM/100624_CM"
-    resultpath = "Z:/PyHub/PyHub_results/CM/Chemelot_fullres"
+    resultpath = "Z:/PyHub/PyHub_results/CM/Chemelot_cluster"
+
+    #no export limit
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import limit'],
+                         carriers=['nitrogen', 'oxygen', 'heatlowT', 'steam', 'crackergas'])
 
     #Set up case study for the first time
 
@@ -40,17 +44,17 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'], carriers=['electricity', 'methane', 'naphtha'])
 
         # No export limit
-        dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'], carriers=['nitrogen', 'oxygen', 'heatlowT', 'steam', 'crackergas'])
+        dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'], carriers=['nitrogen', 'oxygen', 'heatlowT', 'steam', 'crackergas'])
 
         # Constant prices
         dp.fill_carrier_data(casepath, value_or_data=35, columns=['Import price'], carriers=['methane'])
         dp.fill_carrier_data(casepath, value_or_data=732, columns=['Import price'], carriers=['naphtha'])
 
-    # Electricity price from file
-    el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_CM.csv'
-    el_importdata = pd.read_csv(el_load_path, sep=';', header=0, nrows=8760)
-    el_price = el_importdata.iloc[:, 0]
-    el_emissionrate = el_importdata.iloc[:, 3]
+        # Electricity price from file
+        el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_CM.csv'
+        el_importdata = pd.read_csv(el_load_path, sep=';', header=0, nrows=8760)
+        el_price = el_importdata.iloc[:, 0]
+        el_emissionrate = el_importdata.iloc[:, 3]
 
-    dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'], carriers=['electricity'])
-    dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'], carriers=['electricity'])
+        dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'], carriers=['electricity'])
+        dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'], carriers=['electricity'])
