@@ -196,7 +196,7 @@ class Conv3(Technology):
         standby_power = coeff_ti["standby_power"]
         phi = coeff_ti["phi"]
 
-        if standby_power == -1:
+        if self.component_options.performance_function_type == 1 or standby_power == -1:
 
             def init_input_input(const, t, car_input):
                 if car_input == self.component_options.main_input_carrier:
