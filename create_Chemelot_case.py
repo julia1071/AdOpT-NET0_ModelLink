@@ -41,10 +41,10 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=150, columns=['Demand'], carriers=['ethylene'])
 
         # No import limit
-        dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'], carriers=['electricity', 'methane', 'naphtha'])
+        dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'], carriers=['electricity', 'methane', 'naphtha', 'CO2pure'])
 
         # No export limit
-        dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'], carriers=['nitrogen', 'oxygen', 'heatlowT', 'steam', 'crackergas'])
+        dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'], carriers=['nitrogen', 'oxygen', 'heatlowT', 'steam', 'crackergas', 'CO2pure'])
 
         # Constant prices
         dp.fill_carrier_data(casepath, value_or_data=35, columns=['Import price'], carriers=['methane'])
