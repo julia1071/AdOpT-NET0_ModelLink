@@ -46,8 +46,8 @@ execute = 1
 if execute == 1:
     # Specify the path to your input data
     casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster"
-    datapath = "Z:/PyHub/PyHub_data/CM/100624_CM"
-    resultpath = "Z:/PyHub/PyHub_results/CM/Chemelot_cluster_MinE"
+    datapath = "Z:/PyHub/PyHub_data/CM/170624_CM"
+    resultpath = "Z:/PyHub/PyHub_results/CM/Chemelot_cluster"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
     # TD = [10, 20, 40, 60, 100, 200, 0]
@@ -59,7 +59,7 @@ if execute == 1:
             model_config = json.load(json_file)
 
         model_config['optimization']['typicaldays']['N']['value'] = nr
-        model_config['optimization']['objective']['value'] = 'emissions_minC'
+        model_config['optimization']['objective']['value'] = 'costs'
 
         #change save options
         model_config['reporting']['save_summary_path']['value'] = resultpath
@@ -83,6 +83,6 @@ if execute == 1:
         #solving
         pyhub.quick_solve()
 
-    # # Add values of (part of) the parameters and variables to the summary file
+    # Add values of (part of) the parameters and variables to the summary file
     # summarypath = Path(resultpath) / "Summary.xlsx"
     # add_values_to_summary(summarypath)
