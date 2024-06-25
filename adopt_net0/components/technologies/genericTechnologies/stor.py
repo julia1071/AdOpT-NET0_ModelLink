@@ -140,7 +140,7 @@ class Stor(Technology):
         # to account for charging and discharging capacity costs.
         if self.flexibility_data["power_energy_ratio"] == "flex":
             self.economics.capex_model = 4
-        if self.flexibility_data["power_energy_ratio"] not in ["flex", "fixed"]:
+        if self.flexibility_data["power_energy_ratio"] not in ["flex", "fixed", "parameter"]:
             raise Warning(
                 "power_energy_ratio should be either flexible ('flex') or fixed ('fixed')"
             )
