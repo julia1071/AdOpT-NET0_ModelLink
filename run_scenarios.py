@@ -21,6 +21,7 @@ if execute == 1:
 
         model_config['optimization']['typicaldays']['N']['value'] = 0
         model_config['optimization']['objective']['value'] = nr
+        model_config['optimization']['emission_limit']['value'] = 0
 
         #change save options
         model_config['reporting']['save_summary_path']['value'] = resultpath
@@ -58,6 +59,7 @@ if execute == 1:
 
         model_config['optimization']['typicaldays']['N']['value'] = nr
         model_config['optimization']['objective']['value'] = 'costs'
+        model_config['optimization']['emission_limit']['value'] = 0
 
         #change save options
         model_config['reporting']['save_summary_path']['value'] = resultpath
@@ -94,13 +96,20 @@ if execute == 1:
     json_filepath = Path(casepath) / "ConfigModel.json"
 
     # TD = [10, 20, 40, 60, 100, 200, 0]
+    TD = [10, 20, 40, 60, 100, 200, 0]
+
+
 
     maxemisions = 1304912.69
     elimit = [0.9, 0.8, 0.6, 0.4, 0.2, 0.1, 0.07, 0.05]
 
     for lim in elimit:
+    # for nr in TD:
         with open(json_filepath) as json_file:
             model_config = json.load(json_file)
+
+        # model_config['optimization']['typicaldays']['N']['value'] = nr
+        # model_config['optimization']['objective']['value'] = 'emissions_minC'
 
         model_config['optimization']['typicaldays']['N']['value'] = 10
         model_config['optimization']['objective']['value'] = 'costs'
