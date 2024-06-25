@@ -266,13 +266,15 @@ class Stor(Technology):
             domain=pyo.NonNegativeReals,
             bounds=(b_tec.para_size_min, b_tec.para_size_max),
         )
-        b_tec.var_capacity_charge = pyo.Var(
-            domain=pyo.NonNegativeReals, bounds=(0, b_tec.para_size_max * charge_rate)
-        )
-        b_tec.var_capacity_discharge = pyo.Var(
-            domain=pyo.NonNegativeReals,
-            bounds=(0, b_tec.para_size_max * discharge_rate),
-        )
+
+        if not self.flexibility_data["power_energy_ratio"] == "parameter":
+            b_tec.var_capacity_charge = pyo.Var(
+                domain=pyo.NonNegativeReals, bounds=(0, b_tec.para_size_max * charge_rate)
+            )
+            b_tec.var_capacity_discharge = pyo.Var(
+                domain=pyo.NonNegativeReals,
+                bounds=(0, b_tec.para_size_max * discharge_rate),
+            )
 
         if self.flexibility_data["power_energy_ratio"] == "flex":
             b_tec = self._define_stor_capex(b_tec, data)
@@ -348,14 +350,21 @@ class Stor(Technology):
             # Cut according to Morales-Espana "LP Formulation for Optimal Investment and
             # Operation of Storage Including Reserves"
             def init_cut_bidirectional(const, t):
-                # output[t]/discharge_rate + input[t]/charge_rate <= storSize
-                return (
-                    self.output[t, self.component_options.main_input_carrier]
-                    / discharge_rate
-                    + self.input[t, self.component_options.main_input_carrier]
-                    / charge_rate
-                    <= b_tec.var_size
-                )
+                if self.flexibility_data["power_energy_ratio"] == "parameter":
+                    return (
+                        self.output[t, self.component_options.main_input_carrier]
+                        + self.input[t, self.component_options.main_input_carrier]
+                        <= b_tec.var_size
+                    )
+                else:
+                    # output[t]/discharge_rate + input[t]/charge_rate <= storSize
+                    return (
+                        self.output[t, self.component_options.main_input_carrier]
+                        / discharge_rate
+                        + self.input[t, self.component_options.main_input_carrier]
+                        / charge_rate
+                        <= b_tec.var_size
+                    )
 
             b_tec.const_cut_bidirectional = pyo.Constraint(
                 self.set_t_performance, rule=init_cut_bidirectional
@@ -399,43 +408,56 @@ class Stor(Technology):
 
         # Maximal charging and discharging rates
         def init_maximal_charge(const, t):
-            return (
-                self.input[t, self.component_options.main_input_carrier]
-                <= b_tec.var_capacity_charge
-            )
+            if self.flexibility_data["power_energy_ratio"] == "parameter":
+                return (
+                    self.input[t, self.component_options.main_input_carrier]
+                    <= charge_rate
+                )
+            else:
+                return (
+                    self.input[t, self.component_options.main_input_carrier]
+                    <= b_tec.var_capacity_charge
+                )
 
         b_tec.const_max_charge = pyo.Constraint(
             self.set_t_performance, rule=init_maximal_charge
         )
 
         def init_maximal_discharge(const, t):
-            return (
-                self.output[t, self.component_options.main_input_carrier]
-                <= b_tec.var_capacity_discharge
-            )
+            if self.flexibility_data["power_energy_ratio"] == "parameter":
+                return (
+                        self.input[t, self.component_options.main_input_carrier]
+                        <= discharge_rate
+                )
+            else:
+                return (
+                    self.output[t, self.component_options.main_input_carrier]
+                    <= b_tec.var_capacity_discharge
+                )
 
         b_tec.const_max_discharge = pyo.Constraint(
             self.set_t_performance, rule=init_maximal_discharge
         )
 
         # if the charging / discharging rates are fixed or flexible as a ratio of the energy capacity:
-        def init_max_capacity_charge(const):
-            if self.flexibility_data["power_energy_ratio"] == "fixed":
-                return b_tec.var_capacity_charge == charge_rate * b_tec.var_size
-            else:
-                return b_tec.var_capacity_charge <= charge_rate * b_tec.var_size
+        if not self.flexibility_data["power_energy_ratio"] == "parameter":
+            def init_max_capacity_charge(const):
+                if self.flexibility_data["power_energy_ratio"] == "fixed":
+                    return b_tec.var_capacity_charge == charge_rate * b_tec.var_size
+                else:
+                    return b_tec.var_capacity_charge <= charge_rate * b_tec.var_size
 
-        b_tec.const_max_cap_charge = pyo.Constraint(rule=init_max_capacity_charge)
+            b_tec.const_max_cap_charge = pyo.Constraint(rule=init_max_capacity_charge)
 
-        def init_max_capacity_discharge(const):
-            if self.flexibility_data["power_energy_ratio"] == "fixed":
-                # dischargeCapacity == dischargeRate * storSize
-                return b_tec.var_capacity_discharge == discharge_rate * b_tec.var_size
-            else:
-                # dischargeCapacity <= dischargeRate * storSize
-                return b_tec.var_capacity_discharge <= discharge_rate * b_tec.var_size
+            def init_max_capacity_discharge(const):
+                if self.flexibility_data["power_energy_ratio"] == "fixed":
+                    # dischargeCapacity == dischargeRate * storSize
+                    return b_tec.var_capacity_discharge == discharge_rate * b_tec.var_size
+                else:
+                    # dischargeCapacity <= dischargeRate * storSize
+                    return b_tec.var_capacity_discharge <= discharge_rate * b_tec.var_size
 
-        b_tec.const_max_cap_discharge = pyo.Constraint(rule=init_max_capacity_discharge)
+            b_tec.const_max_cap_discharge = pyo.Constraint(rule=init_max_capacity_discharge)
 
         # Energy consumption charging/discharging
         if "energy_consumption" in coeff_ti:

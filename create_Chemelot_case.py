@@ -5,15 +5,13 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 import pandas as pd
 
 
-#Create data Chemelot cluster without GT
-execute = 0
+#Create data Chemelot cluster
+execute = 1
 
 if execute == 1:
     # Specify the path to your input data
     casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster"
-    datapath = "Z:/PyHub/PyHub_data/CM/170624_CM"
-    resultpath = "Z:/PyHub/PyHub_results/CM/Chemelot_cluster"
-
+    datapath = "Z:/PyHub/PyHub_data/CM/240624_CM"
 
     firsttime = 0
     if firsttime == 1:
@@ -77,13 +75,13 @@ if execute == 1:
         data.to_csv(file_path, index=False, sep=';')
 
 
-#Create data Chemelot cluster without GT
-execute = 1
+#Create data Chemelot cluster with GT
+execute = 0
 
 if execute == 1:
     # Specify the path to your input data
     casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster_GT"
-    datapath = "Z:/PyHub/PyHub_data/CM/170624_CM"
+    datapath = "Z:/PyHub/PyHub_data/CM/240624_CM"
 
 
     firsttime = 0
