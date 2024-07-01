@@ -5,11 +5,11 @@ from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 
 #Run Chemelot case study relaxed
-execute = 0
+execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster_relaxed_bidirect"
+    casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster_relaxed"
     resultpath = "Z:/PyHub/PyHub_results/CM/RDS3_Chemelot_cluster_relaxed"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
@@ -41,11 +41,11 @@ if execute == 1:
 
 
 #Run Chemelot case study min costs
-execute = 0
+execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster_bidirect"
+    casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster"
     resultpath = "Z:/PyHub/PyHub_results/CM/RDS3_Chemelot_cluster"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
@@ -91,29 +91,28 @@ execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster_bidirect"
+    casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster"
     resultpath = "Z:/PyHub/PyHub_results/CM/RDS3_Chemelot_cluster_minE"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
     # TD = [10, 20, 40, 60, 100, 200, 0]
-    TD = [10, 20, 40, 60, 100, 200, 0]
-
 
 
     maxemisions = 1304912.69
-    elimit = [0.9, 0.8, 0.6, 0.4, 0.2, 0.1, 0.07, 0.05]
+    elimit = [0.9, 0.8, 0.7]
 
-    for lim in elimit:
-    # for nr in TD:
+    # for lim in elimit:
+    for nr in TD:
         with open(json_filepath) as json_file:
             model_config = json.load(json_file)
 
-        # model_config['optimization']['typicaldays']['N']['value'] = nr
-        # model_config['optimization']['objective']['value'] = 'emissions_minC'
+        model_config['optimization']['typicaldays']['N']['value'] = nr
+        model_config['optimization']['objective']['value'] = 'emissions_minC'
+        model_config['optimization']['emission_limit']['value'] = 0
 
-        model_config['optimization']['typicaldays']['N']['value'] = 10
-        model_config['optimization']['objective']['value'] = 'costs'
-        model_config['optimization']['emission_limit']['value'] = lim * maxemisions
+        # model_config['optimization']['typicaldays']['N']['value'] = 10
+        # model_config['optimization']['objective']['value'] = 'costs_emissionlimit'
+        # model_config['optimization']['emission_limit']['value'] = lim * maxemisions
 
 
         # change save options
@@ -128,14 +127,15 @@ if execute == 1:
         pyhub = ModelHub()
         pyhub.read_data(casepath)
 
-        pyhub.data.model_config['reporting']['case_name']['value'] = 'elimit' + str(int(lim*100))
+        # pyhub.data.model_config['reporting']['case_name']['value'] = 'elimit' + str(int(round(lim*100)))
+        # pyhub.data.model_config['solveroptions']['mipfocus']['value'] = 1
 
-        # # add casename based on resolution
-        # if pyhub.data.model_config['optimization']['typicaldays']['N']['value'] == 0:
-        #     pyhub.data.model_config['reporting']['case_name']['value'] = 'fullres'
-        # else:
-        #     pyhub.data.model_config['reporting']['case_name']['value'] = 'TD' + str(
-        #         pyhub.data.model_config['optimization']['typicaldays']['N']['value'])
+        # add casename based on resolution
+        if pyhub.data.model_config['optimization']['typicaldays']['N']['value'] == 0:
+            pyhub.data.model_config['reporting']['case_name']['value'] = 'fullres'
+        else:
+            pyhub.data.model_config['reporting']['case_name']['value'] = 'TD' + str(
+                pyhub.data.model_config['optimization']['typicaldays']['N']['value'])
 
         # solving
         pyhub.quick_solve()
