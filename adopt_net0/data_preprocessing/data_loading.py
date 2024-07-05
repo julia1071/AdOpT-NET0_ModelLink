@@ -82,7 +82,7 @@ def load_climate_data_from_api(folder_path: str | Path, dataset: str = "JRC"):
 
 def fill_carrier_data(
     folder_path: str | Path,
-    value: float,
+    value_or_data: float | pd.DataFrame,
     columns: list = [],
     carriers: list = [],
     nodes: list = [],
