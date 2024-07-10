@@ -1,4 +1,7 @@
+import os
+
 import h5py
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
@@ -6,11 +9,71 @@ from matplotlib.ticker import PercentFormatter
 from adopt_net0 import extract_datasets_from_h5group
 
 # Define the data path
-run_for = 'minC'
-if run_for == 'minC':
-    resultfolder = "Z:/PyHub/PyHub_results/CM_old/20240701_Chemelot_tests_complexity/BigM_Chemelot_cluster"
-elif run_for == 'minE':
-    resultfolder = "Z:/PyHub/PyHub_results/CM/Complexity/Chemelot_minE"
+resultfolder = "Z:/PyHub/PyHub_results/CM/Cluster_integration"
+
+# Define the multi-level index for rows
+columns = pd.MultiIndex.from_product(
+    [
+        ["Chemelot", "Zeeland"],
+        ["cluster", "ethylene", "ammonia", "standalone"],
+        ["ref", "high", "minE"]
+    ],
+    names=["Location", "Type", "Scenario"]
+)
+
+# Define the columns
+index = ["path", "costs_tot", "emissions_tot", "size_Cracker", "size_eCracker"]
+
+# Create the DataFrame with NaN values
+result_data = pd.DataFrame(np.nan, index=index, columns=columns)
+
+lev0 = ['Chemelot']
+lev1 = ['ethylene']
+
+
+# Fill the path column using a loop
+for location in lev0:
+    for typ in lev1:
+        folder_name = f"{location}_{typ}"
+        summarypath = os.path.join(resultfolder, folder_name, "Summary.xlsx")
+        summary_results = pd.read_excel(summarypath)
+
+        for scenario in result_data.columns.levels[2]:
+            for case in summary_results['case']:
+                if pd.notna(case) and scenario in case:
+                    h5_path = Path(summary_results[summary_results['case'] == case].iloc[0]['time_stamp']) / "optimization_results.h5"
+                    result_data.loc["path", (location, typ, scenario)] = h5_path
+                    result_data.loc["costs_tot", (location, typ, scenario)] = summary_results[summary_results['case'] == 'fullres'].iloc[0]['total_npv']
+                    result_data.loc["emissions_tot", (location, typ, scenario)] = summary_results[summary_results['case'] == 'fullres'].iloc[0]['emissions_pos']
+
+
+
+# calculate total product
+products = {
+    "Chemelot": {
+        "ammonia": 135 * 8760,
+        "ethylene": 150 * 8760,
+        "cracker_tot": None,
+        "total_product": None,
+        "total_product_cor": None
+    },
+    "Zeeland": {
+            "ammonia": 208 * 8760,
+            "ethylene": 208 * 8760,
+            "cracker_tot": None,
+            "total_product": None,
+            "total_product_cor": None
+    }
+}
+
+ethylene_yield = 0.3025
+
+for location in products:
+    products[location]['total_product'] = products[location]['ammonia'] + products[location]['ethylene']
+    products[location]['cracker_tot'] = products[location]['ethylene'] / ethylene_yield
+    products[location]['total_product_cor'] = products[location]['ammonia'] + products[location]['cracker_tot']
+
+
 
 
 
