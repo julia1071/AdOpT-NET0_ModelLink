@@ -15,20 +15,22 @@ resultfolder = "Z:/PyHub/PyHub_results/CM/Cluster_integration"
 columns = pd.MultiIndex.from_product(
     [
         ["Chemelot", "Zeeland"],
-        ["cluster", "ethylene", "ammonia", "standalone"],
-        ["ref", "high", "minE"]
+        ["cluster1", "ethylene", "ammonia", "standalone"],
+        ["minC_ref", "minC_high", "minE"]
     ],
     names=["Location", "Type", "Scenario"]
 )
 
 # Define the columns
-index = ["path", "costs_tot", "emissions_tot", "size_Cracker", "size_eCracker"]
+index = ["path", "costs_tot", "emissions_tot", 'size_NaphthaCracker', 'size_NaphthaCracker_Electric',
+         'size_NaphthaCracker_CC', 'size_KBRreformer', 'size_KBRreformer_CC', 'size_eSMR', 'size_AEC',
+         'costs_spec', 'costs_spec_cor']
 
 # Create the DataFrame with NaN values
 result_data = pd.DataFrame(np.nan, index=index, columns=columns)
 
 lev0 = ['Chemelot']
-lev1 = ['ethylene']
+lev1 = ['cluster1', 'ethylene']
 
 
 # Fill the path column using a loop
@@ -43,9 +45,19 @@ for location in lev0:
                 if pd.notna(case) and scenario in case:
                     h5_path = Path(summary_results[summary_results['case'] == case].iloc[0]['time_stamp']) / "optimization_results.h5"
                     result_data.loc["path", (location, typ, scenario)] = h5_path
-                    result_data.loc["costs_tot", (location, typ, scenario)] = summary_results[summary_results['case'] == 'fullres'].iloc[0]['total_npv']
-                    result_data.loc["emissions_tot", (location, typ, scenario)] = summary_results[summary_results['case'] == 'fullres'].iloc[0]['emissions_pos']
+                    result_data.loc["costs_tot", (location, typ, scenario)] = summary_results[summary_results['case'] == case].iloc[0]['total_npv']
+                    result_data.loc["emissions_tot", (location, typ, scenario)] = summary_results[summary_results['case'] == case].iloc[0]['emissions_pos']
 
+                    if h5_path.exists():
+                        with h5py.File(h5_path, "r") as hdf_file:
+                            df = extract_datasets_from_h5group(hdf_file["design/nodes"])
+                            tecs = ['NaphthaCracker', 'NaphthaCracker_Electric', 'NaphthaCracker_CC', 'KBRreformer', 'KBRreformer_CC', 'eSMR', 'AEC']
+                            for tec in tecs:
+                                output_name = 'size_' + tec
+                                if ('period1', 'Chemelot', tec, 'size') in df.columns:
+                                    result_data.loc[output_name, (location, typ, scenario)] = df[('period1', 'Chemelot', tec, 'size')].iloc[0]
+                                else:
+                                    result_data.loc[output_name, (location, typ, scenario)] = 0
 
 
 # calculate total product
@@ -75,64 +87,50 @@ for location in products:
 
 
 
+# Make calculations with results
+for location in lev0:
+    for scenario in result_data.columns.levels[2]:
+        for row in result_data.index:
+            if row != 'path':
+                result_data.loc[row, (location, 'standalone', scenario)] = result_data.loc[row, (
+                location, 'ethylene', scenario)] + result_data.loc[row, (location, 'ammonia', scenario)]
+            else:
+                result_data.loc[row, (location, 'standalone', scenario)] = None
+
+        # get specific costs and emissions
+        result_data.loc['costs_spec', (location, 'cluster1', scenario)] = result_data.loc['costs_tot', (
+            location, 'cluster1', scenario)] / products[location]['total_product']
+        result_data.loc['costs_spec_cor', (location, 'cluster1', scenario)] = result_data.loc['costs_tot', (
+            location, 'cluster1', scenario)] / products[location]['total_product_cor']
+        result_data.loc['emissions_spec', (location, 'cluster1', scenario)] = result_data.loc['emissions_tot', (
+            location, 'cluster1', scenario)] / products[location]['total_product']
+        result_data.loc['emissions_spec_cor', (location, 'cluster1', scenario)] = result_data.loc['emissions_tot', (
+            location, 'cluster1', scenario)] / products[location]['total_product_cor']
+
+        result_data.loc['costs_spec', (location, 'ethylene', scenario)] = result_data.loc['costs_tot', (
+            location, 'ethylene', scenario)] / products[location]['ethylene']
+        result_data.loc['costs_spec_cor', (location, 'ethylene', scenario)] = result_data.loc['costs_tot', (
+            location, 'ethylene', scenario)] / products[location]['cracker_tot']
+        result_data.loc['emissions_spec', (location, 'ethylene', scenario)] = result_data.loc['emissions_tot', (
+            location, 'ethylene', scenario)] / products[location]['ethylene']
+        result_data.loc['emissions_spec_cor', (location, 'ethylene', scenario)] = result_data.loc['emissions_tot', (
+            location, 'ethylene', scenario)] / products[location]['cracker_tot']
+
+        result_data.loc['costs_spec', (location, 'ammonia', scenario)] = result_data.loc['costs_tot', (
+            location, 'ammonia', scenario)] / products[location]['ammonia']
+        result_data.loc['emissions_spec', (location, 'ammonia', scenario)] = result_data.loc['emissions_tot', (
+            location, 'ammonia', scenario)] / products[location]['ammonia']
+
+        result_data.loc['costs_spec', (location, 'standalone', scenario)] = result_data.loc['costs_tot', (
+            location, 'standalone', scenario)] / products[location]['total_product']
+        result_data.loc['costs_spec_cor', (location, 'standalone', scenario)] = result_data.loc['costs_tot', (
+            location, 'standalone', scenario)] / products[location]['total_product_cor']
+        result_data.loc['emissions_spec', (location, 'standalone', scenario)] = result_data.loc['emissions_tot', (
+            location, 'standalone', scenario)] / products[location]['total_product']
+        result_data.loc['emissions_spec_cor', (location, 'standalone', scenario)] = result_data.loc['emissions_tot', (
+            location, 'standalone', scenario)] / products[location]['total_product_cor']
 
 
-# Extract the relevant data
-summarypath = Path(resultfolder) / 'Summary.xlsx'
-summary_results = pd.read_excel(summarypath)
-
-# full resolution reference
-fullres_results = {
-    'costs': summary_results[summary_results['case'] == 'fullres'].iloc[0]['total_npv'],
-    'emissions': summary_results[summary_results['case'] == 'fullres'].iloc[0]['emissions_pos'],
-    'computation time': summary_results[summary_results['case'] == 'fullres'].iloc[0]['time_total']
-}
-fullres_path_h5 = Path(summary_results[summary_results['case'] == 'fullres'].iloc[0]['time_stamp']) / "optimization_results.h5"
-
-#get capacities from h5 files
-if fullres_path_h5.exists():
-    with h5py.File(fullres_path_h5, "r") as hdf_file:
-        df = extract_datasets_from_h5group(hdf_file["design/nodes"])
-        tecs = ['NaphthaCracker', 'NaphthaCracker_Electric']
-        for tec in tecs:
-            output_name = 'size_' + tec
-            fullres_results[output_name] = df['period1', 'Chemelot', tec, 'size'].iloc[0]
-
-
-#now collect data to plot
-data = []
-for case in summary_results['case']:
-    if pd.notna(case) and case != 'fullres':
-        case_data = {
-            'case': case,
-            'DD': int(case[2:]),
-            'costs': summary_results.loc[summary_results['case'] == case, 'total_npv'].iloc[0],
-            'emissions': summary_results.loc[summary_results['case'] == case, 'emissions_pos'].iloc[0],
-            'computation time': summary_results.loc[summary_results['case'] == case, 'time_total'].iloc[0]
-        }
-
-        #collect sizes from h5
-        case_path_h5 = Path(
-            summary_results[summary_results['case'] == case].iloc[0]['time_stamp']) / "optimization_results.h5"
-
-        if fullres_path_h5.exists():
-            with h5py.File(fullres_path_h5, "r") as hdf_file:
-                df = extract_datasets_from_h5group(hdf_file["design/nodes"])
-                tecs = ['NaphthaCracker', 'NaphthaCracker_Electric']
-                for tec in tecs:
-                    output_name = 'size_' + tec
-                    case_data[output_name] = df['period1', 'Chemelot', tec, 'size'].iloc[0]
-
-        data.append(case_data)
-
-# Convert the list of dictionaries into a DataFrame
-clustered_results = pd.DataFrame(data)
-clustered_results.set_index('case', inplace=True)
-
-# difference
-columns_of_interest = ['costs', 'emissions', 'computation time', 'size_NaphthaCracker']
-for column in columns_of_interest:
-    clustered_results[f'{column}_diff'] = ((clustered_results[column] - fullres_results[column]) / fullres_results[column]) * 100
 
 # Configure Matplotlib to use LaTeX for text rendering and set font
 plt.rcParams.update({
@@ -146,40 +144,70 @@ plt.rcParams.update({
     "ytick.labelsize": 10,
 })
 
-# Define custom colors
-# colors = ['#9fa0c3', '#8b687f', '#7b435b', '#4C4D71', '#B096A7']
-colors = ['#639051', '#E4F0D0', '#5277B7', '#FFBC47']
 
+#Select data to plot (ethylene will be standalone later)
+locations = ['Chemelot', 'Zeeland']
+types = ['cluster1', 'ethylene']
+scenarios = ['minC_ref', 'minC_high']
+metric = 'costs_spec'
 
-# Create a new figure
-fig, ax = plt.subplots(figsize=(5, 4))
+# Extract the relevant data from the DataFrame and prepare data
+plot_data = result_data.loc[metric, locations[0]]
+plot_data = plot_data.loc[types, scenarios]
 
-# Scatter plots for differences
-for i, column in enumerate(columns_of_interest):
-    label = 'Size Naphtha Cracker' if column == 'size_NaphthaCracker' else f'{column.capitalize()}'
-    ax.scatter(clustered_results['DD'], clustered_results[f'{column}_diff'], color=colors[i], label=label)
+# Plotting
+fig, ax = plt.subplots(figsize=(10, 6))
 
-# Set labels and title
-ax.set_xlabel('Number of Design Days')
-ax.set_ylabel('Difference with Full Resolution')
-ax.yaxis.set_major_formatter(PercentFormatter(decimals=1))
+# Define custom colors and layout
+colors = ['#639051', '#E4F0D0']
+bar_width = 0.2
+n_types = len(types)
+n_scenarios = len(scenarios)
+n_locations = len(locations)
+total_bars = n_types * n_scenarios
 
-# Add grid and legend
-ax.grid(True, alpha = 0.2)
-ax.legend()
+# Set positions of the bars
+index = np.arange(n_locations) * (total_bars + 1) * bar_width
 
+# Create custom patches for the legend
+legend_elements = [
+    plt.Line2D([0], [0], color=colors[0], lw=4, alpha=0.5, label='cluster (reference CO$_2$ tax)'),
+    plt.Line2D([0], [0], color=colors[0], lw=4, linestyle='--', label='cluster (high CO$_2$ tax)'),
+    plt.Line2D([0], [0], color=colors[1], lw=4, alpha=0.5, label='ethylene (reference CO$_2$ tax)'),
+    plt.Line2D([0], [0], color=colors[1], lw=4, linestyle='--',  label='ethylene (high CO$_2$ tax)')
+]
+
+# Plot each location
+for loc_idx, location in enumerate(locations):
+    plot_data = result_data.loc[metric, location].loc[types, scenarios]
+
+    # Plot each scenario for each type
+    for j, scenario in enumerate(scenarios):
+        for i, typ in enumerate(types):
+            position = index[loc_idx] + j * (bar_width * n_types) + i * bar_width
+            if scenario == 'minC_ref':
+                plt.bar(position, plot_data.loc[typ, scenario], bar_width,
+                        label=None, color=colors[i], alpha=0.5)
+            elif scenario == 'minC_high':
+                plt.bar(position, plot_data.loc[typ, scenario], bar_width,
+                        label=None, color=colors[i])
+
+# Adding labels and title
+plt.ylabel('Specific costs [€/tonne product]')
+plt.xticks(index + bar_width * (total_bars - 1) / 2, locations)
+plt.legend(handles=legend_elements)
 
 # Adjust layout
 plt.tight_layout()
 
 
-saveas = 'pdf'
+saveas = '0'
 
 if saveas == 'svg':
-    savepath = 'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Images and graphs/Collection CM/Paper/' + 'complexity_minC.svg'
+    savepath = 'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Images and graphs/Collection CM/Paper/' + 'integration_costs.svg'
     plt.savefig(savepath, format='svg')
 if saveas == 'pdf':
-    savepath = 'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Images and graphs/Collection CM/Paper/' + 'complexity_minC.pdf'
+    savepath = 'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Images and graphs/Collection CM/Paper/' + 'integration_costs.pdf'
     plt.savefig(savepath, format='pdf')
 
 #show plot
