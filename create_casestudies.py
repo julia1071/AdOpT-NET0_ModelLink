@@ -96,25 +96,25 @@ if execute == 1:
 
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
-    dp.fill_carrier_data(casepath, value_or_data=0)
+        dp.fill_carrier_data(casepath, value_or_data=0)
 
-    # Demand data
-    dp.fill_carrier_data(casepath, value_or_data=208, columns=['Demand'], carriers=['ammonia'])
-    dp.fill_carrier_data(casepath, value_or_data=111, columns=['Demand'], carriers=['CO2'])
-    dp.fill_carrier_data(casepath, value_or_data=208, columns=['Demand'], carriers=['ethylene'])
-    dp.fill_carrier_data(casepath, value_or_data=546.7, columns=['Demand'], carriers=['steam'])
-    dp.fill_carrier_data(casepath, value_or_data=93.2, columns=['Demand'], carriers=['electricity'])
+        # Demand data
+        dp.fill_carrier_data(casepath, value_or_data=208, columns=['Demand'], carriers=['ammonia'])
+        dp.fill_carrier_data(casepath, value_or_data=111, columns=['Demand'], carriers=['CO2'])
+        dp.fill_carrier_data(casepath, value_or_data=208, columns=['Demand'], carriers=['ethylene'])
+        dp.fill_carrier_data(casepath, value_or_data=546.7, columns=['Demand'], carriers=['steam'])
+        dp.fill_carrier_data(casepath, value_or_data=93.2, columns=['Demand'], carriers=['electricity'])
 
-    # No import limit
-    dp.fill_carrier_data(casepath, value_or_data=3000, columns=['Import limit'], carriers=['electricity', 'methane', 'naphtha', "CO2"])
+        # No import limit
+        dp.fill_carrier_data(casepath, value_or_data=3000, columns=['Import limit'], carriers=['electricity', 'methane', 'naphtha', "CO2"])
 
-    # No export limit
-    dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'], carriers=['nitrogen', 'oxygen', 'heatlowT', 'steam', 'crackergas'])
-    dp.fill_carrier_data(casepath, value_or_data=0.203, columns=['Export emission factor'],
-                         carriers=['crackergas'])
+        # No export limit
+        dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'], carriers=['nitrogen', 'oxygen', 'heatlowT', 'steam', 'crackergas'])
+        dp.fill_carrier_data(casepath, value_or_data=0.203, columns=['Export emission factor'],
+                             carriers=['crackergas'])
 
     # CO2 export
-    dp.fill_carrier_data(casepath, value_or_data=115, columns=['Export limit'], carriers=['CO2'])
+    dp.fill_carrier_data(casepath, value_or_data=171, columns=['Export limit'], carriers=['CO2'])
     dp.fill_carrier_data(casepath, value_or_data=-59.66, columns=['Export price'], carriers=['CO2'])
 
     # Constant prices

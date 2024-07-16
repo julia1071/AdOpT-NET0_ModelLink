@@ -86,6 +86,7 @@ plt.rcParams.update({
 # Define custom colors
 # colors = ['#9fa0c3', '#8b687f', '#7b435b', '#4C4D71', '#B096A7']
 colors = ['#639051', '#E4F0D0', '#5277B7', '#FFBC47']
+markers = ['o', '*', 'D', '^']
 
 
 # Create a new figure
@@ -93,8 +94,8 @@ fig, ax = plt.subplots(figsize=(5, 4))
 
 # Scatter plots for differences
 for i, column in enumerate(columns_of_interest):
-    label = 'Size Naphtha Cracker' if column == 'size_NaphthaCracker' else f'{column.capitalize()}'
-    ax.scatter(clustered_results['DD'], clustered_results[f'{column}_diff'], color=colors[i], label=label)
+    label = 'Size Difference Naphtha Cracker' if column == 'size_NaphthaCracker' else f'{column.capitalize()} Difference'
+    ax.scatter(clustered_results['DD'], clustered_results[f'{column}_diff'], color=colors[i], label=label, marker=markers[i])
 
 # Set labels and title
 ax.set_xlabel('Number of Design Days')
@@ -110,7 +111,7 @@ ax.legend()
 plt.tight_layout()
 
 
-saveas = 'pdf'
+saveas = 'svg'
 
 if saveas == 'svg':
     savepath = 'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Images and graphs/Collection CM/Paper/' + 'complexity_minC.svg'
