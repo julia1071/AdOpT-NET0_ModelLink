@@ -17,8 +17,8 @@ if execute == 1:
     resultpath = "Z:/PyHub/PyHub_results/CM/Cluster_integration/Chemelot_cluster"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
-    # objectives = ['costs', 'emissions_minC']
-    objectives = ['emissions_minC']
+    objectives = ['costs', 'emissions_minC']
+    # objectives = ['emissions_minC']
 
     for obj in objectives:
         with open(json_filepath) as json_file:
@@ -74,8 +74,8 @@ if execute == 1:
     resultpath = "Z:/PyHub/PyHub_results/CM/Cluster_integration/Chemelot_ammonia"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
-    # objectives = ['costs', 'emissions_minC']
-    objectives = ['emissions_minC']
+    objectives = ['costs', 'emissions_minC']
+    # objectives = ['costs']
 
     for obj in objectives:
         with open(json_filepath) as json_file:
@@ -130,8 +130,8 @@ if execute == 1:
     resultpath = "Z:/PyHub/PyHub_results/CM/Cluster_integration/Chemelot_ethylene"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
-    # objectives = ['costs', 'emissions_minC']
-    objectives = ['emissions_minC']
+    objectives = ['costs', 'emissions_minC']
+    # objectives = ['emissions_minC']
 
     for obj in objectives:
         with open(json_filepath) as json_file:
@@ -187,8 +187,8 @@ if execute == 1:
     resultpath = "Z:/PyHub/PyHub_results/CM/Cluster_integration/Zeeland_cluster"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
-    # objectives = ['costs', 'emissions_minC']
-    objectives = ['emissions_minC']
+    objectives = ['costs', 'emissions_minC']
+    # objectives = ['emissions_minC']
 
     for obj in objectives:
         with open(json_filepath) as json_file:
@@ -235,7 +235,7 @@ if execute == 1:
 
 
 #Run Zeeland ammonia case
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the path to your input data
@@ -243,8 +243,8 @@ if execute == 1:
     resultpath = "Z:/PyHub/PyHub_results/CM/Cluster_integration/Zeeland_ammonia"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
-    # objectives = ['costs', 'emissions_minC']
-    objectives = ['emissions_minC']
+    objectives = ['costs', 'emissions_minC']
+    # objectives = ['costs']
 
     for obj in objectives:
         with open(json_filepath) as json_file:
@@ -299,8 +299,8 @@ if execute == 1:
     resultpath = "Z:/PyHub/PyHub_results/CM/Cluster_integration/Zeeland_ethylene"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
-    # objectives = ['costs', 'emissions_minC']
-    objectives = ['costs']
+    objectives = ['costs', 'emissions_minC']
+    # objectives = ['emissions_minC']
 
     for obj in objectives:
         with open(json_filepath) as json_file:
