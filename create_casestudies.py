@@ -114,7 +114,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=2000/2, columns=['Import limit'],
                              carriers=['electricity'])
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'],
-                             carriers=['methane', "CO2"])
+                             carriers=['methane', 'naphtha', "CO2"])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'], carriers=['heatlowT', 'steam', 'crackergas'])
@@ -227,10 +227,10 @@ execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = "Z:/PyHub/PyHub_casestudies/CM/Zeeland_ammonia"
+    casepath = "Z:/PyHub/PyHub_casestudies/CM/Zeeland_ethylene"
     datapath = "Z:/PyHub/PyHub_data/CM/240624_CM"
 
-    carrier = 'ammonia'
+    carrier = 'ethylene'
 
     dp.fill_carrier_data(casepath, value_or_data=0)
 
@@ -256,7 +256,7 @@ if execute == 1:
         # No import limit
         dp.fill_carrier_data(casepath, value_or_data=3000/2, columns=['Import limit'], carriers=['electricity'])
         dp.fill_carrier_data(casepath, value_or_data=3000, columns=['Import limit'],
-                             carriers=['methane', "CO2"])
+                             carriers=['methane','naphtha'])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
