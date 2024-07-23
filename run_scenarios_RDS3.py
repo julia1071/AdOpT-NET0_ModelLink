@@ -17,8 +17,8 @@ if execute == 1:
     resultpath = "Z:/PyHub/PyHub_results/CM/Cluster_integration/Chemelot_cluster"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
-    objectives = ['costs', 'emissions_minC']
-    # objectives = ['emissions_minC']
+    # objectives = ['costs', 'emissions_minC']
+    objectives = ['emissions_minC']
 
     for obj in objectives:
         with open(json_filepath) as json_file:
@@ -72,8 +72,8 @@ if execute == 1:
     resultpath = "Z:/PyHub/PyHub_results/CM/Cluster_integration/Chemelot_ammonia"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
-    objectives = ['costs', 'emissions_minC']
-    # objectives = ['costs']
+    # objectives = ['costs', 'emissions_minC']
+    objectives = ['emissions_minC']
 
     for obj in objectives:
         with open(json_filepath) as json_file:
@@ -177,7 +177,7 @@ if execute == 1:
 
 
 #Run Zeeland cluster case
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the path to your input data
@@ -186,7 +186,7 @@ if execute == 1:
     json_filepath = Path(casepath) / "ConfigModel.json"
 
     objectives = ['costs', 'emissions_minC']
-    # objectives = ['costs']
+    # objectives = ['emissions_minC']
 
     for obj in objectives:
         with open(json_filepath) as json_file:
@@ -257,7 +257,8 @@ if execute == 1:
         model_config['reporting']['save_summary_path']['value'] = resultpath
         model_config['reporting']['save_path']['value'] = resultpath
 
-                # Write the updated JSON data back to the file
+
+        # Write the updated JSON data back to the file
         with open(json_filepath, 'w') as json_file:
             json.dump(model_config, json_file, indent=4)
 

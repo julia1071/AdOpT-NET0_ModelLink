@@ -6,12 +6,12 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 
 
 #Run Chemelot case study min costs
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the path to your input data
     casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster"
-    resultpath = "Z:/PyHub/PyHub_results/CM/Chemelot_cluster"
+    resultpath = "Z:/PyHub/PyHub_results/CM/Complexity/Chemelot"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
     TD = [10, 20, 40, 60, 100, 200, 0]
@@ -37,7 +37,6 @@ if execute == 1:
         pyhub = ModelHub()
         pyhub.read_data(casepath)
 
-        # pyhub.data.model_config['solveroptions']['mipfocus']['value'] = 1
 
         #add casename based on resolution
         if pyhub.data.model_config['optimization']['typicaldays']['N']['value'] == 0:
@@ -48,17 +47,19 @@ if execute == 1:
         #solving
         pyhub.quick_solve()
 
+
+
 # Run Chemelot case study emissions
 execute = 1
 
 if execute == 1:
     # Specify the path to your input data
     casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster"
-    resultpath = "Z:/PyHub/PyHub_results/CM/Chemelot_cluster_minE"
+    resultpath = "Z:/PyHub/PyHub_results/CM/Complexity/Chemelot_minE"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
     # TD = [10, 20, 40, 60, 100, 200, 0]
-    TD = [10, 20, 40, 60, 100, 200, 0]
+    TD = [30, 40, 60, 100, 200, 0]
 
 
     for nr in TD:
@@ -81,7 +82,6 @@ if execute == 1:
         pyhub = ModelHub()
         pyhub.read_data(casepath)
 
-        pyhub.data.model_config['solveroptions']['mipfocus']['value'] = 1
 
         # add casename based on resolution
         if pyhub.data.model_config['optimization']['typicaldays']['N']['value'] == 0:
