@@ -14,9 +14,9 @@ resultfolder = "Z:/PyHub/PyHub_results/CM/Cluster_integration"
 data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data1.xlsx'
 
 # select the type of plot from ['costs_spec', 'costs_spec_cor', 'emissions_spec', 'emissions_spec_cor', 'size']
-plot_type = 'size'
+plot_type = 'costs_spec'
 
-get_data = 1
+get_data = 0
 
 if get_data == 1:
     # Define the multi-level index for rows
@@ -110,12 +110,6 @@ if get_data == 1:
                     location, 'ethylene', scenario)] + result_data.loc[row, (location, 'ammonia', scenario)]
                 else:
                     result_data.loc[row, (location, 'standalone', scenario)] = None
-
-                for type in result_data.columns.levels[1]:
-                    for key, multiplier in multipliers.items():
-                        if key in row:
-                            result_data.loc[row, (location, type, scenario)] *= multiplier
-
 
             # get specific costs and emissions
             result_data.loc['costs_spec', (location, 'cluster', scenario)] = result_data.loc['costs_tot', (
@@ -227,12 +221,13 @@ if plot_type in ['costs_spec', 'costs_spec_cor', 'emissions_spec', 'emissions_sp
 
     # Adding labels and title
     plt.xticks(index + bar_width * (total_bars - 1) / 2, locations)
-    plt.legend(handles=legend_elements + [
-        plt.Line2D([0], [0], color=colors[0], linestyle='--', label='cluster minimum emissions (Chemelot)'),
-        plt.Line2D([0], [0], color=colors[0], linestyle=':', label='cluster minimum emissions (Zeeland)'),
-        plt.Line2D([0], [0], color=colors[1], linestyle='--', label='standalone minimum emissions (Chemelot)'),
-        plt.Line2D([0], [0], color=colors[1], linestyle=':', label='standalone minimum emissions (Zeeland)')
-    ], loc='upper center', ncol=2)
+    if 'emission' in metric:
+        plt.legend(handles=legend_elements + [
+            plt.Line2D([0], [0], color=colors[0], linestyle='--', label='cluster minimum emissions (Chemelot)'),
+            plt.Line2D([0], [0], color=colors[0], linestyle=':', label='cluster minimum emissions (Zeeland)'),
+            plt.Line2D([0], [0], color=colors[1], linestyle='--', label='standalone minimum emissions (Chemelot)'),
+            plt.Line2D([0], [0], color=colors[1], linestyle=':', label='standalone minimum emissions (Zeeland)')
+        ], loc='upper center', ncol=2)
 
     # define filename
     if 'cost' in metric:
