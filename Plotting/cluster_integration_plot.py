@@ -11,12 +11,12 @@ from adopt_net0 import extract_datasets_from_h5group
 
 # Define the data path
 resultfolder = "Z:/PyHub/PyHub_results/CM/Cluster_integration"
-data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data.xlsx'
+data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data1.xlsx'
 
 # select the type of plot from ['costs_spec', 'costs_spec_cor', 'emissions_spec', 'emissions_spec_cor', 'size']
 plot_type = 'size'
 
-get_data = 0
+get_data = 1
 
 if get_data == 1:
     # Define the multi-level index for rows
@@ -40,7 +40,7 @@ if get_data == 1:
     # Fill the path column using a loop
     for location in result_data.columns.levels[0]:
         for typ in result_data.columns.levels[1]:
-            if typ != 'standalone':
+            if typ not in ['standalone', 'ammonia']:
                 folder_name = f"{location}_{typ}"
                 summarypath = os.path.join(resultfolder, folder_name, "Summary.xlsx")
                 summary_results = pd.read_excel(summarypath)
@@ -248,7 +248,7 @@ if plot_type in ['costs_spec', 'costs_spec_cor', 'emissions_spec', 'emissions_sp
     plt.tight_layout()
 
     #save the file
-    saveas = 'pdf'
+    saveas = '0'
 
     if saveas == 'svg':
         savepath = f'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Images and graphs/Collection CM/Paper/{filename}.svg'
@@ -353,7 +353,7 @@ elif plot_type == 'size':
     plt.tight_layout()
 
     # save the file
-    saveas = 'pdf'
+    saveas = '0'
 
     if saveas == 'svg':
         savepath = f'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Images and graphs/Collection CM/Paper/installed_capacities.svg'
