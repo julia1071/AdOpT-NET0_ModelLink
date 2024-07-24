@@ -17,8 +17,8 @@ if execute == 1:
     resultpath = "Z:/PyHub/PyHub_results/CM/Cluster_integration/Chemelot_cluster"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
-    objectives = ['costs', 'emissions_minC']
-    # objectives = ['emissions_minC']
+    # objectives = ['costs', 'emissions_minC']
+    objectives = ['emissions_minC']
 
     for obj in objectives:
         with open(json_filepath) as json_file:
@@ -42,8 +42,6 @@ if execute == 1:
         pyhub.read_data(casepath)
 
         if obj == 'emissions_minC':
-            pyhub.data.model_config['solveroptions']['mipfocus']['value'] = 1
-
             # add casename
             pyhub.data.model_config['reporting']['case_name']['value'] = 'minE_refCO2tax'
 
@@ -74,8 +72,8 @@ if execute == 1:
     resultpath = "Z:/PyHub/PyHub_results/CM/Cluster_integration/Chemelot_ammonia"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
-    objectives = ['costs', 'emissions_minC']
-    # objectives = ['costs']
+    # objectives = ['costs', 'emissions_minC']
+    objectives = ['emissions_minC']
 
     for obj in objectives:
         with open(json_filepath) as json_file:
@@ -219,7 +217,8 @@ if execute == 1:
             pyhub.quick_solve()
 
         elif obj == 'costs':
-            co2tax = ['ref', 'high']
+            # co2tax = ['ref', 'high']
+            co2tax = ['high']
 
             for tax in co2tax:
                 # add casename
@@ -227,7 +226,7 @@ if execute == 1:
 
                 if tax == 'high':
                     pyhub.data.time_series['clustered']['period1', 'Zeeland', 'CarbonCost', 'global', 'price'] = 250
-                    pyhub.data.time_series['full']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
+                    pyhub.data.time_series['full']['period1', 'Zeeland', 'CarbonCost', 'global', 'price'] = 250
 
                 # solving
                 pyhub.quick_solve()
