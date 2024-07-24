@@ -419,7 +419,7 @@ class Stor(Technology):
         def init_maximal_discharge(const, t):
             if self.flexibility_data["power_energy_ratio"] == "parameter":
                 return (
-                        self.input[t, self.component_options.main_input_carrier]
+                        self.output[t, self.component_options.main_input_carrier]
                         <= discharge_rate
                 )
             else:
