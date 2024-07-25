@@ -35,7 +35,7 @@ if get_data == 1:
     # Fill the path column using a loop
     for location in result_data.columns.levels[0]:
         for typ in result_data.columns.levels[1]:
-            if typ not in ['standalone', 'ammonia']:
+            if typ not in ['standalone']:
                 folder_name = f"{location}_{typ}"
                 summarypath = os.path.join(resultfolder, folder_name, "Summary.xlsx")
                 summary_results = pd.read_excel(summarypath)
