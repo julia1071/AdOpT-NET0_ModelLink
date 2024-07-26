@@ -50,7 +50,7 @@ if execute == 1:
 
 
 # Run Chemelot case study emissions
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the path to your input data
@@ -190,3 +190,60 @@ if execute == 1:
 # Add values of (part of) the parameters and variables to the summary file
 # summarypath = Path(resultpath) / "Summary.xlsx"
 # add_values_to_summary(summarypath)
+
+
+#Run Chemelot test case
+execute = 1
+
+if execute == 1:
+    # Specify the path to your input data
+    casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster"
+    resultpath = "Z:/PyHub/PyHub_results/CM/test"
+    json_filepath = Path(casepath) / "ConfigModel.json"
+
+    # objectives = ['costs', 'emissions_minC']
+    objectives = ['emissions_minC']
+
+    for obj in objectives:
+        with open(json_filepath) as json_file:
+            model_config = json.load(json_file)
+
+        model_config['optimization']['typicaldays']['N']['value'] = 20
+        model_config['optimization']['objective']['value'] = obj
+        model_config['optimization']['emission_limit']['value'] = 0
+
+        #change save options
+        model_config['reporting']['save_summary_path']['value'] = resultpath
+        model_config['reporting']['save_path']['value'] = resultpath
+
+
+        # Write the updated JSON data back to the file
+        with open(json_filepath, 'w') as json_file:
+            json.dump(model_config, json_file, indent=4)
+
+        # Construct and solve the model
+        pyhub = ModelHub()
+        pyhub.read_data(casepath)
+
+        # pyhub.data.model_config['solveroptions']['ScaleFlag']['value'] = 1
+
+        if obj == 'emissions_minC':
+            # add casename
+            pyhub.data.model_config['reporting']['case_name']['value'] = 'minE_refCO2tax'
+
+            # solving
+            pyhub.quick_solve()
+
+        elif obj == 'costs':
+            co2tax = ['ref', 'high']
+
+            for tax in co2tax:
+                # add casename
+                pyhub.data.model_config['reporting']['case_name']['value'] = 'minC_' + tax + 'CO2tax'
+
+                if tax == 'high':
+                    pyhub.data.time_series['clustered']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
+                    pyhub.data.time_series['full']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
+
+                # solving
+                pyhub.quick_solve()
