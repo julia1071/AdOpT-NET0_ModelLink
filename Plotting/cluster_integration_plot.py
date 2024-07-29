@@ -11,10 +11,10 @@ from adopt_net0 import extract_datasets_from_h5group
 
 # Define the data path
 resultfolder = "Z:/PyHub/PyHub_results/CM/Cluster_integration"
-data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data1.xlsx'
+data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data.xlsx'
 
 # select the type of plot from ['costs_spec', 'costs_spec_cor', 'emissions_spec', 'emissions_spec_cor', 'size']
-plot_type = 'costs_spec'
+plot_type = 'size'
 
 get_data = 0
 
@@ -30,8 +30,8 @@ if get_data == 1:
     )
 
     # Define the columns
-    index = ["path", "costs_tot", "emissions_tot", 'size_NaphthaCracker', 'size_NaphthaCracker_Electric',
-             'size_NaphthaCracker_CC', 'size_KBRreformer', 'size_KBRreformer_CC', 'size_eSMR', 'size_AEC',
+    index = ["path", "costs_tot", "emissions_tot", 'size_NaphthaCracker', 'size_NaphthaCracker_CC',
+             'size_NaphthaCracker_Electric', 'size_KBRreformer', 'size_KBRreformer_CC', 'size_eSMR', 'size_AEC',
              'costs_spec', 'costs_spec_cor']
 
     # Create the DataFrame with NaN values
@@ -175,11 +175,11 @@ if plot_type in ['costs_spec', 'costs_spec_cor', 'emissions_spec', 'emissions_sp
     plot_data = plot_data.loc[types, scenarios]
 
     # Plotting
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(7, 5))
 
     # Define custom colors and layout
     colors = ['#F1DAC4', '#474973']
-    bar_width = 0.15
+    bar_width = 0.1
     n_types = len(types)
     n_scenarios = len(scenarios)
     n_locations = len(locations)
@@ -228,22 +228,30 @@ if plot_type in ['costs_spec', 'costs_spec_cor', 'emissions_spec', 'emissions_sp
             plt.Line2D([0], [0], color=colors[1], linestyle='--', label='standalone minimum emissions (Chemelot)'),
             plt.Line2D([0], [0], color=colors[1], linestyle=':', label='standalone minimum emissions (Zeeland)')
         ], loc='upper center', ncol=2)
+    else:
+        plt.legend(handles=legend_elements, loc='upper center', ncol=2)
 
     # define filename
     if 'cost' in metric:
         plt.ylabel('Specific costs [€/tonne product]')
         filename = 'integration_costs'
+        ax.set_ylim(0, 2500)
+        if 'cor' in metric:
+            filename = filename + '_cor'
+            ax.set_ylim(0, 1200)
     elif 'emission' in metric:
         plt.ylabel('Specific emissions [kg CO$_2$/tonne product]')
         filename = 'integration_emissions'
-    if 'cor' in metric:
-        filename = filename + '_cor'
+        ax.set_ylim(0, 1.4)
+        if 'cor' in metric:
+            filename = filename + '_cor'
+            ax.set_ylim(0, 0.6)
 
     # Adjust layout
     plt.tight_layout()
 
     #save the file
-    saveas = '0'
+    saveas = 'pdf'
 
     if saveas == 'svg':
         savepath = f'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Images and graphs/Collection CM/Paper/{filename}.svg'
@@ -256,7 +264,7 @@ if plot_type in ['costs_spec', 'costs_spec_cor', 'emissions_spec', 'emissions_sp
 elif plot_type == 'size':
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(10, 5), sharey=True)
 
-    tecs = {'ethylene': ['NaphthaCracker', 'NaphthaCracker_Electric', 'NaphthaCracker_CC'],
+    tecs = {'ethylene': ['NaphthaCracker', 'NaphthaCracker_CC', 'NaphthaCracker_Electric'],
             'ammonia': ['KBRreformer', 'KBRreformer_CC', 'eSMR', 'AEC']}
 
     # Define custom colors for the tecs
@@ -348,7 +356,7 @@ elif plot_type == 'size':
     plt.tight_layout()
 
     # save the file
-    saveas = '0'
+    saveas = 'pdf'
 
     if saveas == 'svg':
         savepath = f'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Images and graphs/Collection CM/Paper/installed_capacities.svg'
