@@ -6,7 +6,7 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 
 
 #Run Chemelot case study min costs
-execute = 0
+execute = 1
 
 if execute == 1:
     # Specify the path to your input data
@@ -14,43 +14,46 @@ if execute == 1:
     resultpath = "Z:/PyHub/PyHub_results/CM/Complexity/Chemelot"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
+    co2tax = ['ref', 'high']
     TD = [10, 20, 40, 60, 100, 200, 0]
 
-    for nr in TD:
-        with open(json_filepath) as json_file:
-            model_config = json.load(json_file)
+    for tax in co2tax:
+        for nr in TD:
+            with open(json_filepath) as json_file:
+                model_config = json.load(json_file)
 
-        model_config['optimization']['typicaldays']['N']['value'] = nr
-        model_config['optimization']['objective']['value'] = 'costs'
-        model_config['optimization']['emission_limit']['value'] = 0
+            # change save options
+            model_config['reporting']['save_summary_path']['value'] = resultpath + '_' + tax + 'CO2tax'
+            model_config['reporting']['save_path']['value'] = resultpath + '_' + tax + 'CO2tax'
 
-        #change save options
-        model_config['reporting']['save_summary_path']['value'] = resultpath
-        model_config['reporting']['save_path']['value'] = resultpath
+            model_config['optimization']['typicaldays']['N']['value'] = nr
+            model_config['optimization']['objective']['value'] = 'costs'
+            model_config['optimization']['emission_limit']['value'] = 0
 
+            # Write the updated JSON data back to the file
+            with open(json_filepath, 'w') as json_file:
+                json.dump(model_config, json_file, indent=4)
 
-        # Write the updated JSON data back to the file
-        with open(json_filepath, 'w') as json_file:
-            json.dump(model_config, json_file, indent=4)
+            # Construct and solve the model
+            pyhub = ModelHub()
+            pyhub.read_data(casepath)
 
-        # Construct and solve the model
-        pyhub = ModelHub()
-        pyhub.read_data(casepath)
+            if tax == 'high':
+                pyhub.data.time_series['clustered']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
+                pyhub.data.time_series['full']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
 
+            #add casename based on resolution
+            if pyhub.data.model_config['optimization']['typicaldays']['N']['value'] == 0:
+                pyhub.data.model_config['reporting']['case_name']['value'] = 'fullres'
+            else:
+                pyhub.data.model_config['reporting']['case_name']['value'] = 'TD' + str(pyhub.data.model_config['optimization']['typicaldays']['N']['value'])
 
-        #add casename based on resolution
-        if pyhub.data.model_config['optimization']['typicaldays']['N']['value'] == 0:
-            pyhub.data.model_config['reporting']['case_name']['value'] = 'fullres'
-        else:
-            pyhub.data.model_config['reporting']['case_name']['value'] = 'TD' + str(pyhub.data.model_config['optimization']['typicaldays']['N']['value'])
-
-        #solving
-        pyhub.quick_solve()
-
+            #solving
+            pyhub.quick_solve()
 
 
 # Run Chemelot case study emissions
-execute = 0
+execute = 1
 
 if execute == 1:
     # Specify the path to your input data
@@ -58,8 +61,8 @@ if execute == 1:
     resultpath = "Z:/PyHub/PyHub_results/CM/Complexity/Chemelot_minE"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
-    # TD = [10, 20, 40, 60, 100, 200, 0]
-    TD = [30, 40, 60, 100, 200, 0]
+    TD = [10, 20, 40, 60, 100, 200, 0]
+    # TD = [30, 40, 60, 100, 200, 0]
 
 
     for nr in TD:
@@ -193,7 +196,7 @@ if execute == 1:
 
 
 #Run Chemelot test case
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the path to your input data
