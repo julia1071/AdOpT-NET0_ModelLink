@@ -14,9 +14,9 @@ resultfolder = "Z:/PyHub/PyHub_results/CM/Cluster_integration"
 data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data.xlsx'
 
 # select the type of plot from ['costs_spec', 'costs_spec_cor', 'emissions_spec', 'emissions_spec_cor', 'size']
-plot_type = 'size'
+plot_type = 'emissions_spec_cor'
 
-get_data = 0
+get_data = 1
 
 if get_data == 1:
     # Define the multi-level index for rows

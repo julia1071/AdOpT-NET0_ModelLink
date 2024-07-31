@@ -14,7 +14,7 @@ resultfolder = "Z:/PyHub/PyHub_results/CM/Infrastructure"
 data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_infra.xlsx'
 
 # select the type of plot from ['costs_spec', 'costs_spec_cor', 'emissions_spec', 'emissions_spec_cor', 'size']
-plot_type = 'size'
+plot_type = 'costs_spec_cor'
 
 get_data = 0
 
@@ -176,14 +176,14 @@ if plot_type in ['costs_spec', 'costs_spec_cor', 'emissions_spec', 'emissions_sp
     # Set y-axis label and file name
     if 'cost' in metric:
         plt.ylabel('Specific costs [€/tonne product]')
-        filename = 'infrastructure_costs'
+        filename = locations[0] + '_infra_costs'
         ax.set_ylim(0, 2500)
         if 'cor' in metric:
             filename += '_cor'
             ax.set_ylim(0, 1000)
     elif 'emission' in metric:
         plt.ylabel('Specific emissions [kg CO$_2$/tonne product]')
-        filename = 'infrastructure_emissions'
+        filename = locations[0] + '_infra_emissions'
         ax.set_ylim(0, 1.2)
         if 'cor' in metric:
             filename += '_cor'
