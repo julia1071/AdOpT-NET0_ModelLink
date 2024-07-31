@@ -13,7 +13,7 @@ execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster"
+    casepath = "Z:/PyHub/PyHub_casestudies/CM/Chemelot_cluster_CGtank"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
     scenarios = ['slow', 'slowSMR', 'slowCracker']
