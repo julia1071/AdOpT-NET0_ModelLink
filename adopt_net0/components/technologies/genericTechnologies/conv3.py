@@ -244,8 +244,11 @@ class Conv3(Technology):
                             return pyo.Constraint.Skip
                         else:
                             return (
-                                    self.input[t, car_input]
-                                    == phi[car_input] * self.input[t, self.component_options.main_input_carrier]
+                                self.input[t, car_input]
+                                == phi[car_input]
+                                * self.input[
+                                    t, self.component_options.main_input_carrier
+                                ]
                             )
 
                     dis.const_input_on = pyo.Constraint(

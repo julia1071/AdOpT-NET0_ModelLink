@@ -24,7 +24,7 @@ def print_h5_tree(file_path: Path | str):
         hdf_file.visititems(print_attrs)
 
 
-def extract_datasets_from_h5group(group, tec_ope = False, prefix: tuple = (),) -> dict:
+def extract_datasets_from_h5group(group, prefix: tuple = ()) -> dict:
     """
     Extracts datasets from a group within a h5 file
 
@@ -40,7 +40,7 @@ def extract_datasets_from_h5group(group, tec_ope = False, prefix: tuple = (),) -
     data = {}
     for key, value in group.items():
         if isinstance(value, h5py.Group):
-            data.update(extract_datasets_from_h5group(value, tec_ope, prefix + (key,)))
+            data.update(extract_datasets_from_h5group(value, prefix + (key,)))
         elif isinstance(value, h5py.Dataset):
             if value.shape == ():
                 data[prefix + (key,)] = [value[()]]
