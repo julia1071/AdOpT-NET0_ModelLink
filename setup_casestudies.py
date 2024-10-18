@@ -11,7 +11,7 @@ execute = 1
 if execute == 1:
     # Specify the path to your input data
     casepath = Path("Z:/PyHub/PyHub_casestudies/MY/MY_Chemelot_2030")
-    datapath = Path("Z:/PyHub/PyHub_data/MY/MY_Data_241003")
+    datapath = Path("Z:/PyHub/PyHub_data/MY/241018_MY_Data_2030")
 
     firsttime = 0
     if firsttime == 1:
@@ -26,11 +26,10 @@ if execute == 1:
         topology_template = {
             "nodes": ["Chemelot"],
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
-                          "CO2", "CO2_DAC", "CO2_bio", "hydrogen", "nitrogen", "oxygen",
-                          "ammonia", "ethylene", "propylene", "PEmonomer",
-                          "crackergas", "feedgas", "fuel", "steam", "heatlowT",
-                          "methanol", "ethanol", "LPG", "propane", "PSW"
-                          "BTX", "pentane", "butene", "butane"],
+                         "CO2", "CO2_DAC", "CO2_bio", "hydrogen", "nitrogen", "oxygen",
+                         "ammonia", "ethylene", "propylene", "PE_olefin",
+                         "crackergas", "feedgas", "steam", "heatlowT",
+                         "methanol", "ethanol", "propane", "MPW"],
             "investment_periods": ["2030"],
             "start_date": "2022-01-01 00:00",
             "end_date": "2022-12-31 23:00",
@@ -38,10 +37,11 @@ if execute == 1:
             "investment_period_length": 1,
         }
 
+        # open and save topology and configuration files
         with open(topology_file, "w") as f:
             json.dump(topology_template, f, indent=4)
         # with open(config_file, "w") as f:
-            # json.dump(configuration_template, f, indent=4)
+        # json.dump(configuration_template, f, indent=4)
 
         # Node location
         file_path = casepath / 'NodeLocations.csv'
@@ -60,11 +60,12 @@ if execute == 1:
 
     else:
         set_tecs = ["SteamReformer", "SteamReformer_CC", "ElectricSMR", "AEC", "HaberBosch",
-                        "NaphthaCracker", "NaphthaCracker_Electric", "NaphthaCracker_CC",
-                        "ASU", "Boiler_Industrial_NG", "Boiler_El",
-                        "MeOHsynthesis", "MTO", "EDH", "PDH", "PSW2methanol"
-                        "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene", "Storage_H2", "Storage_Battery",
-                        "CO2toEmission", "feedgas_mixer", "fuel_mixer", "PE_mixer", "CO2_mixer", "LPG_separator"]
+                    "NaphthaCracker", "NaphthaCracker_CC", "NaphthaCracker_Electric",
+                    "ASU", "Boiler_Industrial_NG", "Boiler_El",
+                    "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol"
+                    "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
+                    "Storage_H2", "Storage_Battery",
+                    "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer"]
 
         json_file_path = casepath / "Topology.json"
         with open(json_file_path, "r") as json_file:
@@ -93,10 +94,10 @@ if execute == 1:
         # Demand data
         dp.fill_carrier_data(casepath, value_or_data=135, columns=['Demand'], carriers=['ammonia'])
         dp.fill_carrier_data(casepath, value_or_data=44, columns=['Demand'], carriers=['CO2'])
-        dp.fill_carrier_data(casepath, value_or_data=218, columns=['Demand'], carriers=['PEmonomer'])
+        dp.fill_carrier_data(casepath, value_or_data=218, columns=['Demand'], carriers=['PE_olefin'])
         dp.fill_carrier_data(casepath, value_or_data=0, columns=['Demand'], carriers=['steam'])
         dp.fill_carrier_data(casepath, value_or_data=81.8, columns=['Demand'], carriers=['electricity'])
-        dp.fill_carrier_data(casepath, value_or_data=6.9, columns=['Demand'], carriers=['crackergas'])
+        dp.fill_carrier_data(casepath, value_or_data=6.9, columns=['Demand'], carriers=['feedgas'])
 
         # No import limit
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'],
@@ -104,16 +105,15 @@ if execute == 1:
 
         # Import limits
         # add correct values later
+        dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'],
+                             carriers=["CO2", "ethanol", "MPW"])
         dp.fill_carrier_data(casepath, value_or_data=500, columns=['Import limit'],
-                             carriers=["CO2", "ethanol", "PSW"])
-        dp.fill_carrier_data(casepath, value_or_data=50, columns=['Import limit'],
                              carriers=["methane_bio", "CO2_DAC", "CO2_bio",
                                        "naphtha_bio", "methanol", "propane"])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
-                             carriers=["nitrogen", "oxygen", "crackergas", "steam", "heatlowT",
-                                        "LPG", "propane", "butane", "BTX", "pentane", "butene"])
+                             carriers=["nitrogen", "oxygen", "crackergas", "steam", "heatlowT"])
 
         # Export emissions
         dp.fill_carrier_data(casepath, value_or_data=0.203, columns=['Export emission factor'],
@@ -123,29 +123,42 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=115, columns=['Export limit'], carriers=['CO2'])
         dp.fill_carrier_data(casepath, value_or_data=-62.74, columns=['Export price'], carriers=['CO2'])
 
-        # Constant prices
-        dp.fill_carrier_data(casepath, value_or_data=100, columns=['Import price'], carriers=['methane'])
+        # Constant import prices
+        dp.fill_carrier_data(casepath, value_or_data=56.45, columns=['Import price'], carriers=['methane'])
         dp.fill_carrier_data(casepath, value_or_data=732, columns=['Import price'], carriers=['naphtha'])
         dp.fill_carrier_data(casepath, value_or_data=127.68, columns=['Import price'], carriers=['methane_bio'])
         dp.fill_carrier_data(casepath, value_or_data=1852.5, columns=['Import price'], carriers=['naphtha_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import price'], carriers=['CO2'])
-        dp.fill_carrier_data(casepath, value_or_data=150.31, columns=['Import price'], carriers=['CO2_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=150.31, columns=['Import price'], carriers=['CO2_DAC'])
+        dp.fill_carrier_data(casepath, value_or_data=95.7, columns=['Import price'], carriers=['CO2'])
+        dp.fill_carrier_data(casepath, value_or_data=38.28, columns=['Import price'], carriers=['CO2_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=382.81, columns=['Import price'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=908.20, columns=['Import price'], carriers=['methanol'])
         dp.fill_carrier_data(casepath, value_or_data=1141.07, columns=['Import price'], carriers=['ethanol'])
         dp.fill_carrier_data(casepath, value_or_data=1710, columns=['Import price'], carriers=['propane'])
-        dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['PSW'])
+        dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
+
+        # Constant import emission factor
+        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['methane'])
+        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['naphtha'])
+        dp.fill_carrier_data(casepath, value_or_data=-0.2, columns=['Import emission factor'], carriers=['methane_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=-1.32, columns=['Import emission factor'], carriers=['naphtha_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['CO2'])
+        dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Import emission factor'], carriers=['CO2_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Import emission factor'], carriers=['CO2_DAC'])
+        dp.fill_carrier_data(casepath, value_or_data=-1.37, columns=['Import emission factor'], carriers=['methanol'])
+        dp.fill_carrier_data(casepath, value_or_data=-1.91, columns=['Import emission factor'], carriers=['ethanol'])
+        dp.fill_carrier_data(casepath, value_or_data=-2.99, columns=['Import emission factor'], carriers=['propane'])
+        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['MPW'])
 
         # Electricity price from file
-        # change to xlsx and read sheet with year
+        # change to xlsx and read sheet with year 2030
         el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
-        el_importdata = pd.read_csv(el_load_path, sep=';', header=0, nrows=8760)
+        el_importdata = pd.read_excel(el_load_path, sheet_name='2030', header=0, nrows=8760)
         el_price = el_importdata.iloc[:, 0]
-        el_emissionrate = el_importdata.iloc[:, 3]
+        el_emissionrate = el_importdata.iloc[:, 2]
 
         dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'], carriers=['electricity'])
-        dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'], carriers=['electricity'])
-
+        dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'],
+                             carriers=['electricity'])
 
         #carbon tax
         file_path = Path(casepath) / 'period1' / "node_data" / 'Chemelot' / 'CarbonCost.csv'
@@ -191,7 +204,7 @@ if execute == 1:
         with open(topology_file, "w") as f:
             json.dump(topology_template, f, indent=4)
         # with open(config_file, "w") as f:
-            # json.dump(configuration_template, f, indent=4)
+        # json.dump(configuration_template, f, indent=4)
 
         # Node location
         # carbon tax
@@ -211,10 +224,10 @@ if execute == 1:
 
     else:
         set_tecs = ["KBRreformer", "KBRreformer_CC", "eSMR", "HaberBosch",
-                        "AEC", "ASU", "NaphthaCracker", "NaphthaCracker_Electric",
-                        "NaphthaCracker_CC", "Boiler_Industrial_NG", "Boiler_El", "Storage_Ammonia",
-                        "Storage_CO2", "Storage_Ethylene", "Storage_H2", "Storage_Battery",
-                        "CO2toEmission", "gasmixer"]
+                    "AEC", "ASU", "NaphthaCracker", "NaphthaCracker_Electric",
+                    "NaphthaCracker_CC", "Boiler_Industrial_NG", "Boiler_El", "Storage_Ammonia",
+                    "Storage_CO2", "Storage_Ethylene", "Storage_H2", "Storage_Battery",
+                    "CO2toEmission", "gasmixer"]
 
         json_file_path = casepath / "Topology.json"
         with open(json_file_path, "r") as json_file:
@@ -273,8 +286,8 @@ if execute == 1:
         el_emissionrate = el_importdata.iloc[:, 3]
 
         dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'], carriers=['electricity'])
-        dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'], carriers=['electricity'])
-
+        dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'],
+                             carriers=['electricity'])
 
         #carbon tax
         file_path = Path(casepath) / 'period1' / "node_data" / 'Chemelot' / 'CarbonCost.csv'
