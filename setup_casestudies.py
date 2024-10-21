@@ -13,7 +13,7 @@ if execute == 1:
     casepath = Path("Z:/PyHub/PyHub_casestudies/MY/MY_Chemelot_2030")
     datapath = Path("Z:/PyHub/PyHub_data/MY/241018_MY_Data_2030")
 
-    firsttime = 0
+    firsttime = 1
     if firsttime == 1:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -43,6 +43,9 @@ if execute == 1:
         # with open(config_file, "w") as f:
         # json.dump(configuration_template, f, indent=4)
 
+        # Create folder structure
+        dp.create_input_data_folder_template(casepath)
+
         # Node location
         file_path = casepath / 'NodeLocations.csv'
         data = pd.read_csv(file_path, delimiter=';')
@@ -55,16 +58,13 @@ if execute == 1:
         # Save the modified CSV file
         data.to_csv(file_path, index=False, sep=';')
 
-        # Create folder structure
-        dp.create_input_data_folder_template(casepath)
-
     else:
         set_tecs = ["SteamReformer", "SteamReformer_CC", "ElectricSMR", "AEC", "HaberBosch",
                     "NaphthaCracker", "NaphthaCracker_CC", "NaphthaCracker_Electric",
                     "ASU", "Boiler_Industrial_NG", "Boiler_El",
                     "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol"
                     "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
-                    "Storage_H2", "Storage_Battery",
+                    "Storage_H2", "Storage_Battery", "Storage_Propylene",
                     "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer"]
 
         json_file_path = casepath / "Topology.json"
