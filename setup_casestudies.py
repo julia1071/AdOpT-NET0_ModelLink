@@ -13,7 +13,7 @@ if execute == 1:
     casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030")
     datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241018_MY_Data_CH_2030")
 
-    firsttime = 1
+    firsttime = 0
     if firsttime == 1:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -28,7 +28,7 @@ if execute == 1:
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
                          "CO2", "CO2_DAC", "CO2_bio", "hydrogen", "nitrogen", "oxygen",
                          "ammonia", "ethylene", "propylene", "PE_olefin",
-                         "crackergas", "feedgas", "steam", "heatlowT",
+                         "crackergas", "feedgas", "steam", "heatlowT", "HBfeed",
                          "methanol", "ethanol", "propane", "MPW"],
             "investment_periods": ["2030"],
             "start_date": "2022-01-01 00:00",
@@ -50,9 +50,8 @@ if execute == 1:
         file_path = casepath / 'NodeLocations.csv'
         data = pd.read_csv(file_path, delimiter=';')
 
-        # Set the price to 150.31 and subsidy to 0 for all rows
-        data['lon'] = 50.968263253252445
-        data['lat'] = 5.803275217879619
+        data['lon'] = 5.80
+        data['lat'] = 50.97
         data['alt'] = 10
 
         # Save the modified CSV file
@@ -62,7 +61,7 @@ if execute == 1:
         set_tecs = ["SteamReformer", "SteamReformer_CC", "ElectricSMR", "AEC", "HaberBosch",
                     "NaphthaCracker", "NaphthaCracker_CC", "NaphthaCracker_Electric",
                     "ASU", "Boiler_Industrial_NG", "Boiler_El",
-                    "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol"
+                    "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
                     "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
                     "Storage_H2", "Storage_Battery", "Storage_Propylene",
                     "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer"]
@@ -161,7 +160,7 @@ if execute == 1:
                              carriers=['electricity'])
 
         #carbon tax
-        file_path = Path(casepath) / 'period1' / "node_data" / 'Chemelot' / 'CarbonCost.csv'
+        file_path = Path(casepath) / '2030' / "node_data" / 'Chemelot' / 'CarbonCost.csv'
         data = pd.read_csv(file_path, delimiter=';')
 
         # Set the price to 150.31 and subsidy to 0 for all rows

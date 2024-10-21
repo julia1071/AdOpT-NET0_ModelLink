@@ -301,7 +301,7 @@ def import_jrc_climate_data(
     # Get data from JRC dataset
     answer = dict()
     print("Importing Climate Data...")
-    response = requests.get("https://re.jrc.ec.europa.eu/api/tmy?", params=parameters)
+    response = requests.get("https://re.jrc.ec.europa.eu/api/tmy", params=parameters)
     if response.status_code == 200:
         print("Importing Climate Data successful")
     else:
