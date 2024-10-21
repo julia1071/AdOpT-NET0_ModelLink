@@ -10,8 +10,8 @@ execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = Path("Z:/PyHub/PyHub_casestudies/MY/MY_Chemelot_2030")
-    datapath = Path("Z:/PyHub/PyHub_data/MY/241018_MY_Data_2030")
+    casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030")
+    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241018_MY_Data_CH_2030")
 
     firsttime = 1
     if firsttime == 1:
@@ -170,6 +170,8 @@ if execute == 1:
 
         # Save the modified CSV file
         data.to_csv(file_path, index=False, sep=';')
+
+
 
 #Create data Chemelot cluster longterm
 execute = 0
