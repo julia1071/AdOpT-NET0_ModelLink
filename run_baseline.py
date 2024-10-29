@@ -10,11 +10,18 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 
 #Run Chemelot test design days
 execute = 1
+linear = 1
 
 if execute == 1:
-    # Specify the path to your input data
-    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030"
-    resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/DesignDays/CH_2030"
+    if linear:
+        # Specify the path to your input data
+        casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030_linear"
+        resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/DesignDays/CH_2030_linear"
+    else:
+        # Specify the path to your input data
+        casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030"
+        resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/DesignDays/CH_2030"
+
     json_filepath = Path(casepath) / "ConfigModel.json"
 
     co2tax = ['ref']
