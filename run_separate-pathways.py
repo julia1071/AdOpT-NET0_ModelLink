@@ -8,43 +8,50 @@ from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 
 
-#Run Chemelot test design days
+#Run Chemelot pathways
 execute = 1
-linear = 1
 
 if execute == 1:
-    if linear:
-        # Specify the path to your input data
-        casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030_linear"
-        resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/DesignDays/CH_2030_linear"
-    else:
-        # Specify the path to your input data
-        casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030"
-        resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/DesignDays/CH_2030"
+    # Specify the path to your input data
+    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030_pathways"
+    resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/Pathways/CH_2030"
 
-    json_filepath = Path(casepath) / "ConfigModel.json"
+    config_filepath = Path(casepath) / "ConfigModel.json"
+    tech_filepath = Path(casepath) / "2030/node_data/Chemelot/Technologies.json"
 
     co2tax = ['ref']
-    DD = [10, 20, 40, 60, 100, 200, 0]
-    #
-    # co2tax = ['high']
-    # DD = [0]
+    DD = [0]
+    pathways = {"conventional": ["SteamReformer", "HaberBosch", "NaphthaCracker"],
+                "electric": [],
+                "methanol": [],
+                "hydrocarbon_upgrading": [],
+                "auxiliary": ["Boiler_Industrial_NG", "Boiler_El",]
+                }
 
     for tax in co2tax:
         for nr in DD:
-            with open(json_filepath) as json_file:
+            # change config file
+            with open(config_filepath) as json_file:
                 model_config = json.load(json_file)
-
-            # change save options
-            model_config['reporting']['save_summary_path']['value'] = resultpath + '_' + tax + 'CO2tax'
-            model_config['reporting']['save_path']['value'] = resultpath + '_' + tax + 'CO2tax'
 
             model_config['optimization']['typicaldays']['N']['value'] = nr
             model_config['optimization']['objective']['value'] = 'costs'
 
             # Write the updated JSON data back to the file
-            with open(json_filepath, 'w') as json_file:
+            with open(config_filepath, 'w') as json_file:
                 json.dump(model_config, json_file, indent=4)
+
+            # change technologies
+            with open(config_filepath) as json_file:
+                model_config = json.load(json_file)
+
+            model_config['optimization']['typicaldays']['N']['value'] = nr
+            model_config['optimization']['objective']['value'] = 'costs'
+
+            # Write the updated JSON data back to the file
+            with open(config_filepath, 'w') as json_file:
+                json.dump(model_config, json_file, indent=4)
+
 
             # Construct and solve the model
             pyhub = ModelHub()
@@ -84,6 +91,7 @@ if execute == 1:
 
         model_config['optimization']['typicaldays']['N']['value'] = 20
         model_config['optimization']['objective']['value'] = obj
+        model_config['optimization']['emission_limit']['value'] = 0
 
         #change save options
         model_config['reporting']['save_summary_path']['value'] = resultpath
