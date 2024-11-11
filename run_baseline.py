@@ -68,6 +68,7 @@ if execute == 1:
 
 #Run Chemelot cluster case
 execute = 0
+DD = 0
 
 if execute == 1:
     # Specify the path to your input data
@@ -82,7 +83,7 @@ if execute == 1:
         with open(json_filepath) as json_file:
             model_config = json.load(json_file)
 
-        model_config['optimization']['typicaldays']['N']['value'] = 20
+        model_config['optimization']['typicaldays']['N']['value'] = DD
         model_config['optimization']['objective']['value'] = obj
 
         #change save options
@@ -113,7 +114,9 @@ if execute == 1:
                 pyhub.data.model_config['reporting']['case_name']['value'] = 'minC_' + tax + 'CO2tax'
 
                 if tax == 'high':
-                    pyhub.data.time_series['clustered']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
+                    if DD != 0:
+                        pyhub.data.time_series['clustered'][
+                            'period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
                     pyhub.data.time_series['full']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
 
                 # solving

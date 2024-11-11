@@ -13,7 +13,7 @@ el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
 # Years to plot and their colors
 years = ['2030', '2040', '2050']
 # colors = {'2030': '#93ABC7', '2040': '#4D5382', '2050': '#3B3348'}
-colors = cm.lipari(np.linspace(0, 1, len(years)))
+colors = cm.lipari(np.linspace(0, 0.8, len(years)))
 
 # Dictionary to store data
 data = {}
@@ -100,7 +100,7 @@ ax_hist2.legend(custom_lines, years, loc='upper right', ncol=1)
 
 # Save the plot
 saveas = 'pdf'
-savepath = 'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Research/Multiyear Modeling/MY_plots/'
+savepath = 'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Research/Multiyear Modeling/MY_Plots/'
 plt.savefig(f"{savepath}Fig_eprice_cum.{saveas}", format=saveas)
 
 # Show plot
