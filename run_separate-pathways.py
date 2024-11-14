@@ -1,9 +1,5 @@
 import json
 from pathlib import Path
-
-import pandas as pd
-
-import adopt_net0.data_preprocessing as dp
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 from adopt_net0.utilities import fix_technology_sizes_zero
@@ -23,16 +19,16 @@ if execute == 1:
     DD = [0]
     pathways_ammonia = {"conventional": ["SteamReformer", "HaberBosch"],
                         "CC": ["SteamReformer_CC", "HaberBosch"],
-                        "electric": ["ElectricSMR_m", "WGS_m",  "HaberBosch", "ASU"],
+                        "electric": ["ElectricSMR_m", "WGS_m", "HaberBosch", "ASU"],
                         "electrolyzer": ["AEC", "HaberBosch", "ASU"],
                         }
     pathways_ethylene = {"conventional": ["NaphthaCracker"],
-                        "CC": ["NaphthaCracker_CC"],
-                        "electric": ["NaphthaCracker_Electric"],
-                        "methanol1": ["RWGS", "MeOHsynthesis", "MTO"],
-                        "methanol2": ["MPW2methanol", "MTO"],
-                        "hydrocarbon_upgrading": ["EDH", "PDH"],
-                        }
+                         "CC": ["NaphthaCracker_CC"],
+                         "electric": ["NaphthaCracker_Electric"],
+                         "methanol1": ["RWGS", "MeOHsynthesis", "MTO"],
+                         "methanol2": ["MPW2methanol", "MTO"],
+                         "hydrocarbon_upgrading": ["EDH", "PDH"],
+                         }
     pathways_auxiliary = ["Boiler_Industrial_NG", "Boiler_El",
                           "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene", "Storage_H2",
                           "Storage_Battery", "Storage_Propylene",
@@ -52,6 +48,10 @@ if execute == 1:
 
                     model_config['optimization']['typicaldays']['N']['value'] = nr
                     model_config['optimization']['objective']['value'] = 'costs'
+
+                    # change save options
+                    model_config['reporting']['save_summary_path']['value'] = resultpath
+                    model_config['reporting']['save_path']['value'] = resultpath
 
                     # Write the updated JSON data back to the file
                     with open(config_filepath, 'w') as json_file:
@@ -73,7 +73,8 @@ if execute == 1:
 
                     if tax == 'high':
                         if nr != 0:
-                            pyhub.data.time_series['clustered']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
+                            pyhub.data.time_series['clustered'][
+                                'period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
                         pyhub.data.time_series['full']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
 
                     #add casename based tech combinition
@@ -118,8 +119,8 @@ if execute == 1:
 
     # Define the order of pathways to unfix
     unfix_order_pathways = [
-        {"ethylene": "electric", "ammonia": "electric"},
-        {"ethylene": "conventional", "ammonia": "conventional"},
+        {"ethylene": "conventional", "ammonia": "electric"},
+        {"ethylene": "electric", "ammonia": "conventional"},
         {"ethylene": "CC", "ammonia": "CC"},
         {"ammonia": "electrolyzer"},
         {"ethylene": ["methanol1", "methanol2"]},
@@ -149,7 +150,8 @@ if execute == 1:
 
             if tax == 'high':
                 if nr != 0:
-                    pyhub.data.time_series['clustered']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
+                    pyhub.data.time_series['clustered'][
+                        'period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
                 pyhub.data.time_series['full']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
 
             # construct model
@@ -178,4 +180,5 @@ if execute == 1:
                 fix_technology_sizes_zero(pyhub, tech_status, 'Chemelot', '2030')
 
                 pyhub.solve()
+
 
