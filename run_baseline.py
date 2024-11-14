@@ -48,8 +48,8 @@ if execute == 1:
 
             if tax == 'high':
                 if nr != 0:
-                    pyhub.data.time_series['clustered']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
-                pyhub.data.time_series['full']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
+                    pyhub.data.time_series['clustered']['2030', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
+                pyhub.data.time_series['full']['2030', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
 
             #add casename based on resolution
             if pyhub.data.model_config['optimization']['typicaldays']['N']['value'] == 0:
@@ -112,8 +112,8 @@ if execute == 1:
                 if tax == 'high':
                     if nr_DD_days != 0:
                         pyhub.data.time_series['clustered'][
-                            'period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
-                    pyhub.data.time_series['full']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
+                            '2030', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
+                    pyhub.data.time_series['full']['2030', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
 
                 # solving
                 pyhub.quick_solve()
