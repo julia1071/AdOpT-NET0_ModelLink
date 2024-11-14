@@ -19,7 +19,7 @@ if execute == 1:
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030")
         datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241018_MY_Data_CH_2030")
 
-    firsttime = 1
+    firsttime = 0
     if firsttime == 1:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -131,7 +131,7 @@ if execute == 1:
 
     # CO2 export
     dp.fill_carrier_data(casepath, value_or_data=0, columns=['Export limit'], carriers=['CO2'])
-    dp.fill_carrier_data(casepath, value_or_data=-62.74, columns=['Export price'], carriers=['CO2'])
+    dp.fill_carrier_data(casepath, value_or_data=-111.51, columns=['Export price'], carriers=['CO2'])
 
     # Constant import prices
     dp.fill_carrier_data(casepath, value_or_data=56.45, columns=['Import price'], carriers=['methane'])
