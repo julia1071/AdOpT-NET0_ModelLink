@@ -94,3 +94,25 @@ def fix_technology_sizes_zero(m, all_tecs, node, period):
             m.model[m.info_solving_algorithms["aggregation_model"]].periods[period].node_blocks[node].tech_blocks_active[tec].var_size.fix(0)
         else:
             m.model[m.info_solving_algorithms["aggregation_model"]].periods[period].node_blocks[node].tech_blocks_active[tec].var_size.unfix()
+
+    return m
+
+
+def fix_installed_capacities(m, scenario, prev_scenario, node, exceptions):
+    """
+    Set the capacity of a technology to a minimum capacity for the next brownfield simulation
+    """
+    model = m[scenario].model[m[scenario].info_solving_algorithms["aggregation_model"]].periods[scenario]
+    prev_model = m[prev_scenario].model[m[scenario].info_solving_algorithms["aggregation_model"]].periods[prev_scenario]
+
+    b_node = model.node_blocks[node]
+    b_node_prev = prev_model.node_blocks[node]
+
+    for tec_name in b_node_prev.set_technologies:
+        if tec_name not in exceptions:
+            b_tec = b_node.tech_blocks_active[tec_name]
+            prev_tec_size = b_node_prev.tech_blocks_active[tec_name].var_size.value
+
+            b_tec.var_size.setlb(prev_tec_size)
+
+    return m
