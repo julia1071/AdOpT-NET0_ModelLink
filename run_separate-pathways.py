@@ -6,6 +6,8 @@ from adopt_net0.utilities import fix_technology_sizes_zero
 
 #Run Chemelot pathways
 execute = 1
+scenario = '2040'
+node = 'Chemelot'
 
 if execute == 1:
     # Specify the path to your input data
@@ -13,7 +15,7 @@ if execute == 1:
     resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/Pathways/CH_2040"
 
     config_filepath = Path(casepath) / "ConfigModel.json"
-    tech_filepath = Path(casepath) / "2030/node_data/Chemelot/Technologies.json"
+    tech_filepath = Path(casepath + "/" + scenario + "/node_data/" + node + "/Technologies.json")
 
     co2tax = ['ref']
     DD = [0]
@@ -76,8 +78,8 @@ if execute == 1:
                     if tax == 'high':
                         if nr != 0:
                             pyhub.data.time_series['clustered'][
-                                'period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
-                        pyhub.data.time_series['full']['period1', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
+                                scenario, node, 'CarbonCost', 'global', 'price'] = 250
+                        pyhub.data.time_series['full'][scenario, node, 'CarbonCost', 'global', 'price'] = 250
 
                     #add casename based tech combinition
                     pyhub.data.model_config['reporting']['case_name']['value'] = 'a_' + ammonia_key + '_e_' + ethylene_key
