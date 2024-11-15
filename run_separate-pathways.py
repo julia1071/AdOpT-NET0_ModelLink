@@ -181,7 +181,7 @@ if execute == 1:
                 counter += 1
                 pyhub.data.model_config['reporting']['case_name']['value'] = 'ws_' + str(counter)
 
-                fix_technology_sizes_zero(pyhub, tech_status, 'Chemelot', '2030')
+                pyhub = fix_technology_sizes_zero(pyhub, tech_status, 'Chemelot', '2030')
 
                 pyhub.solve()
 
