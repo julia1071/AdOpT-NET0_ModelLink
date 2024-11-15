@@ -5,12 +5,12 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 from adopt_net0.utilities import fix_technology_sizes_zero
 
 #Run Chemelot pathways
-execute = 0
+execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030_pathways"
-    resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/Pathways/CH_2030"
+    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2040_pathways"
+    resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/Pathways/CH_2040"
 
     config_filepath = Path(casepath) / "ConfigModel.json"
     tech_filepath = Path(casepath) / "2030/node_data/Chemelot/Technologies.json"
@@ -26,8 +26,10 @@ if execute == 1:
                          "CC": ["NaphthaCracker_CC"],
                          "electric": ["NaphthaCracker_Electric"],
                          "methanol1": ["RWGS", "MeOHsynthesis", "MTO"],
-                         "methanol2": ["MPW2methanol", "MTO"],
+                         "methanol2": ["DirectMeOHsynthesis", "MTO"],
+                         "methanol3": ["MPW2methanol", "MTO"],
                          "hydrocarbon_upgrading": ["EDH", "PDH"],
+                         "CO2electrolysis": ["CO2electrolysis_2040"],
                          }
     pathways_auxiliary = ["Boiler_Industrial_NG", "Boiler_El",
                           "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene", "Storage_H2",
@@ -84,7 +86,7 @@ if execute == 1:
                     pyhub.quick_solve()
 
 #Run Chemelot warmstart
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the path to your input data
