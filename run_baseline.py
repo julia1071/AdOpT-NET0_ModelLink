@@ -7,7 +7,7 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 
 
 #Run Chemelot test design days
-execute = 1
+execute = 0
 linear = 0
 
 if execute == 1:
@@ -63,7 +63,7 @@ if execute == 1:
 
 
 #Run Chemelot cluster case
-execute = 0
+execute = 1
 nr_DD_days = 0
 
 if execute == 1:
