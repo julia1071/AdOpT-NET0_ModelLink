@@ -6,7 +6,7 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 import pandas as pd
 
 #Create data Chemelot cluster short term
-execute = 0
+execute = 1
 linear = 0
 greenfield = 0
 
@@ -18,12 +18,12 @@ if execute == 1:
     else:
         if greenfield:
             # Specify the path to your input data
-            casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030_gf")
-            datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241018_MY_Data_Chemelot")
+            casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_gf_2030")
+            datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
         else:
             # Specify the path to your input data
-            casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030")
-            datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241018_MY_Data_Chemelot")
+            casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2030")
+            datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
 
     firsttime = 1
     if firsttime == 1:
@@ -38,7 +38,7 @@ if execute == 1:
         topology_template = {
             "nodes": ["Chemelot"],
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
-                         "CO2", "CO2_DAC", "CO2_bio", "hydrogen", "nitrogen", "oxygen",
+                         "CO2", "CO2_DAC", "hydrogen", "nitrogen", "oxygen",
                          "ammonia", "ethylene", "propylene", "PE_olefin",
                          "crackergas", "feedgas", "steam", "heatlowT", "HBfeed", "syngas", "syngas_r",
                          "methanol", "ethanol", "propane", "MPW"],
@@ -70,16 +70,16 @@ if execute == 1:
         data.to_csv(file_path, index=False, sep=';')
 
     if greenfield:
-        set_tecs_new = ["SteamReformer", "SteamReformer_CC", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
-                    "NaphthaCracker", "NaphthaCracker_CC", "NaphthaCracker_Electric",
+        set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
+                    "NaphthaCracker", "MEA_large", "NaphthaCracker_Electric",
                     "ASU", "Boiler_Industrial_NG", "Boiler_El",
                     "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
                     "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
                     "Storage_H2", "Storage_Battery", "Storage_Propylene",
                     "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer"]
     else:
-        set_tecs_new = ["SteamReformer_CC", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
-                        "NaphthaCracker_CC", "NaphthaCracker_Electric",
+        set_tecs_new = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
+                        "NaphthaCracker_Electric",
                         "ASU", "Boiler_Industrial_NG", "Boiler_El",
                         "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
                         "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
@@ -132,8 +132,6 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha'])
     dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane_bio'])
     dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=2359, columns=['Import limit'], carriers=['CO2'])
-    dp.fill_carrier_data(casepath, value_or_data=2359, columns=['Import limit'], carriers=['CO2_bio'])
     dp.fill_carrier_data(casepath, value_or_data=2359, columns=['Import limit'], carriers=['CO2_DAC'])
     dp.fill_carrier_data(casepath, value_or_data=1648, columns=['Import limit'], carriers=['methanol'])
     dp.fill_carrier_data(casepath, value_or_data=526, columns=['Import limit'], carriers=['ethanol'])
@@ -157,8 +155,6 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=732, columns=['Import price'], carriers=['naphtha'])
     dp.fill_carrier_data(casepath, value_or_data=127.68, columns=['Import price'], carriers=['methane_bio'])
     dp.fill_carrier_data(casepath, value_or_data=1852.5, columns=['Import price'], carriers=['naphtha_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=95.7, columns=['Import price'], carriers=['CO2'])
-    dp.fill_carrier_data(casepath, value_or_data=38.28, columns=['Import price'], carriers=['CO2_bio'])
     dp.fill_carrier_data(casepath, value_or_data=382.81, columns=['Import price'], carriers=['CO2_DAC'])
     dp.fill_carrier_data(casepath, value_or_data=908.20, columns=['Import price'], carriers=['methanol'])
     dp.fill_carrier_data(casepath, value_or_data=1141.07, columns=['Import price'], carriers=['ethanol'])
@@ -170,8 +166,6 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['naphtha'])
     dp.fill_carrier_data(casepath, value_or_data=-0.2, columns=['Import emission factor'], carriers=['methane_bio'])
     dp.fill_carrier_data(casepath, value_or_data=-1.32, columns=['Import emission factor'], carriers=['naphtha_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['CO2'])
-    dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Import emission factor'], carriers=['CO2_bio'])
     dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Import emission factor'], carriers=['CO2_DAC'])
     dp.fill_carrier_data(casepath, value_or_data=-1.37, columns=['Import emission factor'], carriers=['methanol'])
     dp.fill_carrier_data(casepath, value_or_data=-1.91, columns=['Import emission factor'], carriers=['ethanol'])
@@ -202,14 +196,20 @@ if execute == 1:
 
 
 #Create data Chemelot cluster mid term
-execute = 0
+execute = 1
+greenfield = 0
 
 if execute == 1:
-    # Specify the path to your input data
-    casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2040")
-    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241018_MY_Data_Chemelot")
+    if greenfield:
+        # Specify the path to your input data
+        casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_gf_2040")
+        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
+    else:
+        # Specify the path to your input data
+        casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2040")
+        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
 
-    firsttime = 0
+    firsttime = 1
     if firsttime == 1:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -222,7 +222,7 @@ if execute == 1:
         topology_template = {
             "nodes": ["Chemelot"],
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
-                         "CO2", "CO2_DAC", "CO2_bio", "hydrogen", "nitrogen", "oxygen",
+                         "CO2", "CO2_DAC", "hydrogen", "nitrogen", "oxygen",
                          "ammonia", "ethylene", "propylene", "PE_olefin",
                          "crackergas", "feedgas", "steam", "heatlowT", "HBfeed", "syngas", "syngas_r",
                          "methanol", "ethanol", "propane", "MPW"],
@@ -253,8 +253,8 @@ if execute == 1:
         # Save the modified CSV file
         data.to_csv(file_path, index=False, sep=';')
 
-    set_tecs = ["SteamReformer", "SteamReformer_CC", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
-                "NaphthaCracker", "NaphthaCracker_CC", "NaphthaCracker_Electric",
+    set_tecs = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
+                "NaphthaCracker", "NaphthaCracker_Electric",
                 "ASU", "Boiler_Industrial_NG", "Boiler_El",
                 "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
                 "DirectMeOHsynthesis", "CO2electrolysis_2040",
@@ -304,8 +304,6 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha'])
     dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane_bio'])
     dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=2359, columns=['Import limit'], carriers=['CO2'])
-    dp.fill_carrier_data(casepath, value_or_data=2359, columns=['Import limit'], carriers=['CO2_bio'])
     dp.fill_carrier_data(casepath, value_or_data=2359, columns=['Import limit'], carriers=['CO2_DAC'])
     dp.fill_carrier_data(casepath, value_or_data=1648, columns=['Import limit'], carriers=['methanol'])
     dp.fill_carrier_data(casepath, value_or_data=526, columns=['Import limit'], carriers=['ethanol'])
@@ -329,8 +327,6 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=732, columns=['Import price'], carriers=['naphtha'])
     dp.fill_carrier_data(casepath, value_or_data=127.68, columns=['Import price'], carriers=['methane_bio'])
     dp.fill_carrier_data(casepath, value_or_data=1852.5, columns=['Import price'], carriers=['naphtha_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=95.7, columns=['Import price'], carriers=['CO2'])
-    dp.fill_carrier_data(casepath, value_or_data=38.28, columns=['Import price'], carriers=['CO2_bio'])
     dp.fill_carrier_data(casepath, value_or_data=382.81, columns=['Import price'], carriers=['CO2_DAC'])
     dp.fill_carrier_data(casepath, value_or_data=908.20, columns=['Import price'], carriers=['methanol'])
     dp.fill_carrier_data(casepath, value_or_data=1141.07, columns=['Import price'], carriers=['ethanol'])
@@ -342,8 +338,6 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['naphtha'])
     dp.fill_carrier_data(casepath, value_or_data=-0.2, columns=['Import emission factor'], carriers=['methane_bio'])
     dp.fill_carrier_data(casepath, value_or_data=-1.32, columns=['Import emission factor'], carriers=['naphtha_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['CO2'])
-    dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Import emission factor'], carriers=['CO2_bio'])
     dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Import emission factor'], carriers=['CO2_DAC'])
     dp.fill_carrier_data(casepath, value_or_data=-1.37, columns=['Import emission factor'], carriers=['methanol'])
     dp.fill_carrier_data(casepath, value_or_data=-1.91, columns=['Import emission factor'], carriers=['ethanol'])
@@ -377,11 +371,17 @@ if execute == 1:
 
 #Create data Chemelot cluster long term
 execute = 1
+greenfield = 0
 
 if execute == 1:
-    # Specify the path to your input data
-    casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2050")
-    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241018_MY_Data_Chemelot")
+    if greenfield:
+        # Specify the path to your input data
+        casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_gf_2050")
+        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
+    else:
+        # Specify the path to your input data
+        casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2050")
+        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
 
     firsttime = 1
     if firsttime == 1:
@@ -396,7 +396,7 @@ if execute == 1:
         topology_template = {
             "nodes": ["Chemelot"],
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
-                         "CO2", "CO2_DAC", "CO2_bio", "hydrogen", "nitrogen", "oxygen",
+                         "CO2", "CO2_DAC", "hydrogen", "nitrogen", "oxygen",
                          "ammonia", "ethylene", "propylene", "PE_olefin",
                          "crackergas", "feedgas", "steam", "heatlowT", "HBfeed", "syngas", "syngas_r",
                          "methanol", "ethanol", "propane", "MPW"],
@@ -427,8 +427,8 @@ if execute == 1:
         # Save the modified CSV file
         data.to_csv(file_path, index=False, sep=';')
 
-    set_tecs = ["SteamReformer", "SteamReformer_CC", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
-                "NaphthaCracker", "NaphthaCracker_CC", "NaphthaCracker_Electric",
+    set_tecs = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
+                "NaphthaCracker", "NaphthaCracker_Electric",
                 "ASU", "Boiler_Industrial_NG", "Boiler_El",
                 "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
                 "DirectMeOHsynthesis", "CO2electrolysis_2040", "CO2electrolysis_2050",
@@ -478,8 +478,6 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha'])
     dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane_bio'])
     dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=2359, columns=['Import limit'], carriers=['CO2'])
-    dp.fill_carrier_data(casepath, value_or_data=2359, columns=['Import limit'], carriers=['CO2_bio'])
     dp.fill_carrier_data(casepath, value_or_data=2359, columns=['Import limit'], carriers=['CO2_DAC'])
     dp.fill_carrier_data(casepath, value_or_data=1648, columns=['Import limit'], carriers=['methanol'])
     dp.fill_carrier_data(casepath, value_or_data=526, columns=['Import limit'], carriers=['ethanol'])
@@ -503,8 +501,6 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=732, columns=['Import price'], carriers=['naphtha'])
     dp.fill_carrier_data(casepath, value_or_data=127.68, columns=['Import price'], carriers=['methane_bio'])
     dp.fill_carrier_data(casepath, value_or_data=1852.5, columns=['Import price'], carriers=['naphtha_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=95.7, columns=['Import price'], carriers=['CO2'])
-    dp.fill_carrier_data(casepath, value_or_data=38.28, columns=['Import price'], carriers=['CO2_bio'])
     dp.fill_carrier_data(casepath, value_or_data=382.81, columns=['Import price'], carriers=['CO2_DAC'])
     dp.fill_carrier_data(casepath, value_or_data=908.20, columns=['Import price'], carriers=['methanol'])
     dp.fill_carrier_data(casepath, value_or_data=1141.07, columns=['Import price'], carriers=['ethanol'])
@@ -516,8 +512,6 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['naphtha'])
     dp.fill_carrier_data(casepath, value_or_data=-0.2, columns=['Import emission factor'], carriers=['methane_bio'])
     dp.fill_carrier_data(casepath, value_or_data=-1.32, columns=['Import emission factor'], carriers=['naphtha_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['CO2'])
-    dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Import emission factor'], carriers=['CO2_bio'])
     dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Import emission factor'], carriers=['CO2_DAC'])
     dp.fill_carrier_data(casepath, value_or_data=-1.37, columns=['Import emission factor'], carriers=['methanol'])
     dp.fill_carrier_data(casepath, value_or_data=-1.91, columns=['Import emission factor'], carriers=['ethanol'])

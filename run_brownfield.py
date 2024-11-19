@@ -12,7 +12,7 @@ nr_DD_days = 0
 
 if execute == 1:
     # Specify the base path to your input data
-    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_"
+    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_"
     resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/Brownfield/"
 
 
