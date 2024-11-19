@@ -1467,18 +1467,29 @@ class Technology(ModelComponent):
             bounds=init_output_bounds,
         )
 
+        #Size constraint
+        def init_size_output_ccs(const, t):
+            return (
+                    b_tec.var_output_ccs[t, "CO2"]
+                    <= b_tec.var_size_ccs
+            )
+
+        b_tec.const_size_output_ccs = pyo.Constraint(
+            self.set_t_global, rule=init_size_output_ccs
+        )
+
         # Input-output correlation
         def init_input_output_ccs(const, t):
             if emissions_based_on == "output":
                 return (
-                    b_tec.var_output_ccs[t, "CO2captured"]
+                    b_tec.var_output_ccs[t, "CO2"]
                     <= capture_rate
                     * b_tec.para_tec_emissionfactor
                     * b_tec.var_output[t, self.component_options.main_output_carrier]
                 )
             else:
                 return (
-                    b_tec.var_output_ccs[t, "CO2captured"]
+                    b_tec.var_output_ccs[t, "CO2"]
                     <= capture_rate
                     * b_tec.para_tec_emissionfactor
                     * b_tec.var_input[t, self.component_options.main_input_carrier]
@@ -1493,7 +1504,7 @@ class Technology(ModelComponent):
             return (
                 b_tec.var_input_ccs[t, car]
                 == coeff_ti["input_ratios"][car]
-                * b_tec.var_output_ccs[t, "CO2captured"]
+                * b_tec.var_output_ccs[t, "CO2"]
                 / capture_rate
             )
 
@@ -1519,7 +1530,7 @@ class Technology(ModelComponent):
                 return (
                     b_tec.var_output[t, self.component_options.main_output_carrier]
                     * b_tec.para_tec_emissionfactor
-                    - b_tec.var_output_ccs[t, "CO2captured"]
+                    - b_tec.var_output_ccs[t, "CO2"]
                     == b_tec.var_tec_emissions_pos[t]
                 )
 
@@ -1540,7 +1551,7 @@ class Technology(ModelComponent):
                 return (
                     b_tec.var_input[t, self.component_options.main_input_carrier]
                     * b_tec.para_tec_emissionfactor
-                    - b_tec.var_output_ccs[t, "CO2captured"]
+                    - b_tec.var_output_ccs[t, "CO2"]
                     == b_tec.var_tec_emissions_pos[t]
                 )
 
