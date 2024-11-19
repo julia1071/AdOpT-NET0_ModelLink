@@ -784,23 +784,30 @@ class Technology(ModelComponent):
             self.big_m_transformation_required = 1
             s_indicators = range(0, 2)
 
-            def init_installation(dis, ind):
-                if ind == 0:  # tech not installed
-                    dis.const_capex_aux = pyo.Constraint(expr=b_tec.var_capex_aux == 0)
-                    dis.const_not_installed = pyo.Constraint(expr=b_tec.var_size == 0)
-                else:  # tech installed
-                    dis.const_capex_aux = pyo.Constraint(
-                        expr=b_tec.var_size * b_tec.para_unit_capex_annual
-                        + b_tec.para_fix_capex_annual
-                        == b_tec.var_capex_aux
-                    )
+            if self.existing:
+                b_tec.const_capex_aux = pyo.Constraint(
+                    expr=b_tec.var_size * b_tec.para_unit_capex_annual
+                         + b_tec.para_fix_capex_annual
+                         == b_tec.var_capex_aux
+                )
+            else:
+                def init_installation(dis, ind):
+                    if ind == 0:  # tech not installed
+                        dis.const_capex_aux = pyo.Constraint(expr=b_tec.var_capex_aux == 0)
+                        dis.const_not_installed = pyo.Constraint(expr=b_tec.var_size == 0)
+                    else:  # tech installed
+                        dis.const_capex_aux = pyo.Constraint(
+                            expr=b_tec.var_size * b_tec.para_unit_capex_annual
+                            + b_tec.para_fix_capex_annual
+                            == b_tec.var_capex_aux
+                        )
 
-            b_tec.dis_installation = gdp.Disjunct(s_indicators, rule=init_installation)
+                b_tec.dis_installation = gdp.Disjunct(s_indicators, rule=init_installation)
 
-            def bind_disjunctions(dis):
-                return [b_tec.dis_installation[i] for i in s_indicators]
+                def bind_disjunctions(dis):
+                    return [b_tec.dis_installation[i] for i in s_indicators]
 
-            b_tec.disjunction_installation = gdp.Disjunction(rule=bind_disjunctions)
+                b_tec.disjunction_installation = gdp.Disjunction(rule=bind_disjunctions)
 
         else:
             # Defined in the technology subclass

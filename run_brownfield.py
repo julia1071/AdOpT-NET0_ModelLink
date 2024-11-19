@@ -22,7 +22,7 @@ if execute == 1:
     co2tax = ['ref']
     scenarios = ['2030', '2040', '2050']
     pyhub = {}
-    set_conv_tech = ["SteamReformer", "HaberBosch", "NaphthaCracker"]
+    set_conv_tech = ["SteamReformer_existing", "HaberBosch_existing", "NaphthaCracker_existing"]
 
     for obj in objectives:
         for tax in co2tax:

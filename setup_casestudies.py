@@ -8,6 +8,7 @@ import pandas as pd
 #Create data Chemelot cluster short term
 execute = 0
 linear = 0
+greenfield = 0
 
 if execute == 1:
     if linear:
@@ -15,11 +16,16 @@ if execute == 1:
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030_linear")
         datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/291018_MY_Data_CH_2030_linear")
     else:
-        # Specify the path to your input data
-        casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030")
-        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241018_MY_Data_Chemelot")
+        if greenfield:
+            # Specify the path to your input data
+            casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030_gf")
+            datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241018_MY_Data_Chemelot")
+        else:
+            # Specify the path to your input data
+            casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030")
+            datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241018_MY_Data_Chemelot")
 
-    firsttime = 0
+    firsttime = 1
     if firsttime == 1:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -63,13 +69,24 @@ if execute == 1:
         # Save the modified CSV file
         data.to_csv(file_path, index=False, sep=';')
 
-    set_tecs = ["SteamReformer", "SteamReformer_CC", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
-                "NaphthaCracker", "NaphthaCracker_CC", "NaphthaCracker_Electric",
-                "ASU", "Boiler_Industrial_NG", "Boiler_El",
-                "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
-                "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
-                "Storage_H2", "Storage_Battery", "Storage_Propylene",
-                "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer"]
+    if greenfield:
+        set_tecs_new = ["SteamReformer", "SteamReformer_CC", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
+                    "NaphthaCracker", "NaphthaCracker_CC", "NaphthaCracker_Electric",
+                    "ASU", "Boiler_Industrial_NG", "Boiler_El",
+                    "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
+                    "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
+                    "Storage_H2", "Storage_Battery", "Storage_Propylene",
+                    "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer"]
+    else:
+        set_tecs_new = ["SteamReformer_CC", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
+                        "NaphthaCracker_CC", "NaphthaCracker_Electric",
+                        "ASU", "Boiler_Industrial_NG", "Boiler_El",
+                        "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
+                        "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
+                        "Storage_H2", "Storage_Battery", "Storage_Propylene",
+                        "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer",
+                        "syngas_mixer"]
+        set_tecs_existing = {"SteamReformer": 1060, "HaberBosch": 805, "NaphthaCracker": 495}
 
     json_file_path = casepath / "Topology.json"
     with open(json_file_path, "r") as json_file:
@@ -84,7 +101,9 @@ if execute == 1:
             with open(json_tec_file_path, "r") as json_tec_file:
                 json_tec = json.load(json_tec_file)
 
-            json_tec['new'] = set_tecs
+            json_tec['new'] = set_tecs_new
+            if not greenfield:
+                json_tec['existing'] = set_tecs_existing
             with open(json_tec_file_path, "w") as json_tec_file:
                 json.dump(json_tec, json_tec_file, indent=4)
 
