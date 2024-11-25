@@ -1,6 +1,8 @@
 import json
+import shutil
 from pathlib import Path
 import adopt_net0.data_preprocessing as dp
+from adopt_net0.data_preprocessing.data_loading import find_json_path
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 import pandas as pd
@@ -25,7 +27,7 @@ if execute == 1:
             casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2030")
             datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
 
-    firsttime = 1
+    firsttime = 0
     if firsttime == 1:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -38,7 +40,7 @@ if execute == 1:
         topology_template = {
             "nodes": ["Chemelot"],
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
-                         "CO2", "CO2_DAC", "hydrogen", "nitrogen", "oxygen",
+                         "CO2", "CO2_DAC", "CO2captured", "hydrogen", "nitrogen", "oxygen",
                          "ammonia", "ethylene", "propylene", "PE_olefin",
                          "crackergas", "feedgas", "steam", "heatlowT", "HBfeed", "syngas", "syngas_r",
                          "methanol", "ethanol", "propane", "MPW"],
@@ -109,6 +111,13 @@ if execute == 1:
 
     # Copy technology and network data into folder
     dp.copy_technology_data(casepath, datapath)
+    # Add CCS
+    output_folder = (
+            casepath / period / "node_data" / node_name / "technology_data"
+    )
+    tec_json_file_path = find_json_path(datapath, "MEA_large")
+    if tec_json_file_path:
+        shutil.copy(tec_json_file_path, output_folder)
 
     # Read climate data and fill carried data
     dp.load_climate_data_from_api(casepath)
@@ -196,7 +205,7 @@ if execute == 1:
 
 
 #Create data Chemelot cluster mid term
-execute = 1
+execute = 0
 greenfield = 0
 
 if execute == 1:
@@ -209,7 +218,7 @@ if execute == 1:
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2040")
         datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
 
-    firsttime = 1
+    firsttime = 0
     if firsttime == 1:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -222,7 +231,7 @@ if execute == 1:
         topology_template = {
             "nodes": ["Chemelot"],
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
-                         "CO2", "CO2_DAC", "hydrogen", "nitrogen", "oxygen",
+                         "CO2", "CO2_DAC", "CO2captured", "hydrogen", "nitrogen", "oxygen",
                          "ammonia", "ethylene", "propylene", "PE_olefin",
                          "crackergas", "feedgas", "steam", "heatlowT", "HBfeed", "syngas", "syngas_r",
                          "methanol", "ethanol", "propane", "MPW"],
@@ -281,6 +290,13 @@ if execute == 1:
 
     # Copy technology and network data into folder
     dp.copy_technology_data(casepath, datapath)
+    # Add CCS
+    output_folder = (
+            casepath / period / "node_data" / node_name / "technology_data"
+    )
+    tec_json_file_path = find_json_path(datapath, "MEA_large")
+    if tec_json_file_path:
+        shutil.copy(tec_json_file_path, output_folder)
 
     # Read climate data and fill carried data
     dp.load_climate_data_from_api(casepath)
@@ -370,7 +386,7 @@ if execute == 1:
 
 
 #Create data Chemelot cluster long term
-execute = 1
+execute = 0
 greenfield = 0
 
 if execute == 1:
@@ -383,7 +399,7 @@ if execute == 1:
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2050")
         datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
 
-    firsttime = 1
+    firsttime = 0
     if firsttime == 1:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -396,7 +412,7 @@ if execute == 1:
         topology_template = {
             "nodes": ["Chemelot"],
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
-                         "CO2", "CO2_DAC", "hydrogen", "nitrogen", "oxygen",
+                         "CO2", "CO2_DAC", "CO2captured", "hydrogen", "nitrogen", "oxygen",
                          "ammonia", "ethylene", "propylene", "PE_olefin",
                          "crackergas", "feedgas", "steam", "heatlowT", "HBfeed", "syngas", "syngas_r",
                          "methanol", "ethanol", "propane", "MPW"],
@@ -455,6 +471,13 @@ if execute == 1:
 
     # Copy technology and network data into folder
     dp.copy_technology_data(casepath, datapath)
+    # Add CCS
+    output_folder = (
+            casepath / period / "node_data" / node_name / "technology_data"
+    )
+    tec_json_file_path = find_json_path(datapath, "MEA_large")
+    if tec_json_file_path:
+        shutil.copy(tec_json_file_path, output_folder)
 
     # Read climate data and fill carried data
     dp.load_climate_data_from_api(casepath)

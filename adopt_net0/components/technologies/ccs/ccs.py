@@ -63,7 +63,7 @@ def fit_ccs_coeff(co2_concentration: float, ccs_data: dict, climate_data: pd.Dat
                 ccs_data.input_parameters.performance_data["eta"][car]
                 + ccs_data.input_parameters.performance_data["omega"][car]
                 * co2_concentration
-            ) / (co2_concentration * molar_mass_CO2 * 3.6)
+                ) / (co2_concentration * molar_mass_CO2 * 3.6) + ccs_data.input_parameters.performance_data["compression"][car]
         ccs_data.processed_coeff.time_independent["input_ratios"] = input_ratios
     else:
         raise Exception(

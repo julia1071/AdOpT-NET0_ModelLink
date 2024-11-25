@@ -1428,6 +1428,24 @@ class Technology(ModelComponent):
         emissions_based_on = self.component_options.emissions_based_on
         capture_rate = coeff_ti["capture_rate"]
 
+        # Initialize the size of CCS as in _define_size (size given in mass flow of CO2 entering the CCS object)
+        b_tec.para_size_min_ccs = pyo.Param(
+            domain=pyo.NonNegativeReals,
+            initialize=self.ccs_component.input_parameters.size_min,
+            mutable=True,
+        )
+        b_tec.para_size_max_ccs = pyo.Param(
+            domain=pyo.NonNegativeReals,
+            initialize=self.ccs_component.input_parameters.size_max,
+            mutable=True,
+        )
+
+        # Decommissioning is possible, size variable
+        b_tec.var_size_ccs = pyo.Var(
+            within=pyo.NonNegativeReals,
+            bounds=(0, b_tec.para_size_max_ccs),
+        )
+
         # TODO: maybe make the full set of all carriers as a intersection between this set and the others?
         # Emission Factor
         b_tec.para_tec_emissionfactor = pyo.Param(
@@ -1467,29 +1485,18 @@ class Technology(ModelComponent):
             bounds=init_output_bounds,
         )
 
-        #Size constraint
-        def init_size_output_ccs(const, t):
-            return (
-                    b_tec.var_output_ccs[t, "CO2"]
-                    <= b_tec.var_size_ccs
-            )
-
-        b_tec.const_size_output_ccs = pyo.Constraint(
-            self.set_t_global, rule=init_size_output_ccs
-        )
-
         # Input-output correlation
         def init_input_output_ccs(const, t):
             if emissions_based_on == "output":
                 return (
-                    b_tec.var_output_ccs[t, "CO2"]
+                    b_tec.var_output_ccs[t, "CO2captured"]
                     <= capture_rate
                     * b_tec.para_tec_emissionfactor
                     * b_tec.var_output[t, self.component_options.main_output_carrier]
                 )
             else:
                 return (
-                    b_tec.var_output_ccs[t, "CO2"]
+                    b_tec.var_output_ccs[t, "CO2captured"]
                     <= capture_rate
                     * b_tec.para_tec_emissionfactor
                     * b_tec.var_input[t, self.component_options.main_input_carrier]
@@ -1499,12 +1506,22 @@ class Technology(ModelComponent):
             self.set_t_global, rule=init_input_output_ccs
         )
 
+        def init_size_output_ccs(const, t):
+            return (
+                b_tec.var_output_ccs[t, "CO2captured"]
+                <= b_tec.var_size_ccs
+            )
+
+        b_tec.const_size_output_ccs = pyo.Constraint(
+            self.set_t_global, rule=init_size_output_ccs
+        )
+
         # Electricity and heat demand CCS
         def init_input_ccs(const, t, car):
             return (
                 b_tec.var_input_ccs[t, car]
                 == coeff_ti["input_ratios"][car]
-                * b_tec.var_output_ccs[t, "CO2"]
+                * b_tec.var_output_ccs[t, "CO2captured"]
                 / capture_rate
             )
 
@@ -1530,7 +1547,7 @@ class Technology(ModelComponent):
                 return (
                     b_tec.var_output[t, self.component_options.main_output_carrier]
                     * b_tec.para_tec_emissionfactor
-                    - b_tec.var_output_ccs[t, "CO2"]
+                    - b_tec.var_output_ccs[t, "CO2captured"]
                     == b_tec.var_tec_emissions_pos[t]
                 )
 
@@ -1551,7 +1568,7 @@ class Technology(ModelComponent):
                 return (
                     b_tec.var_input[t, self.component_options.main_input_carrier]
                     * b_tec.para_tec_emissionfactor
-                    - b_tec.var_output_ccs[t, "CO2"]
+                    - b_tec.var_output_ccs[t, "CO2captured"]
                     == b_tec.var_tec_emissions_pos[t]
                 )
 
@@ -1565,24 +1582,6 @@ class Technology(ModelComponent):
             b_tec.const_tec_emissions_neg = pyo.Constraint(
                 self.set_t_global, rule=init_tec_emissions_neg
             )
-
-        # Initialize the size of CCS as in _define_size (size given in mass flow of CO2 entering the CCS object)
-        b_tec.para_size_min_ccs = pyo.Param(
-            domain=pyo.NonNegativeReals,
-            initialize=self.ccs_component.input_parameters.size_min,
-            mutable=True,
-        )
-        b_tec.para_size_max_ccs = pyo.Param(
-            domain=pyo.NonNegativeReals,
-            initialize=self.ccs_component.input_parameters.size_max,
-            mutable=True,
-        )
-
-        # Decommissioning is possible, size variable
-        b_tec.var_size_ccs = pyo.Var(
-            within=pyo.NonNegativeReals,
-            bounds=(0, b_tec.para_size_max_ccs),
-        )
 
         return b_tec
 
