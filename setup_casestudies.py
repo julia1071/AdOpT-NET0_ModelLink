@@ -149,11 +149,7 @@ if execute == 1:
 
     # No export limit
     dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
-                         carriers=["nitrogen", "oxygen", "crackergas", "steam", "heatlowT"])
-
-    # Export emissions
-    dp.fill_carrier_data(casepath, value_or_data=0.203, columns=['Export emission factor'],
-                         carriers=['crackergas'])
+                         carriers=["nitrogen", "oxygen", "steam", "heatlowT"])
 
     # CO2 export
     dp.fill_carrier_data(casepath, value_or_data=0, columns=['Export limit'], carriers=['CO2'])
@@ -328,11 +324,7 @@ if execute == 1:
 
     # No export limit
     dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
-                         carriers=["nitrogen", "oxygen", "crackergas", "steam", "heatlowT"])
-
-    # Export emissions
-    dp.fill_carrier_data(casepath, value_or_data=0.203, columns=['Export emission factor'],
-                         carriers=['crackergas'])
+                         carriers=["nitrogen", "oxygen", "steam", "heatlowT"])
 
     # CO2 export
     dp.fill_carrier_data(casepath, value_or_data=0, columns=['Export limit'], carriers=['CO2'])
@@ -509,11 +501,7 @@ if execute == 1:
 
     # No export limit
     dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
-                         carriers=["nitrogen", "oxygen", "crackergas", "steam", "heatlowT"])
-
-    # Export emissions
-    dp.fill_carrier_data(casepath, value_or_data=0.203, columns=['Export emission factor'],
-                         carriers=['crackergas'])
+                         carriers=["nitrogen", "oxygen", "steam", "heatlowT"])
 
     # CO2 export
     dp.fill_carrier_data(casepath, value_or_data=0, columns=['Export limit'], carriers=['CO2'])
