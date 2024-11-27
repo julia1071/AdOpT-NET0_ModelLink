@@ -7,10 +7,11 @@ from matplotlib.lines import Line2D
 from cmcrameri import cm
 
 # Define the data path
-datapath = "Z:/AdOpt_NET0/AdOpt_data/MY/241018_MY_Data_CH_2030"
+datapath = "Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot"
 el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
 
 # Years to plot and their colors
+node = 'Zeeland'
 years = ['2030', '2040', '2050']
 labels = {'2030': 'Short-term', '2040': 'Mid-term', '2050': 'Long-term'}
 # colors = {'2030': '#93ABC7', '2040': '#4D5382', '2050': '#3B3348'}
@@ -22,10 +23,16 @@ data = {}
 # Load data for each year
 for year in years:
     el_importdata = pd.read_excel(el_load_path, sheet_name=year, header=0, nrows=8760)
-    data[year] = {
-        'price': el_importdata.iloc[:, 0],
-        'emission': el_importdata.iloc[:, 2]
-    }
+    if node == 'Chemelot':
+        data[year] = {
+            'price': el_importdata.iloc[:, 0],
+            'emission': el_importdata.iloc[:, 2]
+        }
+    elif node == 'Zeeland':
+        data[year] = {
+            'price': el_importdata.iloc[:, 1],
+            'emission': el_importdata.iloc[:, 2]
+        }
 
 # Configure Matplotlib to use LaTeX for text rendering and set font
 plt.rcParams.update({
@@ -100,9 +107,9 @@ ax_hist2.legend(custom_lines, [labels[year] for year in years], loc='upper right
 
 
 # Save the plot
-saveas = 'svg'
+saveas = 'pdf'
 savepath = 'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Research/Multiyear Modeling/MY_Plots/'
-plt.savefig(f"{savepath}Fig_eprice_cum.{saveas}", format=saveas)
+plt.savefig(f"{savepath}Fig_eprice_cum_{node}.{saveas}", format=saveas)
 
 # Show plot
 plt.show()
