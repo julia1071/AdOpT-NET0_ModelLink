@@ -336,20 +336,23 @@ def construct_emission_balance(model, data):
 
         # calculate total emissions from technologies, networks and importing/exporting carriers
         def init_emissions_pos(const):
-            from_technologies = sum(
-                sum(
+            if config["scope_three_analysis"]:
+                from_technologies = 0
+            else:
+                from_technologies = sum(
                     sum(
-                        b_period.node_blocks[node]
-                        .tech_blocks_active[tec]
-                        .var_tec_emissions_pos[t]
-                        * nr_timesteps_averaged
-                        * hour_factors[t - 1]
-                        for t in set_t
+                        sum(
+                            b_period.node_blocks[node]
+                            .tech_blocks_active[tec]
+                            .var_tec_emissions_pos[t]
+                            * nr_timesteps_averaged
+                            * hour_factors[t - 1]
+                            for t in set_t
+                        )
+                        for tec in b_period.node_blocks[node].set_technologies
                     )
-                    for tec in b_period.node_blocks[node].set_technologies
+                    for node in model.set_nodes
                 )
-                for node in model.set_nodes
-            )
             from_carriers = sum(
                 sum(
                     b_period.node_blocks[node].var_car_emissions_pos[t]
@@ -360,18 +363,21 @@ def construct_emission_balance(model, data):
                 for node in model.set_nodes
             )
             if not config["energybalance"]["copperplate"]["value"]:
-                from_networks = sum(
-                    sum(
+                if config["scope_three_analysis"]:
+                    from_networks = 0
+                else:
+                    from_networks = sum(
                         sum(
-                            b_period.network_block[netw].var_netw_emissions_pos[t, node]
-                            * nr_timesteps_averaged
-                            * hour_factors[t - 1]
-                            for t in set_t
+                            sum(
+                                b_period.network_block[netw].var_netw_emissions_pos[t, node]
+                                * nr_timesteps_averaged
+                                * hour_factors[t - 1]
+                                for t in set_t
+                            )
+                            for node in model.set_nodes
                         )
-                        for node in model.set_nodes
+                        for netw in b_period.set_networks
                     )
-                    for netw in b_period.set_networks
-                )
             else:
                 from_networks = 0
             return (
@@ -382,20 +388,23 @@ def construct_emission_balance(model, data):
         b_emissionbalance.const_emissions_tot = pyo.Constraint(rule=init_emissions_pos)
 
         def init_emissions_neg(const):
-            from_technologies = sum(
-                sum(
+            if config["scope_three_analysis"]:
+                from_technologies = 0
+            else:
+                from_technologies = sum(
                     sum(
-                        b_period.node_blocks[node]
-                        .tech_blocks_active[tec]
-                        .var_tec_emissions_neg[t]
-                        * nr_timesteps_averaged
-                        * hour_factors[t - 1]
-                        for t in set_t
+                        sum(
+                            b_period.node_blocks[node]
+                            .tech_blocks_active[tec]
+                            .var_tec_emissions_neg[t]
+                            * nr_timesteps_averaged
+                            * hour_factors[t - 1]
+                            for t in set_t
+                        )
+                        for tec in b_period.node_blocks[node].set_technologies
                     )
-                    for tec in b_period.node_blocks[node].set_technologies
+                    for node in model.set_nodes
                 )
-                for node in model.set_nodes
-            )
             from_carriers = sum(
                 sum(
                     b_period.node_blocks[node].var_car_emissions_neg[t]
