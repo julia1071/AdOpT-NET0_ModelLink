@@ -267,7 +267,6 @@ def initialize_configuration_templates() -> dict:
                 "description": "String specifying the objective/type of optimization.",
                 "options": [
                     "costs",
-                    "emissions_pos",
                     "emissions_net",
                     "emissions_minC",
                     "costs_emissionlimit",
@@ -280,6 +279,7 @@ def initialize_configuration_templates() -> dict:
                 "is costs_emissionlimit",
                 "value": 0,
             },
+            "scope_three_analysis": 0,
             "monte_carlo": {
                 "N": {
                     "description": "Number of Monte Carlo simulations (0 = off).",

@@ -21,11 +21,11 @@ if execute == 1:
         if greenfield:
             # Specify the path to your input data
             casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_gf_2030")
-            datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
+            datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
         else:
             # Specify the path to your input data
             casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2030")
-            datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
+            datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
 
     firsttime = 0
     if firsttime == 1:
@@ -41,7 +41,7 @@ if execute == 1:
             "nodes": ["Chemelot"],
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
                          "CO2", "CO2_DAC", "CO2captured", "hydrogen", "nitrogen", "oxygen",
-                         "ammonia", "ethylene", "propylene", "PE_olefin",
+                         "ammonia", "ethylene", "propylene", "PE_olefin", "olefins",
                          "crackergas", "feedgas", "steam", "heatlowT", "HBfeed", "syngas", "syngas_r",
                          "methanol", "ethanol", "propane", "MPW"],
             "investment_periods": ["2030"],
@@ -73,7 +73,7 @@ if execute == 1:
 
     if greenfield:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
-                    "NaphthaCracker", "MEA_large", "NaphthaCracker_Electric",
+                    "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
                     "ASU", "Boiler_Industrial_NG", "Boiler_El",
                     "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
                     "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
@@ -88,7 +88,7 @@ if execute == 1:
                         "Storage_H2", "Storage_Battery", "Storage_Propylene",
                         "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer",
                         "syngas_mixer"]
-        set_tecs_existing = {"SteamReformer": 1060, "HaberBosch": 805, "NaphthaCracker": 495}
+        set_tecs_existing = {"SteamReformer": 1060, "HaberBosch": 805, "CrackerFurnace": 495, "OlefinSeparation": 495}
 
     json_file_path = casepath / "Topology.json"
     with open(json_file_path, "r") as json_file:
@@ -208,11 +208,11 @@ if execute == 1:
     if greenfield:
         # Specify the path to your input data
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_gf_2040")
-        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
+        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
     else:
         # Specify the path to your input data
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2040")
-        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
+        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
 
     firsttime = 0
     if firsttime == 1:
@@ -228,7 +228,7 @@ if execute == 1:
             "nodes": ["Chemelot"],
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
                          "CO2", "CO2_DAC", "CO2captured", "hydrogen", "nitrogen", "oxygen",
-                         "ammonia", "ethylene", "propylene", "PE_olefin",
+                         "ammonia", "ethylene", "propylene", "PE_olefin", "olefins",
                          "crackergas", "feedgas", "steam", "heatlowT", "HBfeed", "syngas", "syngas_r",
                          "methanol", "ethanol", "propane", "MPW"],
             "investment_periods": ["2040"],
@@ -259,7 +259,7 @@ if execute == 1:
         data.to_csv(file_path, index=False, sep=';')
 
     set_tecs = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
-                "NaphthaCracker", "NaphthaCracker_Electric",
+                "CrackerFurnace", "CrackerFurnace_Electric",
                 "ASU", "Boiler_Industrial_NG", "Boiler_El",
                 "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
                 "DirectMeOHsynthesis", "CO2electrolysis_2040",
@@ -385,11 +385,11 @@ if execute == 1:
     if greenfield:
         # Specify the path to your input data
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_gf_2050")
-        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
+        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
     else:
         # Specify the path to your input data
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2050")
-        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot")
+        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
 
     firsttime = 0
     if firsttime == 1:
@@ -405,7 +405,7 @@ if execute == 1:
             "nodes": ["Chemelot"],
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
                          "CO2", "CO2_DAC", "CO2captured", "hydrogen", "nitrogen", "oxygen",
-                         "ammonia", "ethylene", "propylene", "PE_olefin",
+                         "ammonia", "ethylene", "propylene", "PE_olefin", "olefins",
                          "crackergas", "feedgas", "steam", "heatlowT", "HBfeed", "syngas", "syngas_r",
                          "methanol", "ethanol", "propane", "MPW"],
             "investment_periods": ["2050"],
@@ -436,7 +436,7 @@ if execute == 1:
         data.to_csv(file_path, index=False, sep=';')
 
     set_tecs = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
-                "NaphthaCracker", "NaphthaCracker_Electric",
+                "CrackerFurnace", "CrackerFurnace_Electric",
                 "ASU", "Boiler_Industrial_NG", "Boiler_El",
                 "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
                 "DirectMeOHsynthesis", "CO2electrolysis_2040", "CO2electrolysis_2050",
