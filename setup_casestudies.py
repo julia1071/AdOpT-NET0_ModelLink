@@ -81,7 +81,7 @@ if execute == 1:
                     "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer"]
     else:
         set_tecs_new = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
-                        "NaphthaCracker_Electric",
+                        "CrackerFurnce_Electric",
                         "ASU", "Boiler_Industrial_NG", "Boiler_El",
                         "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
                         "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
@@ -109,15 +109,15 @@ if execute == 1:
             with open(json_tec_file_path, "w") as json_tec_file:
                 json.dump(json_tec, json_tec_file, indent=4)
 
-    # Copy technology and network data into folder
-    dp.copy_technology_data(casepath, datapath)
-    # Add CCS
-    output_folder = (
-            casepath / period / "node_data" / node_name / "technology_data"
-    )
-    tec_json_file_path = find_json_path(datapath, "MEA_large")
-    if tec_json_file_path:
-        shutil.copy(tec_json_file_path, output_folder)
+            # Copy technology and network data into folder
+            dp.copy_technology_data(casepath, datapath)
+            # Add CCS
+            output_folder = (
+                    casepath / period / "node_data" / node_name / "technology_data"
+            )
+            tec_json_file_path = find_json_path(datapath, "MEA_large")
+            if tec_json_file_path:
+                shutil.copy(tec_json_file_path, output_folder)
 
     # Read climate data and fill carried data
     dp.load_climate_data_from_api(casepath)
@@ -128,8 +128,8 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=44, columns=['Demand'], carriers=['CO2'])
     dp.fill_carrier_data(casepath, value_or_data=218, columns=['Demand'], carriers=['PE_olefin'])
     dp.fill_carrier_data(casepath, value_or_data=0, columns=['Demand'], carriers=['steam'])
-    dp.fill_carrier_data(casepath, value_or_data=81.8, columns=['Demand'], carriers=['electricity'])
-    dp.fill_carrier_data(casepath, value_or_data=6.9, columns=['Demand'], carriers=['feedgas'])
+    dp.fill_carrier_data(casepath, value_or_data=82, columns=['Demand'], carriers=['electricity'])
+    dp.fill_carrier_data(casepath, value_or_data=7, columns=['Demand'], carriers=['feedgas'])
 
     # No import limit
     dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'],
@@ -142,7 +142,6 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane_bio'])
     dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha_bio'])
     dp.fill_carrier_data(casepath, value_or_data=2359, columns=['Import limit'], carriers=['CO2_DAC'])
-    dp.fill_carrier_data(casepath, value_or_data=1648, columns=['Import limit'], carriers=['methanol'])
     dp.fill_carrier_data(casepath, value_or_data=526, columns=['Import limit'], carriers=['ethanol'])
     dp.fill_carrier_data(casepath, value_or_data=157, columns=['Import limit'], carriers=['propane'])
     dp.fill_carrier_data(casepath, value_or_data=1121, columns=['Import limit'], carriers=['MPW'])
@@ -154,6 +153,7 @@ if execute == 1:
     # CO2 export
     dp.fill_carrier_data(casepath, value_or_data=0, columns=['Export limit'], carriers=['CO2'])
     dp.fill_carrier_data(casepath, value_or_data=-111.51, columns=['Export price'], carriers=['CO2'])
+    dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Export emission factor'], carriers=['CO2'])
 
     # Constant import prices
     dp.fill_carrier_data(casepath, value_or_data=56.45, columns=['Import price'], carriers=['methane'])
@@ -161,47 +161,47 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=127.68, columns=['Import price'], carriers=['methane_bio'])
     dp.fill_carrier_data(casepath, value_or_data=1852.5, columns=['Import price'], carriers=['naphtha_bio'])
     dp.fill_carrier_data(casepath, value_or_data=382.81, columns=['Import price'], carriers=['CO2_DAC'])
-    dp.fill_carrier_data(casepath, value_or_data=908.20, columns=['Import price'], carriers=['methanol'])
     dp.fill_carrier_data(casepath, value_or_data=1141.07, columns=['Import price'], carriers=['ethanol'])
     dp.fill_carrier_data(casepath, value_or_data=1710, columns=['Import price'], carriers=['propane'])
     dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
 
     # Constant import emission factor
-    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['methane'])
-    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['naphtha'])
-    dp.fill_carrier_data(casepath, value_or_data=-0.2, columns=['Import emission factor'], carriers=['methane_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=-1.32, columns=['Import emission factor'], carriers=['naphtha_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Import emission factor'], carriers=['CO2_DAC'])
-    dp.fill_carrier_data(casepath, value_or_data=-1.37, columns=['Import emission factor'], carriers=['methanol'])
-    dp.fill_carrier_data(casepath, value_or_data=-1.91, columns=['Import emission factor'], carriers=['ethanol'])
-    dp.fill_carrier_data(casepath, value_or_data=-2.99, columns=['Import emission factor'], carriers=['propane'])
+    dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
+    dp.fill_carrier_data(casepath, value_or_data=4.64, columns=['Import emission factor'], carriers=['naphtha'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['methane_bio'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['naphtha_bio'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['CO2_DAC'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['ethanol'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['propane'])
     dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['MPW'])
 
     # Electricity price from file
     # change to xlsx and read sheet with year 2030
-    el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
-    el_importdata = pd.read_excel(el_load_path, sheet_name='2030', header=0, nrows=8760)
-    el_price = el_importdata.iloc[:, 0]
-    el_emissionrate = el_importdata.iloc[:, 2]
+    for period in topology["investment_periods"]:
+        for node_name in topology["nodes"]:
+            el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
+            el_importdata = pd.read_excel(el_load_path, sheet_name=period, header=0, nrows=8760)
+            el_price = el_importdata.iloc[:, 0]
+            el_emissionrate = el_importdata.iloc[:, 2]
 
-    dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'], carriers=['electricity'])
-    dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'],
-                         carriers=['electricity'])
+            dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'], carriers=['electricity'])
+            dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'],
+                                 carriers=['electricity'])
 
-    #carbon tax
-    file_path = Path(casepath) / '2030' / "node_data" / 'Chemelot' / 'CarbonCost.csv'
-    data = pd.read_csv(file_path, delimiter=';')
+            # carbon tax
+            file_path = Path(casepath) / period / "node_data" / node_name / 'CarbonCost.csv'
+            data = pd.read_csv(file_path, delimiter=';')
 
-    # Set the price to 150.31 and subsidy to 0 for all rows
-    data['price'] = 150.31
-    data['subsidy'] = 0
+            # Set the price to 300 and subsidy to 0 for all rows
+            data['price'] = 300
+            data['subsidy'] = 0
 
-    # Save the modified CSV file
-    data.to_csv(file_path, index=False, sep=';')
+            # Save the modified CSV file
+            data.to_csv(file_path, index=False, sep=';')
 
 
 #Create data Chemelot cluster mid term
-execute = 0
+execute = 1
 greenfield = 0
 
 if execute == 1:
@@ -284,51 +284,51 @@ if execute == 1:
             with open(json_tec_file_path, "w") as json_tec_file:
                 json.dump(json_tec, json_tec_file, indent=4)
 
-    # Copy technology and network data into folder
-    dp.copy_technology_data(casepath, datapath)
-    # Add CCS
-    output_folder = (
-            casepath / period / "node_data" / node_name / "technology_data"
-    )
-    tec_json_file_path = find_json_path(datapath, "MEA_large")
-    if tec_json_file_path:
-        shutil.copy(tec_json_file_path, output_folder)
+            # Copy technology and network data into folder
+            dp.copy_technology_data(casepath, datapath)
+            # Add CCS
+            output_folder = (
+                    casepath / period / "node_data" / node_name / "technology_data"
+            )
+            tec_json_file_path = find_json_path(datapath, "MEA_large")
+            if tec_json_file_path:
+                shutil.copy(tec_json_file_path, output_folder)
 
     # Read climate data and fill carried data
     dp.load_climate_data_from_api(casepath)
     dp.fill_carrier_data(casepath, value_or_data=0)
 
     # Demand data
-    dp.fill_carrier_data(casepath, value_or_data=135, columns=['Demand'], carriers=['ammonia'])
-    dp.fill_carrier_data(casepath, value_or_data=44, columns=['Demand'], carriers=['CO2'])
-    dp.fill_carrier_data(casepath, value_or_data=218, columns=['Demand'], carriers=['PE_olefin'])
+    dp.fill_carrier_data(casepath, value_or_data=143, columns=['Demand'], carriers=['ammonia'])
+    dp.fill_carrier_data(casepath, value_or_data=47, columns=['Demand'], carriers=['CO2'])
+    dp.fill_carrier_data(casepath, value_or_data=240, columns=['Demand'], carriers=['PE_olefin'])
     dp.fill_carrier_data(casepath, value_or_data=0, columns=['Demand'], carriers=['steam'])
-    dp.fill_carrier_data(casepath, value_or_data=81.8, columns=['Demand'], carriers=['electricity'])
-    dp.fill_carrier_data(casepath, value_or_data=6.9, columns=['Demand'], carriers=['feedgas'])
+    dp.fill_carrier_data(casepath, value_or_data=87, columns=['Demand'], carriers=['electricity'])
+    dp.fill_carrier_data(casepath, value_or_data=7, columns=['Demand'], carriers=['feedgas'])
 
     # No import limit
     dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'],
                          carriers=["electricity", "methane", "naphtha"])
 
     # Import limits
-    dp.fill_carrier_data(casepath, value_or_data=750, columns=['Import limit'], carriers=['electricity'])
-    dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane'])
-    dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha'])
-    dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=2359, columns=['Import limit'], carriers=['CO2_DAC'])
-    dp.fill_carrier_data(casepath, value_or_data=1648, columns=['Import limit'], carriers=['methanol'])
-    dp.fill_carrier_data(casepath, value_or_data=526, columns=['Import limit'], carriers=['ethanol'])
-    dp.fill_carrier_data(casepath, value_or_data=157, columns=['Import limit'], carriers=['propane'])
-    dp.fill_carrier_data(casepath, value_or_data=1121, columns=['Import limit'], carriers=['MPW'])
+    dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'], carriers=['electricity'])
+    dp.fill_carrier_data(casepath, value_or_data=2241, columns=['Import limit'], carriers=['methane'])
+    dp.fill_carrier_data(casepath, value_or_data=1093, columns=['Import limit'], carriers=['naphtha'])
+    dp.fill_carrier_data(casepath, value_or_data=2241, columns=['Import limit'], carriers=['methane_bio'])
+    dp.fill_carrier_data(casepath, value_or_data=1093, columns=['Import limit'], carriers=['naphtha_bio'])
+    dp.fill_carrier_data(casepath, value_or_data=2907, columns=['Import limit'], carriers=['CO2_DAC'])
+    dp.fill_carrier_data(casepath, value_or_data=559, columns=['Import limit'], carriers=['ethanol'])
+    dp.fill_carrier_data(casepath, value_or_data=173, columns=['Import limit'], carriers=['propane'])
+    dp.fill_carrier_data(casepath, value_or_data=1238, columns=['Import limit'], carriers=['MPW'])
 
     # No export limit
     dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
                          carriers=["nitrogen", "oxygen", "steam", "heatlowT"])
 
     # CO2 export
-    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Export limit'], carriers=['CO2'])
+    dp.fill_carrier_data(casepath, value_or_data=114, columns=['Export limit'], carriers=['CO2'])
     dp.fill_carrier_data(casepath, value_or_data=-111.51, columns=['Export price'], carriers=['CO2'])
+    dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Export emission factor'], carriers=['CO2'])
 
     # Constant import prices
     dp.fill_carrier_data(casepath, value_or_data=56.45, columns=['Import price'], carriers=['methane'])
@@ -336,49 +336,49 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=127.68, columns=['Import price'], carriers=['methane_bio'])
     dp.fill_carrier_data(casepath, value_or_data=1852.5, columns=['Import price'], carriers=['naphtha_bio'])
     dp.fill_carrier_data(casepath, value_or_data=382.81, columns=['Import price'], carriers=['CO2_DAC'])
-    dp.fill_carrier_data(casepath, value_or_data=908.20, columns=['Import price'], carriers=['methanol'])
     dp.fill_carrier_data(casepath, value_or_data=1141.07, columns=['Import price'], carriers=['ethanol'])
     dp.fill_carrier_data(casepath, value_or_data=1710, columns=['Import price'], carriers=['propane'])
     dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
 
     # Constant import emission factor
-    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['methane'])
-    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['naphtha'])
-    dp.fill_carrier_data(casepath, value_or_data=-0.2, columns=['Import emission factor'], carriers=['methane_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=-1.32, columns=['Import emission factor'], carriers=['naphtha_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Import emission factor'], carriers=['CO2_DAC'])
-    dp.fill_carrier_data(casepath, value_or_data=-1.37, columns=['Import emission factor'], carriers=['methanol'])
-    dp.fill_carrier_data(casepath, value_or_data=-1.91, columns=['Import emission factor'], carriers=['ethanol'])
-    dp.fill_carrier_data(casepath, value_or_data=-2.99, columns=['Import emission factor'], carriers=['propane'])
+    dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
+    dp.fill_carrier_data(casepath, value_or_data=4.64, columns=['Import emission factor'], carriers=['naphtha'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['methane_bio'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['naphtha_bio'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['CO2_DAC'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['ethanol'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['propane'])
     dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['MPW'])
 
     # Electricity price from file
     # change to xlsx and read sheet with year 2030
-    el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
-    el_importdata = pd.read_excel(el_load_path, sheet_name='2040', header=0, nrows=8760)
-    el_price = el_importdata.iloc[:, 0]
-    el_emissionrate = el_importdata.iloc[:, 2]
+    for period in topology["investment_periods"]:
+        for node_name in topology["nodes"]:
+            el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
+            el_importdata = pd.read_excel(el_load_path, sheet_name=period, header=0, nrows=8760)
+            el_price = el_importdata.iloc[:, 0]
+            el_emissionrate = el_importdata.iloc[:, 2]
 
-    dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'], carriers=['electricity'])
-    dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'],
-                         carriers=['electricity'])
+            dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'], carriers=['electricity'])
+            dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'],
+                                 carriers=['electricity'])
 
-    #carbon tax
-    file_path = Path(casepath) / '2040' / "node_data" / 'Chemelot' / 'CarbonCost.csv'
-    data = pd.read_csv(file_path, delimiter=';')
+            #carbon tax
+            file_path = Path(casepath) / period / "node_data" / node_name / 'CarbonCost.csv'
+            data = pd.read_csv(file_path, delimiter=';')
 
-    # Set the price to 150.31 and subsidy to 0 for all rows
-    data['price'] = 150.31
-    data['subsidy'] = 0
+            # Set the price to 300 and subsidy to 0 for all rows
+            data['price'] = 300
+            data['subsidy'] = 0
 
-    # Save the modified CSV file
-    data.to_csv(file_path, index=False, sep=';')
+            # Save the modified CSV file
+            data.to_csv(file_path, index=False, sep=';')
 
 
 
 
 #Create data Chemelot cluster long term
-execute = 0
+execute = 1
 greenfield = 0
 
 if execute == 1:
@@ -461,51 +461,51 @@ if execute == 1:
             with open(json_tec_file_path, "w") as json_tec_file:
                 json.dump(json_tec, json_tec_file, indent=4)
 
-    # Copy technology and network data into folder
-    dp.copy_technology_data(casepath, datapath)
-    # Add CCS
-    output_folder = (
-            casepath / period / "node_data" / node_name / "technology_data"
-    )
-    tec_json_file_path = find_json_path(datapath, "MEA_large")
-    if tec_json_file_path:
-        shutil.copy(tec_json_file_path, output_folder)
+            # Copy technology and network data into folder
+            dp.copy_technology_data(casepath, datapath)
+            # Add CCS
+            output_folder = (
+                    casepath / period / "node_data" / node_name / "technology_data"
+            )
+            tec_json_file_path = find_json_path(datapath, "MEA_large")
+            if tec_json_file_path:
+                shutil.copy(tec_json_file_path, output_folder)
 
     # Read climate data and fill carried data
     dp.load_climate_data_from_api(casepath)
     dp.fill_carrier_data(casepath, value_or_data=0)
 
     # Demand data
-    dp.fill_carrier_data(casepath, value_or_data=135, columns=['Demand'], carriers=['ammonia'])
-    dp.fill_carrier_data(casepath, value_or_data=44, columns=['Demand'], carriers=['CO2'])
-    dp.fill_carrier_data(casepath, value_or_data=218, columns=['Demand'], carriers=['PE_olefin'])
+    dp.fill_carrier_data(casepath, value_or_data=152, columns=['Demand'], carriers=['ammonia'])
+    dp.fill_carrier_data(casepath, value_or_data=50, columns=['Demand'], carriers=['CO2'])
+    dp.fill_carrier_data(casepath, value_or_data=266, columns=['Demand'], carriers=['PE_olefin'])
     dp.fill_carrier_data(casepath, value_or_data=0, columns=['Demand'], carriers=['steam'])
-    dp.fill_carrier_data(casepath, value_or_data=81.8, columns=['Demand'], carriers=['electricity'])
-    dp.fill_carrier_data(casepath, value_or_data=6.9, columns=['Demand'], carriers=['feedgas'])
+    dp.fill_carrier_data(casepath, value_or_data=92, columns=['Demand'], carriers=['electricity'])
+    dp.fill_carrier_data(casepath, value_or_data=8, columns=['Demand'], carriers=['feedgas'])
 
     # No import limit
     dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'],
                          carriers=["electricity", "methane", "naphtha"])
 
     # Import limits
-    dp.fill_carrier_data(casepath, value_or_data=750, columns=['Import limit'], carriers=['electricity'])
-    dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane'])
-    dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha'])
-    dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=2359, columns=['Import limit'], carriers=['CO2_DAC'])
-    dp.fill_carrier_data(casepath, value_or_data=1648, columns=['Import limit'], carriers=['methanol'])
-    dp.fill_carrier_data(casepath, value_or_data=526, columns=['Import limit'], carriers=['ethanol'])
-    dp.fill_carrier_data(casepath, value_or_data=157, columns=['Import limit'], carriers=['propane'])
-    dp.fill_carrier_data(casepath, value_or_data=1121, columns=['Import limit'], carriers=['MPW'])
+    dp.fill_carrier_data(casepath, value_or_data=2500, columns=['Import limit'], carriers=['electricity'])
+    dp.fill_carrier_data(casepath, value_or_data=2382, columns=['Import limit'], carriers=['methane'])
+    dp.fill_carrier_data(casepath, value_or_data=1210, columns=['Import limit'], carriers=['naphtha'])
+    dp.fill_carrier_data(casepath, value_or_data=2382, columns=['Import limit'], carriers=['methane_bio'])
+    dp.fill_carrier_data(casepath, value_or_data=1210, columns=['Import limit'], carriers=['naphtha_bio'])
+    dp.fill_carrier_data(casepath, value_or_data=3218, columns=['Import limit'], carriers=['CO2_DAC'])
+    dp.fill_carrier_data(casepath, value_or_data=619, columns=['Import limit'], carriers=['ethanol'])
+    dp.fill_carrier_data(casepath, value_or_data=192, columns=['Import limit'], carriers=['propane'])
+    dp.fill_carrier_data(casepath, value_or_data=1370, columns=['Import limit'], carriers=['MPW'])
 
     # No export limit
     dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
                          carriers=["nitrogen", "oxygen", "steam", "heatlowT"])
 
     # CO2 export
-    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Export limit'], carriers=['CO2'])
+    dp.fill_carrier_data(casepath, value_or_data=148, columns=['Export limit'], carriers=['CO2'])
     dp.fill_carrier_data(casepath, value_or_data=-111.51, columns=['Export price'], carriers=['CO2'])
+    dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Export emission factor'], carriers=['CO2'])
 
     # Constant import prices
     dp.fill_carrier_data(casepath, value_or_data=56.45, columns=['Import price'], carriers=['methane'])
@@ -513,41 +513,41 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=127.68, columns=['Import price'], carriers=['methane_bio'])
     dp.fill_carrier_data(casepath, value_or_data=1852.5, columns=['Import price'], carriers=['naphtha_bio'])
     dp.fill_carrier_data(casepath, value_or_data=382.81, columns=['Import price'], carriers=['CO2_DAC'])
-    dp.fill_carrier_data(casepath, value_or_data=908.20, columns=['Import price'], carriers=['methanol'])
     dp.fill_carrier_data(casepath, value_or_data=1141.07, columns=['Import price'], carriers=['ethanol'])
     dp.fill_carrier_data(casepath, value_or_data=1710, columns=['Import price'], carriers=['propane'])
     dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
 
     # Constant import emission factor
-    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['methane'])
-    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['naphtha'])
-    dp.fill_carrier_data(casepath, value_or_data=-0.2, columns=['Import emission factor'], carriers=['methane_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=-1.32, columns=['Import emission factor'], carriers=['naphtha_bio'])
-    dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Import emission factor'], carriers=['CO2_DAC'])
-    dp.fill_carrier_data(casepath, value_or_data=-1.37, columns=['Import emission factor'], carriers=['methanol'])
-    dp.fill_carrier_data(casepath, value_or_data=-1.91, columns=['Import emission factor'], carriers=['ethanol'])
-    dp.fill_carrier_data(casepath, value_or_data=-2.99, columns=['Import emission factor'], carriers=['propane'])
+    dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
+    dp.fill_carrier_data(casepath, value_or_data=4.64, columns=['Import emission factor'], carriers=['naphtha'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['methane_bio'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['naphtha_bio'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['CO2_DAC'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['ethanol'])
+    dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['propane'])
     dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['MPW'])
 
     # Electricity price from file
     # change to xlsx and read sheet with year 2030
-    el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
-    el_importdata = pd.read_excel(el_load_path, sheet_name='2050', header=0, nrows=8760)
-    el_price = el_importdata.iloc[:, 0]
-    el_emissionrate = el_importdata.iloc[:, 2]
+    for period in topology["investment_periods"]:
+        for node_name in topology["nodes"]:
+            el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
+            el_importdata = pd.read_excel(el_load_path, sheet_name=period, header=0, nrows=8760)
+            el_price = el_importdata.iloc[:, 0]
+            el_emissionrate = el_importdata.iloc[:, 2]
 
-    dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'], carriers=['electricity'])
-    dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'],
-                         carriers=['electricity'])
+            dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'], carriers=['electricity'])
+            dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'],
+                                 carriers=['electricity'])
 
-    #carbon tax
-    file_path = Path(casepath) / '2050' / "node_data" / 'Chemelot' / 'CarbonCost.csv'
-    data = pd.read_csv(file_path, delimiter=';')
+            # carbon tax
+            file_path = Path(casepath) / period / "node_data" / node_name / 'CarbonCost.csv'
+            data = pd.read_csv(file_path, delimiter=';')
 
-    # Set the price to 150.31 and subsidy to 0 for all rows
-    data['price'] = 150.31
-    data['subsidy'] = 0
+            # Set the price to 300 and subsidy to 0 for all rows
+            data['price'] = 300
+            data['subsidy'] = 0
 
-    # Save the modified CSV file
-    data.to_csv(file_path, index=False, sep=';')
+            # Save the modified CSV file
+            data.to_csv(file_path, index=False, sep=';')
 

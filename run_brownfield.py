@@ -20,9 +20,10 @@ if execute == 1:
     node = 'Chemelot'
     objectives = ['costs']
     co2tax = ['ref']
+    scope3 = 1
     scenarios = ['2030', '2040', '2050']
     pyhub = {}
-    set_conv_tech = ["SteamReformer_existing", "HaberBosch_existing", "NaphthaCracker_existing"]
+    set_conv_tech = ["SteamReformer_existing", "HaberBosch_existing", "CrackerFurnace_existing", "OlefinSeparation_existing"]
 
     for obj in objectives:
         for tax in co2tax:
@@ -35,6 +36,9 @@ if execute == 1:
 
                 model_config['optimization']['typicaldays']['N']['value'] = nr_DD_days
                 model_config['optimization']['objective']['value'] = obj
+
+                # Scope 3 analysis yes/no
+                model_config['optimization']['scope_three_analysis'] = scope3
 
                 #change save options
                 model_config['reporting']['save_summary_path']['value'] = resultpath + node
