@@ -80,6 +80,8 @@ def get_summary(model, solution, folder_path: Path, model_info: dict, data) -> d
     config = model_info['config']
     if config['optimization']['scope_three_analysis']:
         from_technologies = {}
+        from_electricity = {}
+        from_fossil = {}
         for period in model.set_periods:
             b_period = model.periods[period]
             set_t = get_set_t(config, b_period)
@@ -100,10 +102,28 @@ def get_summary(model, solution, folder_path: Path, model_info: dict, data) -> d
                 )
                 for node in model.set_nodes
             )
-            from_electricity = {}
+
             from_electricity[period] = sum(
                 sum(
                     b_period.node_blocks[node].var_import_emissions_pos[t, 'electricity'].value
+                    * nr_timesteps_averaged
+                    * hour_factors[t - 1]
+                    for t in set_t
+                )
+                for node in model.set_nodes
+            )
+
+            from_fossil[period] = sum(
+                sum(
+                    b_period.node_blocks[node].var_import_emissions_pos[t, 'naphtha'].value
+                    * nr_timesteps_averaged
+                    * hour_factors[t - 1]
+                    for t in set_t
+                )
+                for node in model.set_nodes
+            ) + sum(
+                sum(
+                    b_period.node_blocks[node].var_import_emissions_pos[t, 'methane'].value
                     * nr_timesteps_averaged
                     * hour_factors[t - 1]
                     for t in set_t
@@ -116,6 +136,9 @@ def get_summary(model, solution, folder_path: Path, model_info: dict, data) -> d
         )
         summary_dict["electricity_emissions"] = sum(
             from_electricity[period] for period in model.set_periods
+        )
+        summary_dict["fossil_emissions"] = sum(
+            from_fossil[period] for period in model.set_periods
         )
 
 
