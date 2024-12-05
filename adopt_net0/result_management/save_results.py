@@ -3,14 +3,14 @@ from pathlib import Path
 import os
 
 from pyomo.environ import ConcreteModel
-from ..utilities import get_set_t
+from ..utilities import get_set_t, get_hour_factors, get_nr_timesteps_averaged
 
 import logging
 
 log = logging.getLogger(__name__)
 
 
-def get_summary(model, solution, folder_path: Path, model_info: dict) -> dict:
+def get_summary(model, solution, folder_path: Path, model_info: dict, data) -> dict:
     """
     Retrieves all variable values relevant for the summary of an optimization run.
 
@@ -75,6 +75,51 @@ def get_summary(model, solution, folder_path: Path, model_info: dict) -> dict:
     summary_dict["emissions_net"] = sum(
         model.periods[period].var_emissions_net.value for period in model.set_periods
     )
+
+    # Calculate direct emissions
+    config = model_info['config']
+    if config['optimization']['scope_three_analysis']:
+        from_technologies = {}
+        for period in model.set_periods:
+            b_period = model.periods[period]
+            set_t = get_set_t(config, b_period)
+            hour_factors = get_hour_factors(config, data, period)
+            nr_timesteps_averaged = get_nr_timesteps_averaged(config)
+
+            from_technologies[period] = sum(
+                sum(
+                    sum(
+                        b_period.node_blocks[node]
+                        .tech_blocks_active[tec]
+                        .var_tec_emissions_pos[t].value
+                        * nr_timesteps_averaged
+                        * hour_factors[t - 1]
+                        for t in set_t
+                    )
+                    for tec in b_period.node_blocks[node].set_technologies
+                )
+                for node in model.set_nodes
+            )
+            from_electricity = {}
+            from_electricity[period] = sum(
+                sum(
+                    b_period.node_blocks[node].var_import_emissions_pos[t, 'electricity'].value
+                    * nr_timesteps_averaged
+                    * hour_factors[t - 1]
+                    for t in set_t
+                )
+                for node in model.set_nodes
+            )
+
+        summary_dict["direct_emissions"] = sum(
+            from_technologies[period] for period in model.set_periods
+        )
+        summary_dict["electricity_emissions"] = sum(
+            from_electricity[period] for period in model.set_periods
+        )
+
+
+
 
     # summary: retrieve / calculate solver status
     try:
@@ -145,7 +190,7 @@ def write_optimization_results_to_h5(model, solution, model_info: dict, data) ->
     h5_file_path = os.path.join(folder_path, "optimization_results.h5")
     with h5py.File(h5_file_path, mode="w") as f:
 
-        summary_dict = get_summary(model, solution, folder_path, model_info)
+        summary_dict = get_summary(model, solution, folder_path, model_info, data)
 
         # SUMMARY [g]: convert dictionary to h5 datasets
         summary = f.create_group("summary")

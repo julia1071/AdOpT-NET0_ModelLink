@@ -336,7 +336,7 @@ def construct_emission_balance(model, data):
 
         # calculate total emissions from technologies, networks and importing/exporting carriers
         def init_emissions_pos(const):
-            if config["scope_three_analysis"]:
+            if config['optimization']['scope_three_analysis']:
                 from_technologies = 0
             else:
                 from_technologies = sum(
@@ -363,7 +363,7 @@ def construct_emission_balance(model, data):
                 for node in model.set_nodes
             )
             if not config["energybalance"]["copperplate"]["value"]:
-                if config["scope_three_analysis"]:
+                if config['optimization']['scope_three_analysis']:
                     from_networks = 0
                 else:
                     from_networks = sum(
@@ -388,7 +388,7 @@ def construct_emission_balance(model, data):
         b_emissionbalance.const_emissions_tot = pyo.Constraint(rule=init_emissions_pos)
 
         def init_emissions_neg(const):
-            if config["scope_three_analysis"]:
+            if config['optimization']['scope_three_analysis']:
                 from_technologies = 0
             else:
                 from_technologies = sum(
