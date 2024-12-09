@@ -659,41 +659,57 @@ def construct_system_cost(model, data):
 
         # Emission cost and revenues (if applicable)
         def init_carbon_revenue(const):
-            revenue_carbon_from_technologies = sum(
-                sum(
+            if config['optimization']['scope_three_analysis']:
+                revenue_carbon_from_technologies = 0
+            else:
+                revenue_carbon_from_technologies = sum(
                     sum(
-                        b_period.node_blocks[node]
-                        .tech_blocks_active[tec]
-                        .var_tec_emissions_neg[t]
-                        * nr_timesteps_averaged
-                        * hour_factors[t - 1]
-                        * b_period.node_blocks[node].para_carbon_subsidy[t]
-                        for t in set_t
+                        sum(
+                            b_period.node_blocks[node]
+                            .tech_blocks_active[tec]
+                            .var_tec_emissions_neg[t]
+                            * nr_timesteps_averaged
+                            * hour_factors[t - 1]
+                            * b_period.node_blocks[node].para_carbon_subsidy[t]
+                            for t in set_t
+                        )
+                        for tec in b_period.node_blocks[node].set_technologies
                     )
-                    for tec in b_period.node_blocks[node].set_technologies
+                    for node in model.set_nodes
+                )
+            revenue_carbon_from_carriers = sum(
+                sum(
+                    b_period.node_blocks[node].var_car_emissions_neg[t]
+                    * nr_timesteps_averaged
+                    * b_period.node_blocks[node].para_carbon_tax[t]
+                    * hour_factors[t - 1]
+                    for t in set_t
                 )
                 for node in model.set_nodes
             )
-            return revenue_carbon_from_technologies == b_period.var_carbon_revenue
+            return revenue_carbon_from_technologies + revenue_carbon_from_carriers == b_period.var_carbon_revenue
 
         b_period_cost.const_revenue_carbon = pyo.Constraint(rule=init_carbon_revenue)
 
         def init_carbon_cost(const):
-            cost_carbon_from_technologies = sum(
-                sum(
+            if config['optimization']['scope_three_analysis']:
+                cost_carbon_from_technologies = 0
+            else:
+                cost_carbon_from_technologies = sum(
                     sum(
-                        b_period.node_blocks[node]
-                        .tech_blocks_active[tec]
-                        .var_tec_emissions_pos[t]
-                        * nr_timesteps_averaged
-                        * hour_factors[t - 1]
-                        * b_period.node_blocks[node].para_carbon_tax[t]
-                        for t in set_t
+                        sum(
+                            b_period.node_blocks[node]
+                            .tech_blocks_active[tec]
+                            .var_tec_emissions_pos[t]
+                            * nr_timesteps_averaged
+                            * hour_factors[t - 1]
+                            * b_period.node_blocks[node].para_carbon_tax[t]
+                            for t in set_t
+                        )
+                        for tec in b_period.node_blocks[node].set_technologies
                     )
-                    for tec in b_period.node_blocks[node].set_technologies
+                    for node in model.set_nodes
                 )
-                for node in model.set_nodes
-            )
             cost_carbon_from_carriers = sum(
                 sum(
                     b_period.node_blocks[node].var_car_emissions_pos[t]
@@ -704,7 +720,7 @@ def construct_system_cost(model, data):
                 )
                 for node in model.set_nodes
             )
-            if not config["energybalance"]["copperplate"]["value"]:
+            if not config["energybalance"]["copperplate"]["value"] and not config['optimization']['scope_three_analysis']:
                 cost_carbon_from_networks = sum(
                     sum(
                         sum(
