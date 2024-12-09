@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 from pyomo.environ import SolverFactory
 
 
@@ -116,3 +119,36 @@ def fix_installed_capacities(m, scenario, prev_scenario, node, exceptions):
             b_tec.var_size.setlb(prev_tec_size)
 
     return m
+
+
+def installed_capacities_existing(m, scenario, prev_scenario, node, casepath):
+    """
+    Set the capacity of a technology to a minimum capacity for the next brownfield simulation
+    """
+    prev_model = m[prev_scenario].model[m[prev_scenario].info_solving_algorithms["aggregation_model"]].periods[prev_scenario]
+
+    b_node_prev = prev_model.node_blocks[node]
+
+    size_tecs_existing = {}
+
+    for tec_name in b_node_prev.set_technologies:
+        prev_tec_size = b_node_prev.tech_blocks_active[tec_name].var_size.value
+
+        if prev_tec_size > 0:
+            if 'existing' in tec_name:
+                tec_name = tec_name[:-9]
+            size_tecs_existing[tec_name] = prev_tec_size
+
+
+    # Read the JSON technology file
+    casepath = Path(casepath)
+    json_tec_file_path = (
+            casepath / scenario / "node_data" / node / "Technologies.json"
+    )
+    with open(json_tec_file_path, "r") as json_tec_file:
+        json_tec = json.load(json_tec_file)
+
+    json_tec['existing'] = size_tecs_existing
+    with open(json_tec_file_path, "w") as json_tec_file:
+        json.dump(json_tec, json_tec_file, indent=4)
+
