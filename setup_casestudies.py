@@ -131,10 +131,6 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=82, columns=['Demand'], carriers=['electricity'])
     dp.fill_carrier_data(casepath, value_or_data=7, columns=['Demand'], carriers=['feedgas'])
 
-    # No import limit
-    dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'],
-                         carriers=["electricity", "methane", "naphtha"])
-
     # Import limits
     dp.fill_carrier_data(casepath, value_or_data=750, columns=['Import limit'], carriers=['electricity'])
     dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane'])
@@ -193,8 +189,8 @@ if execute == 1:
             data = pd.read_csv(file_path, delimiter=';')
 
             # Set the price to 300 and subsidy to 0 for all rows
-            data['price'] = 300
-            data['subsidy'] = 0
+            data['price'] = 150.31
+            data['subsidy'] = 150.31
 
             # Save the modified CSV file
             data.to_csv(file_path, index=False, sep=';')
@@ -306,10 +302,6 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=87, columns=['Demand'], carriers=['electricity'])
     dp.fill_carrier_data(casepath, value_or_data=7, columns=['Demand'], carriers=['feedgas'])
 
-    # No import limit
-    dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'],
-                         carriers=["electricity", "methane", "naphtha"])
-
     # Import limits
     dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'], carriers=['electricity'])
     dp.fill_carrier_data(casepath, value_or_data=2241, columns=['Import limit'], carriers=['methane'])
@@ -369,7 +361,7 @@ if execute == 1:
 
             # Set the price to 300 and subsidy to 0 for all rows
             data['price'] = 300
-            data['subsidy'] = 0
+            data['subsidy'] = 300
 
             # Save the modified CSV file
             data.to_csv(file_path, index=False, sep=';')
@@ -483,10 +475,6 @@ if execute == 1:
     dp.fill_carrier_data(casepath, value_or_data=92, columns=['Demand'], carriers=['electricity'])
     dp.fill_carrier_data(casepath, value_or_data=8, columns=['Demand'], carriers=['feedgas'])
 
-    # No import limit
-    dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'],
-                         carriers=["electricity", "methane", "naphtha"])
-
     # Import limits
     dp.fill_carrier_data(casepath, value_or_data=2500, columns=['Import limit'], carriers=['electricity'])
     dp.fill_carrier_data(casepath, value_or_data=2382, columns=['Import limit'], carriers=['methane'])
@@ -546,7 +534,7 @@ if execute == 1:
 
             # Set the price to 300 and subsidy to 0 for all rows
             data['price'] = 450
-            data['subsidy'] = 0
+            data['subsidy'] = 450
 
             # Save the modified CSV file
             data.to_csv(file_path, index=False, sep=';')
