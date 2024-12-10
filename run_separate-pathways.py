@@ -8,6 +8,7 @@ from adopt_net0.utilities import fix_technology_sizes_zero
 execute = 1
 scenario = '2040'
 node = 'Chemelot'
+nr_DD_days = 0
 
 if execute == 1:
     # Specify the path to your input data
@@ -18,15 +19,13 @@ if execute == 1:
     tech_filepath = Path(casepath + "/" + scenario + "/node_data/" + node + "/Technologies.json")
 
     co2tax = ['ref']
-    DD = [0]
-    pathways_ammonia = {"conventional": ["SteamReformer", "HaberBosch"],
-                        "CC": ["SteamReformer_CC", "HaberBosch"],
+
+    pathways_ammonia = {"conventional_CC": ["SteamReformer", "HaberBosch"],
                         "electric": ["ElectricSMR_m", "WGS_m", "HaberBosch", "ASU"],
                         "electrolyzer": ["AEC", "HaberBosch", "ASU"],
                         }
-    pathways_ethylene = {"conventional": ["NaphthaCracker"],
-                         "CC": ["NaphthaCracker_CC"],
-                         "electric": ["NaphthaCracker_Electric"],
+    pathways_ethylene = {"conventional_CC": ["CrackerFurnace", "OlefinSeparation"],
+                         "electric": ["CrackerFurnace_Electric", "OlefinSeparation"],
                          "methanol1": ["RWGS", "MeOHsynthesis", "MTO"],
                          "methanol2": ["DirectMeOHsynthesis", "MTO"],
                          "methanol3": ["MPW2methanol", "MTO"],
@@ -45,47 +44,46 @@ if execute == 1:
             combined_tech = ammonia_tech + ethylene_tech + pathways_auxiliary
 
             for tax in co2tax:
-                for nr in DD:
-                    # change config file
-                    with open(config_filepath) as json_file:
-                        model_config = json.load(json_file)
+                # change config file
+                with open(config_filepath) as json_file:
+                    model_config = json.load(json_file)
 
-                    model_config['optimization']['typicaldays']['N']['value'] = nr
-                    model_config['optimization']['objective']['value'] = 'costs'
+                model_config['optimization']['typicaldays']['N']['value'] = nr_DD_days
+                model_config['optimization']['objective']['value'] = 'costs'
 
-                    # change save options
-                    model_config['reporting']['save_summary_path']['value'] = resultpath
-                    model_config['reporting']['save_path']['value'] = resultpath
+                # change save options
+                model_config['reporting']['save_summary_path']['value'] = resultpath
+                model_config['reporting']['save_path']['value'] = resultpath
 
-                    # Write the updated JSON data back to the file
-                    with open(config_filepath, 'w') as json_file:
-                        json.dump(model_config, json_file, indent=4)
+                # Write the updated JSON data back to the file
+                with open(config_filepath, 'w') as json_file:
+                    json.dump(model_config, json_file, indent=4)
 
-                    # change technologies
-                    with open(tech_filepath) as json_file:
-                        techs = json.load(json_file)
+                # change technologies
+                with open(tech_filepath) as json_file:
+                    techs = json.load(json_file)
 
-                    techs["new"] = combined_tech
+                techs["new"] = combined_tech
 
-                    # Write the updated JSON data back to the file
-                    with open(tech_filepath, 'w') as json_file:
-                        json.dump(techs, json_file, indent=4)
+                # Write the updated JSON data back to the file
+                with open(tech_filepath, 'w') as json_file:
+                    json.dump(techs, json_file, indent=4)
 
-                    # Construct and solve the model
-                    pyhub = ModelHub()
-                    pyhub.read_data(casepath)
+                # Construct and solve the model
+                pyhub = ModelHub()
+                pyhub.read_data(casepath)
 
-                    if tax == 'high':
-                        if nr != 0:
-                            pyhub.data.time_series['clustered'][
-                                scenario, node, 'CarbonCost', 'global', 'price'] = 250
-                        pyhub.data.time_series['full'][scenario, node, 'CarbonCost', 'global', 'price'] = 250
+                if tax == 'high':
+                    if nr_DD_days != 0:
+                        pyhub.data.time_series['clustered'][
+                            scenario, node, 'CarbonCost', 'global', 'price'] = 250
+                    pyhub.data.time_series['full'][scenario, node, 'CarbonCost', 'global', 'price'] = 250
 
-                    #add casename based tech combinition
-                    pyhub.data.model_config['reporting']['case_name']['value'] = 'a_' + ammonia_key + '_e_' + ethylene_key
+                #add casename based tech combinition
+                pyhub.data.model_config['reporting']['case_name']['value'] = 'a_' + ammonia_key + '_e_' + ethylene_key
 
-                    #solving
-                    pyhub.quick_solve()
+                #solving
+                pyhub.quick_solve()
 
 #Run Chemelot warmstart
 execute = 0
