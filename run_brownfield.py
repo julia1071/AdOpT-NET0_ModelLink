@@ -8,7 +8,7 @@ from adopt_net0.utilities import fix_installed_capacities, installed_capacities_
 
 #Run Chemelot cluster case
 execute = 1
-nr_DD_days = 0
+
 
 if execute == 1:
     # Specify the base path to your input data
@@ -22,6 +22,8 @@ if execute == 1:
     co2tax = ['ref']
     scope3 = 1
     scenarios = ['2030', '2040', '2050']
+    scenario_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
+    nr_DD_days = 0
     pyhub = {}
 
     for obj in objectives:
@@ -52,7 +54,7 @@ if execute == 1:
 
                 # Construct and solve the model
                 pyhub[scenario] = ModelHub()
-                pyhub[scenario].read_data(casepath_period, start_period=1, end_period=10)
+                pyhub[scenario].read_data(casepath_period)
 
                 if obj == 'emissions_minC':
                     # add casename
@@ -65,8 +67,8 @@ if execute == 1:
                     if tax == 'high':
                         if nr_DD_days != 0:
                             pyhub[scenario].data.time_series['clustered'][
-                                scenario, node, 'CarbonCost', 'global', 'price'] = 250
-                        pyhub[scenario].data.time_series['full'][scenario, node, 'CarbonCost', 'global', 'price'] = 250
+                                scenario, node, 'CarbonCost', 'global', 'price'] = scenario_taxHigh[scenario]
+                        pyhub[scenario].data.time_series['full'][scenario, node, 'CarbonCost', 'global', 'price'] = scenario_taxHigh[scenario]
 
                 # Start brownfield optimization
                 pyhub[scenario].construct_model()
