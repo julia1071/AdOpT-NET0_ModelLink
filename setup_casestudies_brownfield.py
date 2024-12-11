@@ -22,10 +22,10 @@ if execute == 1:
     else:
         # Specify the path to your input data
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2030")
-        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
+        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot_bf")
 
     firsttime = 0
-    if firsttime or read_all:
+    if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
         dp.create_montecarlo_template_csv(casepath)
@@ -200,10 +200,10 @@ execute = 1
 if execute == 1:
     # Specify the path to your input data
     casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2040")
-    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
+    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot_bf")
 
     firsttime = 0
-    if firsttime or read_all:
+    if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
         dp.create_montecarlo_template_csv(casepath)
@@ -381,10 +381,10 @@ execute = 1
 if execute == 1:
     # Specify the path to your input data
     casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2050")
-    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
+    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot_bf")
 
     firsttime = 0
-    if firsttime or read_all:
+    if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
         dp.create_montecarlo_template_csv(casepath)
