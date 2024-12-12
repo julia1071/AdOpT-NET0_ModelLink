@@ -8,7 +8,7 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 import pandas as pd
 
 #global functions
-read_all = 1
+read_all = 0
 
 #Create data Chemelot cluster short term
 execute = 1
@@ -111,7 +111,7 @@ if execute == 1:
                 if tec_json_file_path:
                     shutil.copy(tec_json_file_path, output_folder)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -150,8 +150,8 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=141, columns=['Import price'], carriers=['methane_bio'])
         dp.fill_carrier_data(casepath, value_or_data=1830, columns=['Import price'], carriers=['naphtha_bio'])
         dp.fill_carrier_data(casepath, value_or_data=318, columns=['Import price'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=1719, columns=['Import price'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=1016, columns=['Import price'], carriers=['propane'])
+        dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
+        dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
 
         # Constant import emission factor
@@ -165,33 +165,37 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['MPW'])
 
     # Electricity price from file
-    # change to xlsx and read sheet with year 2030
-    for period in topology["investment_periods"]:
-        for node_name in topology["nodes"]:
-            # load electricity data
-            load_elec = 0
-            if load_elec or read_all:
-                el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
-                el_importdata = pd.read_excel(el_load_path, sheet_name=period, header=0, nrows=8760)
-                el_price = el_importdata.iloc[:, 0]
-                el_emissionrate = el_importdata.iloc[:, 2]
+    load_carbon = 1
+    load_elec = 0
+    if load_elec or load_carbon or read_all:
+        json_file_path = casepath / "Topology.json"
+        with open(json_file_path, "r") as json_file:
+            topology = json.load(json_file)
 
-                dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'], carriers=['electricity'])
-                dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'],
-                                     carriers=['electricity'])
+        for period in topology["investment_periods"]:
+            for node_name in topology["nodes"]:
+                # load electricity data
+                if load_elec or read_all:
+                    el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
+                    el_importdata = pd.read_excel(el_load_path, sheet_name=period, header=0, nrows=8760)
+                    el_price = el_importdata.iloc[:, 0]
+                    el_emissionrate = el_importdata.iloc[:, 2]
 
-            load_carbon = 1
-            if load_carbon or read_all:
-                # carbon tax
-                file_path = Path(casepath) / period / "node_data" / node_name / 'CarbonCost.csv'
-                data = pd.read_csv(file_path, delimiter=';')
+                    dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'], carriers=['electricity'])
+                    dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'],
+                                         carriers=['electricity'])
 
-                # Set the price to 300 and subsidy to 0 for all rows
-                data['price'] = 150.31
-                data['subsidy'] = 150.31
+                if load_carbon or read_all:
+                    # carbon tax
+                    file_path = Path(casepath) / period / "node_data" / node_name / 'CarbonCost.csv'
+                    data = pd.read_csv(file_path, delimiter=';')
 
-                # Save the modified CSV file
-                data.to_csv(file_path, index=False, sep=';')
+                    # Set the price to 300 and subsidy to 0 for all rows
+                    data['price'] = 150.31
+                    data['subsidy'] = 150.31
+
+                    # Save the modified CSV file
+                    data.to_csv(file_path, index=False, sep=';')
 
 
 #Create data Chemelot cluster mid term
@@ -290,7 +294,7 @@ if execute == 1:
                     if tec_json_file_path:
                         shutil.copy(tec_json_file_path, output_folder)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -329,8 +333,8 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=141, columns=['Import price'], carriers=['methane_bio'])
         dp.fill_carrier_data(casepath, value_or_data=1830, columns=['Import price'], carriers=['naphtha_bio'])
         dp.fill_carrier_data(casepath, value_or_data=318, columns=['Import price'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=1719, columns=['Import price'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=1016, columns=['Import price'], carriers=['propane'])
+        dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
+        dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
 
         # Constant import emission factor
@@ -343,34 +347,40 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['MPW'])
 
-    # Electricity price from file
-    # change to xlsx and read sheet with year 2030
-    for period in topology["investment_periods"]:
-        for node_name in topology["nodes"]:
-            #load electricity data
-            load_elec = 0
-            if load_elec or read_all:
-                el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
-                el_importdata = pd.read_excel(el_load_path, sheet_name=period, header=0, nrows=8760)
-                el_price = el_importdata.iloc[:, 0]
-                el_emissionrate = el_importdata.iloc[:, 2]
+        # Electricity price from file
+        load_carbon = 1
+        load_elec = 0
+        if load_elec or load_carbon or read_all:
+            json_file_path = casepath / "Topology.json"
+            with open(json_file_path, "r") as json_file:
+                topology = json.load(json_file)
 
-                dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'], carriers=['electricity'])
-                dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'],
-                                     carriers=['electricity'])
+            for period in topology["investment_periods"]:
+                for node_name in topology["nodes"]:
+                    # load electricity data
+                    if load_elec or read_all:
+                        el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
+                        el_importdata = pd.read_excel(el_load_path, sheet_name=period, header=0, nrows=8760)
+                        el_price = el_importdata.iloc[:, 0]
+                        el_emissionrate = el_importdata.iloc[:, 2]
 
-            load_carbon = 1
-            if load_carbon or read_all:
-                #carbon tax
-                file_path = Path(casepath) / period / "node_data" / node_name / 'CarbonCost.csv'
-                data = pd.read_csv(file_path, delimiter=';')
+                        dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'],
+                                             carriers=['electricity'])
+                        dp.fill_carrier_data(casepath, value_or_data=el_emissionrate,
+                                             columns=['Import emission factor'],
+                                             carriers=['electricity'])
 
-                # Set the price to 300 and subsidy to 0 for all rows
-                data['price'] = 300
-                data['subsidy'] = 300
+                    if load_carbon or read_all:
+                        #carbon tax
+                        file_path = Path(casepath) / period / "node_data" / node_name / 'CarbonCost.csv'
+                        data = pd.read_csv(file_path, delimiter=';')
 
-                # Save the modified CSV file
-                data.to_csv(file_path, index=False, sep=';')
+                        # Set the price to 300 and subsidy to 0 for all rows
+                        data['price'] = 300
+                        data['subsidy'] = 300
+
+                        # Save the modified CSV file
+                        data.to_csv(file_path, index=False, sep=';')
 
 
 
@@ -471,7 +481,7 @@ if execute == 1:
                     if tec_json_file_path:
                         shutil.copy(tec_json_file_path, output_folder)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -510,8 +520,8 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=148, columns=['Import price'], carriers=['methane_bio'])
         dp.fill_carrier_data(casepath, value_or_data=1830, columns=['Import price'], carriers=['naphtha_bio'])
         dp.fill_carrier_data(casepath, value_or_data=318, columns=['Import price'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=1719, columns=['Import price'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=1016, columns=['Import price'], carriers=['propane'])
+        dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
+        dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
 
         # Constant import emission factor
@@ -524,31 +534,38 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['MPW'])
 
-    # Electricity price from file
-    # change to xlsx and read sheet with year 2030
-    for period in topology["investment_periods"]:
-        for node_name in topology["nodes"]:
-            load_elec = 0
-            if load_elec or read_all:
-                el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
-                el_importdata = pd.read_excel(el_load_path, sheet_name=period, header=0, nrows=8760)
-                el_price = el_importdata.iloc[:, 0]
-                el_emissionrate = el_importdata.iloc[:, 2]
+        # Electricity price from file
+        load_carbon = 1
+        load_elec = 0
+        if load_elec or load_carbon or read_all:
+            json_file_path = casepath / "Topology.json"
+            with open(json_file_path, "r") as json_file:
+                topology = json.load(json_file)
 
-                dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'], carriers=['electricity'])
-                dp.fill_carrier_data(casepath, value_or_data=el_emissionrate, columns=['Import emission factor'],
-                                     carriers=['electricity'])
+            for period in topology["investment_periods"]:
+                for node_name in topology["nodes"]:
+                    # load electricity data
+                    if load_elec or read_all:
+                        el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_MY.xlsx'
+                        el_importdata = pd.read_excel(el_load_path, sheet_name=period, header=0, nrows=8760)
+                        el_price = el_importdata.iloc[:, 0]
+                        el_emissionrate = el_importdata.iloc[:, 2]
 
-            load_carbon = 1
-            if load_carbon or read_all:
-                # carbon tax
-                file_path = Path(casepath) / period / "node_data" / node_name / 'CarbonCost.csv'
-                data = pd.read_csv(file_path, delimiter=';')
+                        dp.fill_carrier_data(casepath, value_or_data=el_price, columns=['Import price'],
+                                             carriers=['electricity'])
+                        dp.fill_carrier_data(casepath, value_or_data=el_emissionrate,
+                                             columns=['Import emission factor'],
+                                             carriers=['electricity'])
 
-                # Set the price to 400 and subsidy to 0 for all rows
-                data['price'] = 400
-                data['subsidy'] = 400
+                    if load_carbon or read_all:
+                        # carbon tax
+                        file_path = Path(casepath) / period / "node_data" / node_name / 'CarbonCost.csv'
+                        data = pd.read_csv(file_path, delimiter=';')
 
-                # Save the modified CSV file
-                data.to_csv(file_path, index=False, sep=';')
+                        # Set the price to 400 and subsidy to 0 for all rows
+                        data['price'] = 400
+                        data['subsidy'] = 400
+
+                        # Save the modified CSV file
+                        data.to_csv(file_path, index=False, sep=';')
 
