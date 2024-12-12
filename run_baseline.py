@@ -7,7 +7,7 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 
 
 #Run Chemelot cluster case
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the path to your input data
@@ -38,6 +38,10 @@ if execute == 1:
                 # Scope 3 analysis yes/no
                 model_config['optimization']['scope_three_analysis'] = scope3
 
+                # solver settings
+                model_config['solveroptions']['timelim']['value'] = 48
+                model_config['solveroptions']['mipgap']['value'] = 0.01
+
                 #change save options
                 model_config['reporting']['save_summary_path']['value'] = resultpath + node
                 model_config['reporting']['save_path']['value'] = resultpath + node
@@ -48,7 +52,7 @@ if execute == 1:
 
                 # Construct and solve the model
                 pyhub = ModelHub()
-                pyhub.read_data(casepath)
+                pyhub.read_data(casepath_period)
 
                 if obj == 'emissions_minC':
                     # add casename
@@ -85,7 +89,7 @@ if execute == 1:
         resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/DesignDays/CH_2030_linear"
     else:
         # Specify the path to your input data
-        casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2030"
+        casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_gf_2030"
         resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/DesignDays/CH_2030"
 
     json_filepath = Path(casepath) / "ConfigModel.json"
@@ -108,6 +112,10 @@ if execute == 1:
 
             # Scope 3 analysis yes/no
             model_config['optimization']['scope_three_analysis'] = scope3
+
+            # solver settings
+            model_config['solveroptions']['timelim']['value'] = 48
+            model_config['solveroptions']['mipgap']['value'] = 0.01
 
             # Write the updated JSON data back to the file
             with open(json_filepath, 'w') as json_file:

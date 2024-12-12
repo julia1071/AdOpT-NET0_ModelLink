@@ -41,6 +41,10 @@ if execute == 1:
                 # Scope 3 analysis yes/no
                 model_config['optimization']['scope_three_analysis'] = scope3
 
+                # solver settings
+                model_config['solveroptions']['timelim']['value'] = 48
+                model_config['solveroptions']['mipgap']['value'] = 0.01
+
                 #change save options
                 model_config['reporting']['save_summary_path']['value'] = resultpath + node
                 model_config['reporting']['save_path']['value'] = resultpath + node

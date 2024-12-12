@@ -9,6 +9,7 @@ execute = 1
 scenario = '2040'
 node = 'Chemelot'
 nr_DD_days = 0
+scope3 = 0
 
 if execute == 1:
     # Specify the path to your input data
@@ -50,6 +51,13 @@ if execute == 1:
 
                 model_config['optimization']['typicaldays']['N']['value'] = nr_DD_days
                 model_config['optimization']['objective']['value'] = 'costs'
+
+                # Scope 3 analysis yes/no
+                model_config['optimization']['scope_three_analysis'] = scope3
+
+                # solver settings
+                model_config['solveroptions']['timelim']['value'] = 48
+                model_config['solveroptions']['mipgap']['value'] = 0.01
 
                 # change save options
                 model_config['reporting']['save_summary_path']['value'] = resultpath
