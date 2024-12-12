@@ -22,10 +22,10 @@ if execute == 1:
     else:
         # Specify the path to your input data
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2030")
-        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
+        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot_bf")
 
     firsttime = 0
-    if firsttime or read_all:
+    if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
         dp.create_montecarlo_template_csv(casepath)
@@ -200,10 +200,10 @@ execute = 1
 if execute == 1:
     # Specify the path to your input data
     casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2040")
-    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
+    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot_bf")
 
     firsttime = 0
-    if firsttime or read_all:
+    if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
         dp.create_montecarlo_template_csv(casepath)
@@ -381,10 +381,10 @@ execute = 1
 if execute == 1:
     # Specify the path to your input data
     casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2050")
-    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
+    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot_bf")
 
     firsttime = 0
-    if firsttime or read_all:
+    if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
         dp.create_montecarlo_template_csv(casepath)
@@ -436,7 +436,7 @@ if execute == 1:
                     "CrackerFurnace_Electric",
                     "ASU", "Boiler_Industrial_NG", "Boiler_El",
                     "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
-                    "DirectMeOHsynthesis", "CO2electrolysis_2040",
+                    "DirectMeOHsynthesis", "CO2electrolysis_2050",
                     "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
                     "Storage_H2", "Storage_Battery", "Storage_Propylene",
                     "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer"]
@@ -462,7 +462,7 @@ if execute == 1:
                 dp.copy_technology_data(casepath, datapath)
 
                 # Add additional tecs
-                set_tecfiles = ["MEA_large", "SteamReformer", "CrackerFurnace", "OlefinSeparation"]
+                set_tecfiles = ["MEA_large", "SteamReformer", "CrackerFurnace", "OlefinSeparation", "CO2electrolysis_2040"]
                 for tec in set_tecfiles:
                     output_folder = (
                             casepath / period / "node_data" / node_name / "technology_data"

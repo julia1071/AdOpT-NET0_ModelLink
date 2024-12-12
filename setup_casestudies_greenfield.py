@@ -25,7 +25,7 @@ if execute == 1:
         datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
 
     firsttime = 0
-    if firsttime or read_all:
+    if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
         dp.create_montecarlo_template_csv(casepath)
@@ -201,7 +201,7 @@ if execute == 1:
     datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
 
     firsttime = 0
-    if firsttime or read_all:
+    if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
         dp.create_montecarlo_template_csv(casepath)
@@ -249,14 +249,14 @@ if execute == 1:
 
     read_techs = 0
     if read_techs or read_all:
-        set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
-                        "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
-                        "ASU", "Boiler_Industrial_NG", "Boiler_El",
-                        "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
-                        "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
-                        "Storage_H2", "Storage_Battery", "Storage_Propylene",
-                        "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer",
-                        "syngas_mixer"]
+        set_tecs_new = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
+                    "CrackerFurnace_Electric",
+                    "ASU", "Boiler_Industrial_NG", "Boiler_El",
+                    "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
+                    "DirectMeOHsynthesis", "CO2electrolysis_2040",
+                    "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
+                    "Storage_H2", "Storage_Battery", "Storage_Propylene",
+                    "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer"]
 
         json_file_path = casepath / "Topology.json"
         with open(json_file_path, "r") as json_file:
@@ -382,7 +382,7 @@ if execute == 1:
     datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
 
     firsttime = 0
-    if firsttime or read_all:
+    if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
         dp.create_montecarlo_template_csv(casepath)
@@ -430,14 +430,14 @@ if execute == 1:
 
     read_techs = 0
     if read_techs or read_all:
-        set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
-                        "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
+        set_tecs_new = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
+                        "CrackerFurnace_Electric",
                         "ASU", "Boiler_Industrial_NG", "Boiler_El",
                         "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
+                        "DirectMeOHsynthesis", "CO2electrolysis_2050",
                         "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
                         "Storage_H2", "Storage_Battery", "Storage_Propylene",
-                        "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer",
-                        "syngas_mixer"]
+                        "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer"]
 
         json_file_path = casepath / "Topology.json"
         with open(json_file_path, "r") as json_file:
@@ -460,7 +460,7 @@ if execute == 1:
                 dp.copy_technology_data(casepath, datapath)
 
                 # Add additional tecs
-                set_tecfiles = ["MEA_large"]
+                set_tecfiles = ["MEA_large", "CO2electrolysis_2050"]
                 for tec in set_tecfiles:
                     output_folder = (
                             casepath / period / "node_data" / node_name / "technology_data"
