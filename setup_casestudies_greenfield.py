@@ -8,7 +8,7 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 import pandas as pd
 
 #global functions
-read_all = 1
+read_all = 0
 
 #Create data Chemelot cluster short term
 execute = 1
@@ -124,14 +124,18 @@ if execute == 1:
 
         # Import limits
         dp.fill_carrier_data(casepath, value_or_data=750, columns=['Import limit'], carriers=['electricity'])
-        dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane'])
-        dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha'])
-        dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=2359, columns=['Import limit'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=526, columns=['Import limit'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=157, columns=['Import limit'], carriers=['propane'])
-        dp.fill_carrier_data(casepath, value_or_data=1121, columns=['Import limit'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=5000, columns=['Import limit'],
+                             carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'CO2_DAC', 'ethanol',
+                                       'propane', 'MPW'])
+
+        # dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane'])
+        # dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha'])
+        # dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane_bio'])
+        # dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha_bio'])
+        # dp.fill_carrier_data(casepath, value_or_data=2359, columns=['Import limit'], carriers=['CO2_DAC'])
+        # dp.fill_carrier_data(casepath, value_or_data=526, columns=['Import limit'], carriers=['ethanol'])
+        # dp.fill_carrier_data(casepath, value_or_data=157, columns=['Import limit'], carriers=['propane'])
+        # dp.fill_carrier_data(casepath, value_or_data=1121, columns=['Import limit'], carriers=['MPW'])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
@@ -163,7 +167,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['MPW'])
 
         # Electricity price from file
-        load_carbon = 1
+        load_carbon = 0
         load_elec = 0
         if load_elec or load_carbon or read_all:
             json_file_path = casepath / "Topology.json"
@@ -309,14 +313,18 @@ if execute == 1:
 
         # Import limits
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'], carriers=['electricity'])
-        dp.fill_carrier_data(casepath, value_or_data=2241, columns=['Import limit'], carriers=['methane'])
-        dp.fill_carrier_data(casepath, value_or_data=1093, columns=['Import limit'], carriers=['naphtha'])
-        dp.fill_carrier_data(casepath, value_or_data=2241, columns=['Import limit'], carriers=['methane_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=1093, columns=['Import limit'], carriers=['naphtha_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=2907, columns=['Import limit'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=559, columns=['Import limit'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=173, columns=['Import limit'], carriers=['propane'])
-        dp.fill_carrier_data(casepath, value_or_data=1238, columns=['Import limit'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=5000, columns=['Import limit'],
+                             carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'CO2_DAC', 'ethanol',
+                                       'propane', 'MPW'])
+
+        # dp.fill_carrier_data(casepath, value_or_data=2241, columns=['Import limit'], carriers=['methane'])
+        # dp.fill_carrier_data(casepath, value_or_data=1093, columns=['Import limit'], carriers=['naphtha'])
+        # dp.fill_carrier_data(casepath, value_or_data=2241, columns=['Import limit'], carriers=['methane_bio'])
+        # dp.fill_carrier_data(casepath, value_or_data=1093, columns=['Import limit'], carriers=['naphtha_bio'])
+        # dp.fill_carrier_data(casepath, value_or_data=2907, columns=['Import limit'], carriers=['CO2_DAC'])
+        # dp.fill_carrier_data(casepath, value_or_data=559, columns=['Import limit'], carriers=['ethanol'])
+        # dp.fill_carrier_data(casepath, value_or_data=173, columns=['Import limit'], carriers=['propane'])
+        # dp.fill_carrier_data(casepath, value_or_data=1238, columns=['Import limit'], carriers=['MPW'])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
@@ -348,7 +356,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['MPW'])
 
         # Electricity price from file
-        load_carbon = 1
+        load_carbon = 0
         load_elec = 0
         if load_elec or load_carbon or read_all:
             json_file_path = casepath / "Topology.json"
@@ -496,14 +504,18 @@ if execute == 1:
 
         # Import limits
         dp.fill_carrier_data(casepath, value_or_data=2500, columns=['Import limit'], carriers=['electricity'])
-        dp.fill_carrier_data(casepath, value_or_data=2382, columns=['Import limit'], carriers=['methane'])
-        dp.fill_carrier_data(casepath, value_or_data=1210, columns=['Import limit'], carriers=['naphtha'])
-        dp.fill_carrier_data(casepath, value_or_data=2382, columns=['Import limit'], carriers=['methane_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=1210, columns=['Import limit'], carriers=['naphtha_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=3218, columns=['Import limit'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=619, columns=['Import limit'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=192, columns=['Import limit'], carriers=['propane'])
-        dp.fill_carrier_data(casepath, value_or_data=1370, columns=['Import limit'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=5000, columns=['Import limit'],
+                             carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'CO2_DAC', 'ethanol',
+                                       'propane', 'MPW'])
+
+        # dp.fill_carrier_data(casepath, value_or_data=2382, columns=['Import limit'], carriers=['methane'])
+        # dp.fill_carrier_data(casepath, value_or_data=1210, columns=['Import limit'], carriers=['naphtha'])
+        # dp.fill_carrier_data(casepath, value_or_data=2382, columns=['Import limit'], carriers=['methane_bio'])
+        # dp.fill_carrier_data(casepath, value_or_data=1210, columns=['Import limit'], carriers=['naphtha_bio'])
+        # dp.fill_carrier_data(casepath, value_or_data=3218, columns=['Import limit'], carriers=['CO2_DAC'])
+        # dp.fill_carrier_data(casepath, value_or_data=619, columns=['Import limit'], carriers=['ethanol'])
+        # dp.fill_carrier_data(casepath, value_or_data=192, columns=['Import limit'], carriers=['propane'])
+        # dp.fill_carrier_data(casepath, value_or_data=1370, columns=['Import limit'], carriers=['MPW'])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
@@ -535,7 +547,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['MPW'])
 
         # Electricity price from file
-        load_carbon = 1
+        load_carbon = 0
         load_elec = 0
         if load_elec or load_carbon or read_all:
             json_file_path = casepath / "Topology.json"
