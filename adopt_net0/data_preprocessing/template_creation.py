@@ -348,7 +348,7 @@ def initialize_configuration_templates() -> dict:
                 "value": 24,
             },
             "threads": {
-                "description": "Value to define number of threads (default is maximum available).",
+                "description": "Value to define number of threads (default 0 is maximum available).",
                 "value": 0,
             },
             "mipfocus": {

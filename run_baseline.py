@@ -7,7 +7,7 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 
 
 #Run Chemelot cluster case
-execute = 0
+execute = 1
 
 if execute == 1:
     # Specify the path to your input data
@@ -18,10 +18,11 @@ if execute == 1:
     node = 'Chemelot'
     objectives = ['costs']
     scope3 = 1
-    scenarios = ['2030', '2040', '2050']
+    scenarios = ['2040', '2050']
+    # scenarios = ['2030', '2040', '2050']
     co2tax = ['ref']
     scenario_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
-    nr_DD_days = 0
+    nr_DD_days = 10
 
     for obj in objectives:
         for tax in co2tax:
@@ -39,8 +40,9 @@ if execute == 1:
                 model_config['optimization']['scope_three_analysis'] = scope3
 
                 # solver settings
-                model_config['solveroptions']['timelim']['value'] = 48
+                model_config['solveroptions']['timelim']['value'] = 72
                 model_config['solveroptions']['mipgap']['value'] = 0.01
+                model_config['solveroptions']['threads']['value'] = 24
 
                 #change save options
                 model_config['reporting']['save_summary_path']['value'] = resultpath + node
@@ -63,8 +65,14 @@ if execute == 1:
 
                 elif obj == 'costs':
                     # add casename
-                    pyhub.data.model_config['reporting']['case_name'][
-                        'value'] = scenario + '_minC_' + tax + 'CO2tax'
+                    if nr_DD_days > 0:
+                        pyhub.data.model_config['reporting']['case_name'][
+                            'value'] = (scenario + '_minC_' + tax + 'CO2tax' +
+                                        'DD' + str(pyhub.data.model_config['optimization']['typicaldays']['N']['value']))
+                    else:
+                        pyhub.data.model_config['reporting']['case_name'][
+                            'value'] = (scenario + '_minC_' + tax + 'CO2tax_fullres')
+
 
                     if tax == 'high':
                         if nr_DD_days != 0:
@@ -79,7 +87,7 @@ if execute == 1:
 
 
 #Run Chemelot test design days
-execute = 1
+execute = 0
 linear = 0
 
 if execute == 1:
@@ -114,7 +122,7 @@ if execute == 1:
             model_config['optimization']['scope_three_analysis'] = scope3
 
             # solver settings
-            model_config['solveroptions']['timelim']['value'] = 48
+            model_config['solveroptions']['timelim']['value'] = 96
             model_config['solveroptions']['mipgap']['value'] = 0.01
 
             # Write the updated JSON data back to the file

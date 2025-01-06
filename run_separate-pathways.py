@@ -9,12 +9,12 @@ execute = 1
 scenario = '2040'
 node = 'Chemelot'
 nr_DD_days = 0
-scope3 = 0
+scope3 = 1
 
 if execute == 1:
     # Specify the path to your input data
     casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_2040_pathways"
-    resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/Pathways/CH_2040"
+    resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/Pathways/CH_2040_scope3"
 
     config_filepath = Path(casepath) / "ConfigModel.json"
     tech_filepath = Path(casepath + "/" + scenario + "/node_data/" + node + "/Technologies.json")
@@ -58,6 +58,7 @@ if execute == 1:
                 # solver settings
                 model_config['solveroptions']['timelim']['value'] = 48
                 model_config['solveroptions']['mipgap']['value'] = 0.01
+                model_config['solveroptions']['threads']['value'] = 10
 
                 # change save options
                 model_config['reporting']['save_summary_path']['value'] = resultpath
@@ -80,6 +81,22 @@ if execute == 1:
                 # Construct and solve the model
                 pyhub = ModelHub()
                 pyhub.read_data(casepath)
+
+                # change emission factor to correct for scope 3
+                if not scope3:
+                    if nr_DD_days != 0:
+                        pyhub.data.time_series['clustered'][
+                            scenario, node, 'CarrierData', 'CO2', 'Export emission factor'] = 0
+                        pyhub.data.time_series['clustered'][
+                            scenario, node, 'CarrierData', 'naphtha', 'Import emission factor'] = 0
+                        pyhub.data.time_series['clustered'][
+                            scenario, node, 'CarrierData', 'methane', 'Import emission factor'] = 0
+                    pyhub.data.time_series['full'][
+                        scenario, node, 'CarrierData', 'CO2', 'Export emission factor'] = 0
+                    pyhub.data.time_series['full'][
+                        scenario, node, 'CarrierData', 'naphtha', 'Import emission factor'] = 0
+                    pyhub.data.time_series['full'][
+                        scenario, node, 'CarrierData', 'methane', 'Import emission factor'] = 0
 
                 if tax == 'high':
                     if nr_DD_days != 0:
