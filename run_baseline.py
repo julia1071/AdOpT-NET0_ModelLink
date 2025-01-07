@@ -18,8 +18,7 @@ if execute == 1:
     node = 'Chemelot'
     objectives = ['costs']
     scope3 = 1
-    scenarios = ['2040', '2050']
-    # scenarios = ['2030', '2040', '2050']
+    scenarios = ['2030', '2040', '2050']
     co2tax = ['ref']
     scenario_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
     nr_DD_days = 10
@@ -102,12 +101,17 @@ if execute == 1:
 
     json_filepath = Path(casepath) / "ConfigModel.json"
 
-    co2tax = ['ref', 'high']
-    DD = [10, 20, 40, 60, 100, 200, 0]
+    node = 'Chemelot'
+    objectives = ['costs']
     scope3 = 1
+    scenarios = ['2030', '2040', '2050']
+    co2tax = ['ref']
+    scenario_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
+    nr_DD_days = 0
+
 
     for tax in co2tax:
-        for nr in DD:
+        for nr in nr_DD_days:
             with open(json_filepath) as json_file:
                 model_config = json.load(json_file)
 
@@ -124,6 +128,7 @@ if execute == 1:
             # solver settings
             model_config['solveroptions']['timelim']['value'] = 96
             model_config['solveroptions']['mipgap']['value'] = 0.01
+            model_config['solveroptions']['threads']['value'] = 24
 
             # Write the updated JSON data back to the file
             with open(json_filepath, 'w') as json_file:

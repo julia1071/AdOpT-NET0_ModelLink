@@ -8,7 +8,7 @@ from adopt_net0.utilities import fix_technology_sizes_zero
 execute = 1
 scenario = '2040'
 node = 'Chemelot'
-nr_DD_days = 0
+nr_DD_days = 10
 scope3 = 1
 
 if execute == 1:
@@ -27,8 +27,8 @@ if execute == 1:
                         }
     pathways_ethylene = {"conventional_CC": ["CrackerFurnace", "OlefinSeparation"],
                          "electric": ["CrackerFurnace_Electric", "OlefinSeparation"],
-                         "methanol1": ["RWGS", "MeOHsynthesis", "MTO"],
-                         "methanol2": ["DirectMeOHsynthesis", "MTO"],
+                         "methanol1": ["AEC", "RWGS", "MeOHsynthesis", "MTO"],
+                         "methanol2": ["AEC", "DirectMeOHsynthesis", "MTO"],
                          "methanol3": ["MPW2methanol", "MTO"],
                          "hydrocarbon_upgrading": ["EDH", "PDH"],
                          "CO2electrolysis": ["CO2electrolysis_2040"],
@@ -58,7 +58,7 @@ if execute == 1:
                 # solver settings
                 model_config['solveroptions']['timelim']['value'] = 48
                 model_config['solveroptions']['mipgap']['value'] = 0.01
-                model_config['solveroptions']['threads']['value'] = 10
+                model_config['solveroptions']['threads']['value'] = 24
 
                 # change save options
                 model_config['reporting']['save_summary_path']['value'] = resultpath
@@ -105,7 +105,12 @@ if execute == 1:
                     pyhub.data.time_series['full'][scenario, node, 'CarbonCost', 'global', 'price'] = 250
 
                 #add casename based tech combinition
-                pyhub.data.model_config['reporting']['case_name']['value'] = 'a_' + ammonia_key + '_e_' + ethylene_key
+                if nr_DD_days > 0:
+                    pyhub.data.model_config['reporting']['case_name']['value'] = 'DD{0}_a_{1}_e_{2}'.format(
+                        str(pyhub.data.model_config['optimization']['typicaldays']['N']['value']), ammonia_key,
+                        ethylene_key)
+                else:
+                    pyhub.data.model_config['reporting']['case_name']['value'] = 'a_' + ammonia_key + '_e_' + ethylene_key
 
                 #solving
                 pyhub.quick_solve()
