@@ -21,16 +21,16 @@ if execute == 1:
     objectives = ['costs']
     co2tax = ['ref']
     scope3 = 1
-    scenarios = ['2030', '2040', '2050']
-    scenario_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
+    intervals = ['2030', '2040', '2050']
+    interval_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
     nr_DD_days = 0
     pyhub = {}
 
     for obj in objectives:
         for tax in co2tax:
-            for i, scenario in enumerate(scenarios):
-                casepath_period = casepath + scenario
-                json_filepath = Path(casepath_period) / "ConfigModel.json"
+            for i, interval in enumerate(intervals):
+                casepath_interval = casepath + interval
+                json_filepath = Path(casepath_interval) / "ConfigModel.json"
 
                 with open(json_filepath) as json_file:
                     model_config = json.load(json_file)
@@ -54,31 +54,31 @@ if execute == 1:
                     json.dump(model_config, json_file, indent=4)
 
                 if i != 0:
-                    prev_scenario = scenarios[i - 1]
-                    installed_capacities_existing(pyhub, scenario, prev_scenario, node, casepath_period)
+                    prev_interval = intervals[i - 1]
+                    installed_capacities_existing(pyhub, interval, prev_interval, node, casepath_interval)
 
                 # Construct and solve the model
-                pyhub[scenario] = ModelHub()
-                pyhub[scenario].read_data(casepath_period)
+                pyhub[interval] = ModelHub()
+                pyhub[interval].read_data(casepath_interval)
 
                 if obj == 'emissions_minC':
                     # add casename
-                    pyhub[scenario].data.model_config['reporting']['case_name']['value'] = scenario + '_minE_refCO2tax'
+                    pyhub[interval].data.model_config['reporting']['case_name']['value'] = interval + '_minE_refCO2tax'
 
                 elif obj == 'costs':
                     # add casename
-                    pyhub[scenario].data.model_config['reporting']['case_name']['value'] = scenario + '_minC_' + tax + 'CO2tax'
+                    pyhub[interval].data.model_config['reporting']['case_name']['value'] = interval + '_minC_' + tax + 'CO2tax'
 
                     if tax == 'high':
                         if nr_DD_days != 0:
-                            pyhub[scenario].data.time_series['clustered'][
-                                scenario, node, 'CarbonCost', 'global', 'price'] = scenario_taxHigh[scenario]
-                        pyhub[scenario].data.time_series['full'][scenario, node, 'CarbonCost', 'global', 'price'] = scenario_taxHigh[scenario]
+                            pyhub[interval].data.time_series['clustered'][
+                                interval, node, 'CarbonCost', 'global', 'price'] = interval_taxHigh[interval]
+                        pyhub[interval].data.time_series['full'][interval, node, 'CarbonCost', 'global', 'price'] = interval_taxHigh[interval]
 
                 # Start brownfield optimization
-                pyhub[scenario].construct_model()
-                pyhub[scenario].construct_balances()
-                pyhub[scenario].solve()
+                pyhub[interval].construct_model()
+                pyhub[interval].construct_balances()
+                pyhub[interval].solve()
 
 
 
@@ -97,15 +97,15 @@ if execute == 1:
     objectives = ['costs']
     co2tax = ['ref']
     scope3 = 1
-    scenarios = ['2030', '2040', '2050']
+    intervals = ['2030', '2040', '2050']
     pyhub = {}
     set_conv_tech = ["SteamReformer_existing", "HaberBosch_existing", "CrackerFurnace_existing", "OlefinSeparation_existing"]
 
     for obj in objectives:
         for tax in co2tax:
-            for i, scenario in enumerate(scenarios):
-                casepath_period = casepath + scenario
-                json_filepath = Path(casepath_period) / "ConfigModel.json"
+            for i, interval in enumerate(intervals):
+                casepath_interval = casepath + interval
+                json_filepath = Path(casepath_interval) / "ConfigModel.json"
 
                 with open(json_filepath) as json_file:
                     model_config = json.load(json_file)
@@ -124,34 +124,34 @@ if execute == 1:
                     json.dump(model_config, json_file, indent=4)
 
                 # Construct and solve the model
-                pyhub[scenario] = ModelHub()
-                pyhub[scenario].read_data(casepath_period, start_period=1, end_period=10)
+                pyhub[interval] = ModelHub()
+                pyhub[interval].read_data(casepath_interval, start_period=1, end_period=10)
 
                 if obj == 'emissions_minC':
                     # add casename
-                    pyhub[scenario].data.model_config['reporting']['case_name']['value'] = scenario + '_minE_refCO2tax'
+                    pyhub[interval].data.model_config['reporting']['case_name']['value'] = interval + '_minE_refCO2tax'
 
                 elif obj == 'costs':
                     # add casename
-                    pyhub[scenario].data.model_config['reporting']['case_name']['value'] = scenario + '_minC_' + tax + 'CO2tax'
+                    pyhub[interval].data.model_config['reporting']['case_name']['value'] = interval + '_minC_' + tax + 'CO2tax'
 
                     if tax == 'high':
                         if nr_DD_days != 0:
-                            pyhub[scenario].data.time_series['clustered'][
-                                scenario, node, 'CarbonCost', 'global', 'price'] = 250
-                        pyhub[scenario].data.time_series['full'][scenario, node, 'CarbonCost', 'global', 'price'] = 250
+                            pyhub[interval].data.time_series['clustered'][
+                                interval, node, 'CarbonCost', 'global', 'price'] = 250
+                        pyhub[interval].data.time_series['full'][interval, node, 'CarbonCost', 'global', 'price'] = 250
 
                 # Start brownfield optimization
-                pyhub[scenario].construct_model()
-                pyhub[scenario].construct_balances()
+                pyhub[interval].construct_model()
+                pyhub[interval].construct_balances()
 
                 if i != 0:
-                    prev_scenario = scenarios[i - 1]
-                    pyhub = fix_installed_capacities(pyhub, scenario, prev_scenario, node, set_conv_tech)
+                    prev_interval = intervals[i - 1]
+                    pyhub = fix_installed_capacities(pyhub, interval, prev_interval, node, set_conv_tech)
 
-                pyhub[scenario].solve()
+                pyhub[interval].solve()
 
-                # ref = pyhub['2040'].model[pyhub[scenario].info_solving_algorithms["aggregation_model"]].periods[scenario].node_blocks[node].tech_blocks_active['SteamReformer']
+                # ref = pyhub['2040'].model[pyhub[interval].info_solving_algorithms["aggregation_model"]].intervals[interval].node_blocks[node].tech_blocks_active['SteamReformer']
 
 
 
