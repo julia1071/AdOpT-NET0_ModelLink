@@ -5,9 +5,8 @@ import adopt_net0.data_preprocessing as dp
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 
-
 #Run Chemelot cluster case
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the path to your input data
@@ -18,16 +17,16 @@ if execute == 1:
     node = 'Chemelot'
     objectives = ['costs']
     scope3 = 1
-    scenarios = ['2030', '2040', '2050']
+    intervals = ['2030', '2040', '2050']
     co2tax = ['ref']
-    scenario_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
+    interval_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
     nr_DD_days = 10
 
     for obj in objectives:
         for tax in co2tax:
-            for i, scenario in enumerate(scenarios):
-                casepath_period = casepath + scenario
-                json_filepath = Path(casepath_period) / "ConfigModel.json"
+            for i, interval in enumerate(intervals):
+                casepath_interval = casepath + interval
+                json_filepath = Path(casepath_interval) / "ConfigModel.json"
 
                 with open(json_filepath) as json_file:
                     model_config = json.load(json_file)
@@ -53,7 +52,7 @@ if execute == 1:
 
                 # Construct and solve the model
                 pyhub = ModelHub()
-                pyhub.read_data(casepath_period)
+                pyhub.read_data(casepath_interval)
 
                 if obj == 'emissions_minC':
                     # add casename
@@ -66,27 +65,25 @@ if execute == 1:
                     # add casename
                     if nr_DD_days > 0:
                         pyhub.data.model_config['reporting']['case_name'][
-                            'value'] = (scenario + '_minC_' + tax + 'CO2tax' +
-                                        'DD' + str(pyhub.data.model_config['optimization']['typicaldays']['N']['value']))
+                            'value'] = (interval + '_minC_' + tax + 'CO2tax' +
+                                        'DD' + str(
+                                    pyhub.data.model_config['optimization']['typicaldays']['N']['value']))
                     else:
                         pyhub.data.model_config['reporting']['case_name'][
-                            'value'] = (scenario + '_minC_' + tax + 'CO2tax_fullres')
-
+                            'value'] = (interval + '_minC_' + tax + 'CO2tax_fullres')
 
                     if tax == 'high':
                         if nr_DD_days != 0:
                             pyhub.data.time_series['clustered'][
-                                scenario, node, 'CarbonCost', 'global', 'price'] = scenario_taxHigh[scenario]
+                                interval, node, 'CarbonCost', 'global', 'price'] = interval_taxHigh[interval]
                         pyhub.data.time_series['full'][
-                            scenario, node, 'CarbonCost', 'global', 'price'] = scenario_taxHigh[scenario]
+                            interval, node, 'CarbonCost', 'global', 'price'] = interval_taxHigh[interval]
 
                     # solving
                     pyhub.quick_solve()
 
-
-
 #Run Chemelot test design days
-execute = 0
+execute = 1
 linear = 0
 
 if execute == 1:
@@ -104,11 +101,10 @@ if execute == 1:
     node = 'Chemelot'
     objectives = ['costs']
     scope3 = 1
-    scenarios = ['2030', '2040', '2050']
+    interval = '2030'
     co2tax = ['ref']
-    scenario_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
-    nr_DD_days = 0
-
+    interval_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
+    nr_DD_days = [10, 20, 40, 100, 200, 0]
 
     for tax in co2tax:
         for nr in nr_DD_days:
@@ -128,7 +124,7 @@ if execute == 1:
             # solver settings
             model_config['solveroptions']['timelim']['value'] = 96
             model_config['solveroptions']['mipgap']['value'] = 0.01
-            model_config['solveroptions']['threads']['value'] = 24
+            model_config['solveroptions']['threads']['value'] = 8
 
             # Write the updated JSON data back to the file
             with open(json_filepath, 'w') as json_file:
@@ -139,16 +135,18 @@ if execute == 1:
             pyhub.read_data(casepath)
 
             if tax == 'high':
-                if nr != 0:
-                    pyhub.data.time_series['clustered']['2030', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
-                pyhub.data.time_series['full']['2030', 'Chemelot', 'CarbonCost', 'global', 'price'] = 250
+                if nr_DD_days != 0:
+                    pyhub.data.time_series['clustered'][
+                        interval, node, 'CarbonCost', 'global', 'price'] = interval_taxHigh[interval]
+                pyhub.data.time_series['full'][interval, node, 'CarbonCost', 'global', 'price'] = interval_taxHigh[
+                    interval]
 
             #add casename based on resolution
             if pyhub.data.model_config['optimization']['typicaldays']['N']['value'] == 0:
                 pyhub.data.model_config['reporting']['case_name']['value'] = 'fullres'
             else:
-                pyhub.data.model_config['reporting']['case_name']['value'] = 'DD' + str(pyhub.data.model_config['optimization']['typicaldays']['N']['value'])
+                pyhub.data.model_config['reporting']['case_name']['value'] = 'DD' + str(
+                    pyhub.data.model_config['optimization']['typicaldays']['N']['value'])
 
             #solving
             pyhub.quick_solve()
-
