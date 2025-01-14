@@ -817,6 +817,11 @@ class Technology(ModelComponent):
         if self.existing:
             if self.component_options.decommission:
                 # technology can be decommissioned
+                b_tec.para_decommissioning_cost = pyo.Param(
+                    domain=pyo.Reals,
+                    initialize=economics.decommission_cost,
+                    mutable=True,
+                )
                 b_tec.const_capex = pyo.Constraint(
                     expr=b_tec.var_capex
                     == (b_tec.para_size_initial - b_tec.var_size)
