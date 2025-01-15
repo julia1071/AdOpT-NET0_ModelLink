@@ -461,6 +461,11 @@ class Network(ModelComponent):
             initialize=economics.capex_data["gamma4"] * annualization_factor,
         )
 
+        if self.existing:
+            b_netw.para_decommissioning_cost = pyo.Param(
+                domain=pyo.Reals, initialize=economics.decommission_cost * annualization_factor, mutable=True
+            )
+
         b_netw.var_capex = pyo.Var()
 
         return b_netw
@@ -483,10 +488,6 @@ class Network(ModelComponent):
 
         b_netw.var_opex_variable = pyo.Var(self.set_t)
         b_netw.var_opex_fixed = pyo.Var()
-        if self.existing:
-            b_netw.para_decommissioning_cost = pyo.Param(
-                domain=pyo.Reals, initialize=economics.decommission_cost, mutable=True
-            )
 
         return b_netw
 

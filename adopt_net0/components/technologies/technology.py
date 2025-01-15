@@ -616,6 +616,7 @@ class Technology(ModelComponent):
                     # Full plant decommissioned only
                     self.big_m_transformation_required = 1
                     s_indicators = range(0, 2)
+
                     def init_decommission_full(dis, ind):
                         if ind == 0:  # tech not installed
                             dis.const_decommissioned = pyo.Constraint(expr=b_tec.var_size == 0)
@@ -765,7 +766,7 @@ class Technology(ModelComponent):
 
         if self.existing and self.component_options.decommission:
             b_tec.para_decommissioning_cost = pyo.Param(
-                domain=pyo.Reals, initialize=economics.decommission_cost, mutable=True
+                domain=pyo.Reals, initialize=annualization_factor * economics.decommission_cost, mutable=True
             )
 
         return b_tec
