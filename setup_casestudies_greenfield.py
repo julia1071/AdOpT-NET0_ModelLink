@@ -258,7 +258,7 @@ if execute == 1:
                     "CrackerFurnace_Electric",
                     "ASU", "Boiler_Industrial_NG", "Boiler_El",
                     "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
-                    "DirectMeOHsynthesis", "CO2electrolysis_2040",
+                    "DirectMeOHsynthesis", "CO2electrolysis",
                     "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
                     "Storage_H2", "Storage_Battery", "Storage_Propylene",
                     "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer"]
@@ -444,7 +444,7 @@ if execute == 1:
                         "CrackerFurnace_Electric",
                         "ASU", "Boiler_Industrial_NG", "Boiler_El",
                         "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
-                        "DirectMeOHsynthesis", "CO2electrolysis_2050",
+                        "DirectMeOHsynthesis", "CO2electrolysis",
                         "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
                         "Storage_H2", "Storage_Battery", "Storage_Propylene",
                         "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer"]
