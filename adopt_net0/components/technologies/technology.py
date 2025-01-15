@@ -612,6 +612,10 @@ class Technology(ModelComponent):
                 )
             else:
                 # Decommissioning is possible
+                b_tec.var_size = pyo.Var(
+                    within=size_domain, bounds=(b_tec.para_size_min, b_tec.para_size_max)
+                )
+
                 if self.component_options.decommission_full:
                     # Full plant decommissioned only
                     self.big_m_transformation_required = 1

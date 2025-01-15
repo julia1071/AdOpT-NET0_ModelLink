@@ -669,6 +669,10 @@ class Network(ModelComponent):
                 )
             else:
                 # Decommissioning is possible
+                b_arc.var_size = pyo.Var(
+                    domain=size_domain, bounds=(b_netw.para_size_min, b_arc.para_size_max)
+                )
+
                 if self.component_options.decommission_full:
                     # Full plant decommissioned only
                     self.big_m_transformation_required = 1
