@@ -31,7 +31,7 @@ if execute == 1:
                          "methanol2": ["AEC", "DirectMeOHsynthesis", "MTO"],
                          "methanol3": ["MPW2methanol", "MTO"],
                          "hydrocarbon_upgrading": ["EDH", "PDH"],
-                         "CO2electrolysis": ["CO2electrolysis_2040"],
+                         "CO2electrolysis": ["CO2electrolysis"],
                          }
     pathways_auxiliary = ["Boiler_Industrial_NG", "Boiler_El",
                           "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene", "Storage_H2",
