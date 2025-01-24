@@ -262,6 +262,7 @@ if execute == 1:
                     "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
                     "Storage_H2", "Storage_Battery", "Storage_Propylene",
                     "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer"]
+        set_tecs_existing = {}
 
         json_file_path = casepath / "Topology.json"
         with open(json_file_path, "r") as json_file:
@@ -277,6 +278,7 @@ if execute == 1:
                     json_tec = json.load(json_tec_file)
 
                 json_tec['new'] = set_tecs
+                json_tec['existing'] = set_tecs_existing
                 with open(json_tec_file_path, "w") as json_tec_file:
                     json.dump(json_tec, json_tec_file, indent=4)
 
@@ -448,6 +450,7 @@ if execute == 1:
                     "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene",
                     "Storage_H2", "Storage_Battery", "Storage_Propylene",
                     "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer"]
+        set_tecs_existing = {}
 
         json_file_path = casepath / "Topology.json"
         with open(json_file_path, "r") as json_file:
@@ -463,6 +466,8 @@ if execute == 1:
                     json_tec = json.load(json_tec_file)
 
                 json_tec['new'] = set_tecs
+                json_tec['existing'] = set_tecs_existing
+
                 with open(json_tec_file_path, "w") as json_tec_file:
                     json.dump(json_tec, json_tec_file, indent=4)
 
