@@ -21,9 +21,10 @@ if execute == 1:
     objectives = ['costs']
     co2tax = ['ref']
     scope3 = 1
+    run_with_emission_limit = 1
     intervals = ['2030', '2040', '2050']
     interval_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
-    nr_DD_days = 0
+    nr_DD_days = 10
     pyhub = {}
 
     for obj in objectives:
@@ -42,9 +43,9 @@ if execute == 1:
                 model_config['optimization']['scope_three_analysis'] = scope3
 
                 # solver settings
-                model_config['solveroptions']['timelim']['value'] = 48
+                model_config['solveroptions']['timelim']['value'] = 96
                 model_config['solveroptions']['mipgap']['value'] = 0.01
-                model_config['solveroptions']['threads']['value'] = 10
+                model_config['solveroptions']['threads']['value'] = 24
 
                 #change save options
                 model_config['reporting']['save_summary_path']['value'] = resultpath + node
@@ -67,7 +68,13 @@ if execute == 1:
 
                 elif obj == 'costs':
                     # add casename
-                    pyhub[interval].data.model_config['reporting']['case_name']['value'] = interval + '_minC_' + tax + 'CO2tax'
+                    if nr_DD_days > 0:
+                        pyhub[interval].data.model_config['reporting']['case_name'][
+                            'value'] = (interval + '_minC_' + tax + 'CO2tax' +
+                                        'DD' + str(pyhub[interval].data.model_config['optimization']['typicaldays']['N']['value']))
+                    else:
+                        pyhub[interval].data.model_config['reporting']['case_name'][
+                            'value'] = (interval + '_minC_' + tax + 'CO2tax_fullres')
 
                     if tax == 'high':
                         if nr_DD_days != 0:
@@ -79,6 +86,44 @@ if execute == 1:
                 pyhub[interval].construct_model()
                 pyhub[interval].construct_balances()
                 pyhub[interval].solve()
+
+                if interval == '2050' and run_with_emission_limit:
+                    casepath_interval = casepath + interval
+                    json_filepath = Path(casepath_interval) / "ConfigModel.json"
+
+                    with open(json_filepath) as json_file:
+                        model_config = json.load(json_file)
+
+                    model_config['optimization']['objective']['value'] = "costs_emissionlimit"
+                    model_config['optimization']['emission_limit']['value'] = 0
+
+                    # Write the updated JSON data back to the file
+                    with open(json_filepath, 'w') as json_file:
+                        json.dump(model_config, json_file, indent=4)
+
+                    # fix to 2040 capacities
+                    prev_interval = intervals[i - 1]
+                    installed_capacities_existing(pyhub, interval, prev_interval, node, casepath_interval)
+
+                    # Construct and solve the model
+                    pyhub["2050_emissionlimit"] = ModelHub()
+                    pyhub["2050_emissionlimit"].read_data(casepath_interval)
+
+                    # add casename
+                    if nr_DD_days > 0:
+                        pyhub["2050_emissionlimit"].data.model_config['reporting']['case_name'][
+                            'value'] = ('2050_emissionlimit_minC_' + tax + 'CO2tax' +
+                                        'DD' + str(pyhub["2050_emissionlimit"].data.model_config['optimization']['typicaldays']['N']['value']))
+                    else:
+                        pyhub["2050_emissionlimit"].data.model_config['reporting']['case_name'][
+                            'value'] = ('2050_emissionlimit_minC_' + tax + 'CO2tax_fullres')
+
+                    # Start brownfield optimization
+                    pyhub["2050_emissionlimit"].construct_model()
+                    pyhub["2050_emissionlimit"].construct_balances()
+                    pyhub["2050_emissionlimit"].solve()
+
+
 
 
 

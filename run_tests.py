@@ -6,8 +6,8 @@ from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 from adopt_net0.utilities import fix_installed_capacities, installed_capacities_existing
 
-#Run Chemelot cluster case
-execute = 1
+#Run Chemelot cluster case brownfield
+execute = 0
 
 
 if execute == 1:
@@ -81,8 +81,8 @@ if execute == 1:
                 pyhub[interval].solve()
 
 
-#Run Chemelot cluster case
-execute = 0
+#Run Chemelot cluster case greenfield
+execute = 1
 
 
 if execute == 1:
@@ -96,8 +96,8 @@ if execute == 1:
     objectives = ['costs']
     co2tax = ['ref']
     scope3 = 1
-    scenarios = ['2030', '2040', '2050']
-    # scenarios = ['2030']
+    # scenarios = ['2030', '2040', '2050']
+    scenarios = ['2050']
     scenario_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
     nr_DD_days = 0
     pyhub = {}
@@ -124,13 +124,14 @@ if execute == 1:
                 with open(json_filepath, 'w') as json_file:
                     json.dump(model_config, json_file, indent=4)
 
-                if i != 0:
-                    prev_scenario = scenarios[i - 1]
-                    installed_capacities_existing(pyhub, scenario, prev_scenario, node, casepath_period)
+                #brownfield capacities
+                # if i != 0:
+                #     prev_scenario = scenarios[i - 1]
+                #     installed_capacities_existing(pyhub, scenario, prev_scenario, node, casepath_period)
 
                 #change carrier data
-                dp.fill_carrier_data(casepath_period, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
-                dp.fill_carrier_data(casepath_period, value_or_data=1473, columns=['Import price'], carriers=['propane'])
+                # dp.fill_carrier_data(casepath_period, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
+                # dp.fill_carrier_data(casepath_period, value_or_data=1473, columns=['Import price'], carriers=['propane'])
 
                 # Construct and solve the model
                 pyhub[scenario] = ModelHub()

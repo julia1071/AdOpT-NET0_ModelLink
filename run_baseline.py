@@ -6,7 +6,7 @@ from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 
 #Run Chemelot cluster case
-execute = 0
+execute = 1
 
 if execute == 1:
     # Specify the path to your input data
@@ -17,7 +17,8 @@ if execute == 1:
     node = 'Chemelot'
     objectives = ['costs']
     scope3 = 1
-    intervals = ['2030', '2040', '2050']
+    intervals = ['2040', '2050']
+    # intervals = ['2030', '2040', '2050']
     co2tax = ['ref']
     interval_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
     nr_DD_days = 10
@@ -82,8 +83,40 @@ if execute == 1:
                     # solving
                     pyhub.quick_solve()
 
+                    if interval == '2050' and run_with_emission_limit:
+                        casepath_interval = casepath + interval
+                        json_filepath = Path(casepath_interval) / "ConfigModel.json"
+
+                        with open(json_filepath) as json_file:
+                            model_config = json.load(json_file)
+
+                        model_config['optimization']['objective']['value'] = "costs_emissionlimit"
+                        model_config['optimization']['emission_limit']['value'] = 0
+
+                        # Write the updated JSON data back to the file
+                        with open(json_filepath, 'w') as json_file:
+                            json.dump(model_config, json_file, indent=4)
+
+                        # Construct and solve the model
+                        pyhub = ModelHub()
+                        pyhub.read_data(casepath_interval)
+
+                        # add casename
+                        if nr_DD_days > 0:
+                            pyhub["2050_emissionlimit"].data.model_config['reporting']['case_name'][
+                                'value'] = ('2050_emissionlimit_minC_' + tax + 'CO2tax' +
+                                            'DD' + str(
+                                        pyhub["2050_emissionlimit"].data.model_config['optimization']['typicaldays'][
+                                            'N']['value']))
+                        else:
+                            pyhub["2050_emissionlimit"].data.model_config['reporting']['case_name'][
+                                'value'] = ('2050_emissionlimit_minC_' + tax + 'CO2tax_fullres')
+
+                        # Start brownfield optimization
+                        pyhub.quick_solve()
+
 #Run Chemelot test design days
-execute = 1
+execute = 0
 linear = 0
 
 if execute == 1:
@@ -102,9 +135,10 @@ if execute == 1:
     objectives = ['costs']
     scope3 = 1
     interval = '2030'
-    co2tax = ['ref']
+    co2tax = ['ref', 'high']
     interval_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
-    nr_DD_days = [10, 20, 40, 100, 200, 0]
+    nr_DD_days = [5, 80, 100, 200, 0]
+    # nr_DD_days = [10, 20, 40, 100, 200, 0]
 
     for tax in co2tax:
         for nr in nr_DD_days:
