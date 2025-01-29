@@ -6,7 +6,7 @@ from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 
 #Run Chemelot cluster case
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the path to your input data
@@ -138,8 +138,8 @@ if execute == 1:
     interval = '2030'
     co2tax = ['ref', 'high']
     interval_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
-    nr_DD_days = [5, 80, 100, 200, 0]
-    # nr_DD_days = [10, 20, 40, 100, 200, 0]
+    nr_DD_days = [5, 10, 20, 40, 100, 200, 0]
+    # nr_DD_days = [100, 200, 0]
 
     for tax in co2tax:
         for nr in nr_DD_days:
