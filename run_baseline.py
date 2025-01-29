@@ -17,8 +17,9 @@ if execute == 1:
     node = 'Chemelot'
     objectives = ['costs']
     scope3 = 1
-    intervals = ['2040', '2050']
-    # intervals = ['2030', '2040', '2050']
+    # intervals = ['2040', '2050']
+    intervals = ['2030', '2040', '2050']
+    run_with_emission_limit = 1
     co2tax = ['ref']
     interval_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
     nr_DD_days = 10
