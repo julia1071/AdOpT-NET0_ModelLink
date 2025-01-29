@@ -126,8 +126,9 @@ if execute == 1:
 
         # Import limits
         dp.fill_carrier_data(casepath, value_or_data=750, columns=['Import limit'], carriers=['electricity'])
+        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import limit'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=5000, columns=['Import limit'],
-                             carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'CO2_DAC', 'ethanol',
+                             carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'ethanol',
                                        'propane', 'MPW'])
 
         # dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane'])
@@ -141,7 +142,7 @@ if execute == 1:
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
-                             carriers=["nitrogen", "oxygen", "steam", "heatlowT"])
+                             carriers=["nitrogen", "oxygen", "steam", "heatlowT", "crackergas"])
 
         # CO2 export
         dp.fill_carrier_data(casepath, value_or_data=0, columns=['Export limit'], carriers=['CO2'])
@@ -158,15 +159,9 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
 
-        # Constant import emission factor
+        # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
         dp.fill_carrier_data(casepath, value_or_data=3.23, columns=['Import emission factor'], carriers=['naphtha'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['methane_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['naphtha_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['propane'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['MPW'])
 
         # Electricity price from file
         json_file_path = casepath / "Topology.json"
@@ -310,8 +305,9 @@ if execute == 1:
 
         # Import limits
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'], carriers=['electricity'])
+        dp.fill_carrier_data(casepath, value_or_data=114, columns=['Import limit'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=5000, columns=['Import limit'],
-                             carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'CO2_DAC', 'ethanol',
+                             carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'ethanol',
                                        'propane', 'MPW'])
 
         # dp.fill_carrier_data(casepath, value_or_data=2241, columns=['Import limit'], carriers=['methane'])
@@ -325,7 +321,7 @@ if execute == 1:
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
-                             carriers=["nitrogen", "oxygen", "steam", "heatlowT"])
+                             carriers=["nitrogen", "oxygen", "steam", "heatlowT", "crackergas"])
 
         # CO2 export
         dp.fill_carrier_data(casepath, value_or_data=114, columns=['Export limit'], carriers=['CO2'])
@@ -342,15 +338,9 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
 
-        # Constant import emission factor
+        # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
         dp.fill_carrier_data(casepath, value_or_data=3.23, columns=['Import emission factor'], carriers=['naphtha'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['methane_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['naphtha_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['propane'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['MPW'])
 
         # Electricity price from file
         json_file_path = casepath / "Topology.json"
@@ -499,8 +489,9 @@ if execute == 1:
 
         # Import limits
         dp.fill_carrier_data(casepath, value_or_data=2500, columns=['Import limit'], carriers=['electricity'])
+        dp.fill_carrier_data(casepath, value_or_data=148, columns=['Import limit'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=5000, columns=['Import limit'],
-                             carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'CO2_DAC', 'ethanol',
+                             carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'ethanol',
                                        'propane', 'MPW'])
 
         # dp.fill_carrier_data(casepath, value_or_data=2382, columns=['Import limit'], carriers=['methane'])
@@ -514,7 +505,7 @@ if execute == 1:
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
-                             carriers=["nitrogen", "oxygen", "steam", "heatlowT"])
+                             carriers=["nitrogen", "oxygen", "steam", "heatlowT", "crackergas"])
 
         # CO2 export
         dp.fill_carrier_data(casepath, value_or_data=148, columns=['Export limit'], carriers=['CO2'])
@@ -531,15 +522,9 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
 
-        # Constant import emission factor
+        # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
         dp.fill_carrier_data(casepath, value_or_data=3.23, columns=['Import emission factor'], carriers=['naphtha'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['methane_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['naphtha_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['propane'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import emission factor'], carriers=['MPW'])
 
         # Electricity price from file:
         json_file_path = casepath / "Topology.json"
