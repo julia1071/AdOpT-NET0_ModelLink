@@ -7,7 +7,7 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 from adopt_net0.utilities import fix_installed_capacities, installed_capacities_existing
 
 #Run Chemelot cluster case brownfield
-execute = 0
+execute = 1
 
 
 if execute == 1:
@@ -82,7 +82,7 @@ if execute == 1:
 
 
 #Run Chemelot cluster case greenfield
-execute = 1
+execute = 0
 
 
 if execute == 1:

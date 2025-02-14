@@ -71,7 +71,7 @@ if execute == 1:
         # Read climate data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all:
         set_tecs_new = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace_Electric",
@@ -126,7 +126,6 @@ if execute == 1:
 
         # Import limits
         dp.fill_carrier_data(casepath, value_or_data=750, columns=['Import limit'], carriers=['electricity'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import limit'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=5000, columns=['Import limit'],
                              carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'ethanol',
                                        'propane', 'MPW'])
@@ -247,7 +246,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all:
         set_tecs = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -305,7 +304,6 @@ if execute == 1:
 
         # Import limits
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'], carriers=['electricity'])
-        dp.fill_carrier_data(casepath, value_or_data=114, columns=['Import limit'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=5000, columns=['Import limit'],
                              carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'ethanol',
                                        'propane', 'MPW'])
@@ -430,7 +428,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all:
         set_tecs = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -489,7 +487,6 @@ if execute == 1:
 
         # Import limits
         dp.fill_carrier_data(casepath, value_or_data=2500, columns=['Import limit'], carriers=['electricity'])
-        dp.fill_carrier_data(casepath, value_or_data=148, columns=['Import limit'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=5000, columns=['Import limit'],
                              carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'ethanol',
                                        'propane', 'MPW'])
