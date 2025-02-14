@@ -75,6 +75,8 @@ if execute == 1:
                                 interval, node, 'CarbonCost', 'global', 'price'] = interval_taxHigh[interval]
                         pyhub[interval].data.time_series['full'][interval, node, 'CarbonCost', 'global', 'price'] = interval_taxHigh[interval]
 
+                # pyhub[interval].data.time_series['full'][interval, node, 'CarbonCost', 'global', 'price'] = 1000
+
                 # Start brownfield optimization
                 pyhub[interval].construct_model()
                 pyhub[interval].construct_balances()
