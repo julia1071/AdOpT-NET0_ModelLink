@@ -124,10 +124,9 @@ if execute == 1:
 
         # Import limits
         dp.fill_carrier_data(casepath, value_or_data=750, columns=['Import limit'], carriers=['electricity'])
-        dp.fill_carrier_data(casepath, value_or_data=0, columns=['Import limit'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=5000, columns=['Import limit'],
                              carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'ethanol',
-                                       'propane', 'MPW'])
+                                       'propane', 'MPW', 'CO2_DAC'])
 
         # dp.fill_carrier_data(casepath, value_or_data=2114, columns=['Import limit'], carriers=['methane'])
         # dp.fill_carrier_data(casepath, value_or_data=990, columns=['Import limit'], carriers=['naphtha'])
@@ -303,10 +302,9 @@ if execute == 1:
 
         # Import limits
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Import limit'], carriers=['electricity'])
-        dp.fill_carrier_data(casepath, value_or_data=114, columns=['Import limit'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=5000, columns=['Import limit'],
                              carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'ethanol',
-                                       'propane', 'MPW'])
+                                       'propane', 'MPW', 'CO2_DAC'])
 
         # dp.fill_carrier_data(casepath, value_or_data=2241, columns=['Import limit'], carriers=['methane'])
         # dp.fill_carrier_data(casepath, value_or_data=1093, columns=['Import limit'], carriers=['naphtha'])
@@ -484,10 +482,9 @@ if execute == 1:
 
         # Import limits
         dp.fill_carrier_data(casepath, value_or_data=2500, columns=['Import limit'], carriers=['electricity'])
-        dp.fill_carrier_data(casepath, value_or_data=148, columns=['Import limit'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=5000, columns=['Import limit'],
                              carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'ethanol',
-                                       'propane', 'MPW'])
+                                       'propane', 'MPW', 'CO2_DAC'])
 
         # dp.fill_carrier_data(casepath, value_or_data=2382, columns=['Import limit'], carriers=['methane'])
         # dp.fill_carrier_data(casepath, value_or_data=1210, columns=['Import limit'], carriers=['naphtha'])
