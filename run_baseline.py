@@ -6,7 +6,7 @@ from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 
 #Run Chemelot cluster case
-execute = 0
+execute = 1
 
 if execute == 1:
     # Specify the path to your input data
@@ -40,7 +40,7 @@ if execute == 1:
                 model_config['optimization']['scope_three_analysis'] = scope3
 
                 # solver settings
-                model_config['solveroptions']['timelim']['value'] = 72
+                model_config['solveroptions']['timelim']['value'] = 120
                 model_config['solveroptions']['mipgap']['value'] = 0.01
                 model_config['solveroptions']['threads']['value'] = 24
 
@@ -68,8 +68,7 @@ if execute == 1:
                     if nr_DD_days > 0:
                         pyhub.data.model_config['reporting']['case_name'][
                             'value'] = (interval + '_minC_' + tax + 'CO2tax' +
-                                        'DD' + str(
-                                    pyhub.data.model_config['optimization']['typicaldays']['N']['value']))
+                                        'DD' + str(pyhub.data.model_config['optimization']['typicaldays']['N']['value']))
                     else:
                         pyhub.data.model_config['reporting']['case_name'][
                             'value'] = (interval + '_minC_' + tax + 'CO2tax_fullres')
@@ -104,13 +103,13 @@ if execute == 1:
 
                         # add casename
                         if nr_DD_days > 0:
-                            pyhub["2050_emissionlimit"].data.model_config['reporting']['case_name'][
+                            pyhub.data.model_config['reporting']['case_name'][
                                 'value'] = ('2050_emissionlimit_minC_' + tax + 'CO2tax' +
                                             'DD' + str(
                                         pyhub["2050_emissionlimit"].data.model_config['optimization']['typicaldays'][
                                             'N']['value']))
                         else:
-                            pyhub["2050_emissionlimit"].data.model_config['reporting']['case_name'][
+                            pyhub.data.model_config['reporting']['case_name'][
                                 'value'] = ('2050_emissionlimit_minC_' + tax + 'CO2tax_fullres')
 
                         # Start brownfield optimization
@@ -157,7 +156,7 @@ if execute == 1:
             model_config['optimization']['scope_three_analysis'] = scope3
 
             # solver settings
-            model_config['solveroptions']['timelim']['value'] = 96
+            model_config['solveroptions']['timelim']['value'] = 240
             model_config['solveroptions']['mipgap']['value'] = 0.01
             model_config['solveroptions']['threads']['value'] = 8
 

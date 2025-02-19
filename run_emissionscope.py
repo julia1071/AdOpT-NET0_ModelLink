@@ -19,15 +19,16 @@ if execute == 1:
     node = 'Chemelot'
     objectives = ['costs']
     scope3 = 0
-    scenarios = ['2030', '2040', '2050']
+    run_with_emission_limit = 1
+    intervals = ['2030', '2040', '2050']
     co2tax = ['ref']
-    scenario_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
+    interval_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
     nr_DD_days = 0
 
     for obj in objectives:
         for tax in co2tax:
-            for i, scenario in enumerate(scenarios):
-                casepath_period = casepath + scenario
+            for i, interval in enumerate(intervals):
+                casepath_period = casepath + interval
                 json_filepath = Path(casepath_period) / "ConfigModel.json"
 
                 with open(json_filepath) as json_file:
@@ -40,7 +41,7 @@ if execute == 1:
                 model_config['optimization']['scope_three_analysis'] = scope3
 
                 # solver settings
-                model_config['solveroptions']['timelim']['value'] = 48
+                model_config['solveroptions']['timelim']['value'] = 168
                 model_config['solveroptions']['mipgap']['value'] = 0.01
                 model_config['solveroptions']['threads']['value'] = 10
 
@@ -60,21 +61,21 @@ if execute == 1:
                 if not scope3:
                     if nr_DD_days != 0:
                         pyhub.data.time_series['clustered'][
-                            scenario, node, 'CarrierData', 'CO2', 'Export emission factor'] = 0
+                            interval, node, 'CarrierData', 'CO2', 'Export emission factor'] = 0
                         pyhub.data.time_series['clustered'][
-                            scenario, node, 'CarrierData', 'naphtha', 'Import emission factor'] = 0
+                            interval, node, 'CarrierData', 'naphtha', 'Import emission factor'] = 0
                         pyhub.data.time_series['clustered'][
-                            scenario, node, 'CarrierData', 'methane', 'Import emission factor'] = 0
+                            interval, node, 'CarrierData', 'methane', 'Import emission factor'] = 0
                     pyhub.data.time_series['full'][
-                        scenario, node, 'CarrierData', 'CO2', 'Export emission factor'] = 0
+                        interval, node, 'CarrierData', 'CO2', 'Export emission factor'] = 0
                     pyhub.data.time_series['full'][
-                        scenario, node, 'CarrierData', 'naphtha', 'Import emission factor'] = 0
+                        interval, node, 'CarrierData', 'naphtha', 'Import emission factor'] = 0
                     pyhub.data.time_series['full'][
-                        scenario, node, 'CarrierData', 'methane', 'Import emission factor'] = 0
+                        interval, node, 'CarrierData', 'methane', 'Import emission factor'] = 0
 
                 if obj == 'emissions_minC':
                     # add casename
-                    pyhub.data.model_config['reporting']['case_name']['value'] = scenario + '_gf_minE_refCO2tax'
+                    pyhub.data.model_config['reporting']['case_name']['value'] = interval + '_gf_minE_refCO2tax'
 
                     # solving
                     pyhub.quick_solve()
@@ -82,17 +83,49 @@ if execute == 1:
                 elif obj == 'costs':
                     # add casename
                     pyhub.data.model_config['reporting']['case_name'][
-                        'value'] = scenario + '_gf_minC_' + tax + 'CO2tax'
+                        'value'] = interval + '_gf_minC_' + tax + 'CO2tax'
 
                     if tax == 'high':
                         if nr_DD_days != 0:
                             pyhub.data.time_series['clustered'][
-                                scenario, node, 'CarbonCost', 'global', 'price'] = scenario_taxHigh[scenario]
+                                interval, node, 'CarbonCost', 'global', 'price'] = interval_taxHigh[interval]
                         pyhub.data.time_series['full'][
-                            scenario, node, 'CarbonCost', 'global', 'price'] = scenario_taxHigh[scenario]
+                            interval, node, 'CarbonCost', 'global', 'price'] = interval_taxHigh[interval]
 
                     # solving
                     pyhub.quick_solve()
+
+                    if interval == '2050' and run_with_emission_limit:
+                        casepath_interval = casepath + interval
+                        json_filepath = Path(casepath_interval) / "ConfigModel.json"
+
+                        with open(json_filepath) as json_file:
+                            model_config = json.load(json_file)
+
+                        model_config['optimization']['objective']['value'] = "costs_emissionlimit"
+                        model_config['optimization']['emission_limit']['value'] = 0
+
+                        # Write the updated JSON data back to the file
+                        with open(json_filepath, 'w') as json_file:
+                            json.dump(model_config, json_file, indent=4)
+
+                        # Construct and solve the model
+                        pyhub = ModelHub()
+                        pyhub.read_data(casepath_interval)
+
+                        # add casename
+                        if nr_DD_days > 0:
+                            pyhub.data.model_config['reporting']['case_name'][
+                                'value'] = ('2050_emissionlimit_minC_' + tax + 'CO2tax' +
+                                            'DD' + str(
+                                        pyhub["2050_emissionlimit"].data.model_config['optimization']['typicaldays'][
+                                            'N']['value']))
+                        else:
+                            pyhub.data.model_config['reporting']['case_name'][
+                                'value'] = ('2050_emissionlimit_minC_' + tax + 'CO2tax_fullres')
+
+                        # Start brownfield optimization
+                        pyhub.quick_solve()
 
 
 #Run Chemelot cluster case
@@ -109,16 +142,17 @@ if execute == 1:
     node = 'Chemelot'
     objectives = ['costs']
     co2tax = ['ref']
-    scope3 = 1
-    scenarios = ['2030', '2040', '2050']
-    scenario_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
+    scope3 = 0
+    run_with_emission_limit = 1
+    intervals = ['2030', '2040', '2050']
+    interval_taxHigh = {'2030': 250, '2040': 400, '2050': 500}
     nr_DD_days = 0
     pyhub = {}
 
     for obj in objectives:
         for tax in co2tax:
-            for i, scenario in enumerate(scenarios):
-                casepath_period = casepath + scenario
+            for i, interval in enumerate(intervals):
+                casepath_period = casepath + interval
                 json_filepath = Path(casepath_period) / "ConfigModel.json"
 
                 with open(json_filepath) as json_file:
@@ -143,47 +177,83 @@ if execute == 1:
                     json.dump(model_config, json_file, indent=4)
 
                 if i != 0:
-                    prev_scenario = scenarios[i - 1]
-                    installed_capacities_existing(pyhub, scenario, prev_scenario, node, casepath_period)
+                    prev_interval = intervals[i - 1]
+                    installed_capacities_existing(pyhub, interval, prev_interval, node, casepath_period)
 
                 # Construct and solve the model
-                pyhub[scenario] = ModelHub()
-                pyhub[scenario].read_data(casepath_period)
+                pyhub[interval] = ModelHub()
+                pyhub[interval].read_data(casepath_period)
 
                 #change emission factor to correct for scope 3
                 if not scope3:
                     if nr_DD_days != 0:
-                        pyhub[scenario].data.time_series['clustered'][
-                            scenario, node, 'CarrierData', 'CO2', 'Export emission factor'] = 0
-                        pyhub[scenario].data.time_series['clustered'][
-                            scenario, node, 'CarrierData', 'naphtha', 'Import emission factor'] = 0
-                        pyhub[scenario].data.time_series['clustered'][
-                            scenario, node, 'CarrierData', 'methane', 'Import emission factor'] = 0
-                    pyhub[scenario].data.time_series['full'][
-                        scenario, node, 'CarrierData', 'CO2', 'Export emission factor'] = 0
-                    pyhub[scenario].data.time_series['full'][
-                        scenario, node, 'CarrierData', 'naphtha', 'Import emission factor'] = 0
-                    pyhub[scenario].data.time_series['full'][
-                        scenario, node, 'CarrierData', 'methane', 'Import emission factor'] = 0
+                        pyhub[interval].data.time_series['clustered'][
+                            interval, node, 'CarrierData', 'CO2', 'Export emission factor'] = 0
+                        pyhub[interval].data.time_series['clustered'][
+                            interval, node, 'CarrierData', 'naphtha', 'Import emission factor'] = 0
+                        pyhub[interval].data.time_series['clustered'][
+                            interval, node, 'CarrierData', 'methane', 'Import emission factor'] = 0
+                    pyhub[interval].data.time_series['full'][
+                        interval, node, 'CarrierData', 'CO2', 'Export emission factor'] = 0
+                    pyhub[interval].data.time_series['full'][
+                        interval, node, 'CarrierData', 'naphtha', 'Import emission factor'] = 0
+                    pyhub[interval].data.time_series['full'][
+                        interval, node, 'CarrierData', 'methane', 'Import emission factor'] = 0
 
                 if obj == 'emissions_minC':
                     # add casename
-                    pyhub[scenario].data.model_config['reporting']['case_name']['value'] = scenario + '_bf_minE_refCO2tax'
+                    pyhub[interval].data.model_config['reporting']['case_name']['value'] = interval + '_bf_minE_refCO2tax'
 
                 elif obj == 'costs':
                     # add casename
-                    pyhub[scenario].data.model_config['reporting']['case_name']['value'] = scenario + '_bf_minC_' + tax + 'CO2tax'
+                    pyhub[interval].data.model_config['reporting']['case_name']['value'] = interval + '_bf_minC_' + tax + 'CO2tax'
 
                     if tax == 'high':
                         if nr_DD_days != 0:
-                            pyhub[scenario].data.time_series['clustered'][
-                                scenario, node, 'CarbonCost', 'global', 'price'] = scenario_taxHigh[scenario]
-                        pyhub[scenario].data.time_series['full'][scenario, node, 'CarbonCost', 'global', 'price'] = scenario_taxHigh[scenario]
+                            pyhub[interval].data.time_series['clustered'][
+                                interval, node, 'CarbonCost', 'global', 'price'] = interval_taxHigh[interval]
+                        pyhub[interval].data.time_series['full'][interval, node, 'CarbonCost', 'global', 'price'] = interval_taxHigh[interval]
 
                 # Start brownfield optimization
-                pyhub[scenario].construct_model()
-                pyhub[scenario].construct_balances()
-                pyhub[scenario].solve()
+                pyhub[interval].construct_model()
+                pyhub[interval].construct_balances()
+                pyhub[interval].solve()
+
+                if interval == '2050' and run_with_emission_limit:
+                    casepath_interval = casepath + interval
+                    json_filepath = Path(casepath_interval) / "ConfigModel.json"
+
+                    with open(json_filepath) as json_file:
+                        model_config = json.load(json_file)
+
+                    model_config['optimization']['objective']['value'] = "costs_emissionlimit"
+                    model_config['optimization']['emission_limit']['value'] = 0
+
+                    # Write the updated JSON data back to the file
+                    with open(json_filepath, 'w') as json_file:
+                        json.dump(model_config, json_file, indent=4)
+
+                    # fix to 2040 capacities
+                    prev_interval = intervals[i - 1]
+                    installed_capacities_existing(pyhub, interval, prev_interval, node, casepath_interval)
+
+                    # Construct and solve the model
+                    pyhub["2050_emissionlimit"] = ModelHub()
+                    pyhub["2050_emissionlimit"].read_data(casepath_interval)
+
+                    # add casename
+                    if nr_DD_days > 0:
+                        pyhub["2050_emissionlimit"].data.model_config['reporting']['case_name'][
+                            'value'] = ('2050_emissionlimit_minC_' + tax + 'CO2tax' +
+                                        'DD' + str(pyhub["2050_emissionlimit"].data.model_config['optimization']['typicaldays']['N']['value']))
+                    else:
+                        pyhub["2050_emissionlimit"].data.model_config['reporting']['case_name'][
+                            'value'] = ('2050_emissionlimit_minC_' + tax + 'CO2tax_fullres')
+
+                    # Start brownfield optimization
+                    pyhub["2050_emissionlimit"].construct_model()
+                    pyhub["2050_emissionlimit"].construct_balances()
+                    pyhub["2050_emissionlimit"].solve()
 
 
 
