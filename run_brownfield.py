@@ -171,6 +171,7 @@ if execute == 1:
         #change save options
         model_config['reporting']['save_summary_path']['value'] = resultpath + node
         model_config['reporting']['save_path']['value'] = resultpath + node
+
         # Write the updated JSON data back to the file
         with open(json_filepath, 'w') as json_file:
             json.dump(model_config, json_file, indent=4)
