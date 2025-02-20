@@ -8,7 +8,7 @@ from adopt_net0.utilities import fix_installed_capacities, installed_capacities_
 
 
 #Run Chemelot cluster case
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the path to your input data

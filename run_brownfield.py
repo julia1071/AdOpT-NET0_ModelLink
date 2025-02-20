@@ -157,7 +157,10 @@ if execute == 1:
         else:
             prev_interval = intervals[i - 1]
             model_config['optimization']['objective']['value'] = "costs_emissionlimit"
-            limit = interval_emissionLim[interval] * pyhub[prev_interval].model['full'].var_emissions_net.value
+            if nr_DD_days > 0:
+                limit = interval_emissionLim[interval] * pyhub[prev_interval].model['clustered'].var_emissions_net.value
+            else:
+                limit = interval_emissionLim[interval] * pyhub[prev_interval].model['full'].var_emissions_net.value
             model_config['optimization']['emission_limit']['value'] = limit
 
         # Scope 3 analysis yes/no
