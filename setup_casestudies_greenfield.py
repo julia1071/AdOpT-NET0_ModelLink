@@ -315,6 +315,11 @@ if execute == 1:
         # dp.fill_carrier_data(casepath, value_or_data=173, columns=['Import limit'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=468, columns=['Import limit'], carriers=['MPW'])
 
+        # Import for demand
+        dp.fill_carrier_data(casepath, value_or_data=26, columns=['Import limit'], carriers=['PE_olefin'])
+        dp.fill_carrier_data(casepath, value_or_data=9, columns=['Import limit'], carriers=['PE_olefin'])
+        dp.fill_carrier_data(casepath, value_or_data=10000, columns=['Import price'], carriers=['PE_olefin', 'ammonia'])
+
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
                              carriers=["nitrogen", "oxygen", "steam", "heatlowT", "crackergas"])
@@ -494,6 +499,11 @@ if execute == 1:
         # dp.fill_carrier_data(casepath, value_or_data=619, columns=['Import limit'], carriers=['ethanol'])
         # dp.fill_carrier_data(casepath, value_or_data=192, columns=['Import limit'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=518, columns=['Import limit'], carriers=['MPW'])
+
+        # Import for demand
+        dp.fill_carrier_data(casepath, value_or_data=26, columns=['Import limit'], carriers=['PE_olefin'])
+        dp.fill_carrier_data(casepath, value_or_data=9, columns=['Import limit'], carriers=['PE_olefin'])
+        dp.fill_carrier_data(casepath, value_or_data=10000, columns=['Import price'], carriers=['PE_olefin', 'ammonia'])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
