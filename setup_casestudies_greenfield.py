@@ -317,7 +317,7 @@ if execute == 1:
 
         # Import for demand
         dp.fill_carrier_data(casepath, value_or_data=26, columns=['Import limit'], carriers=['PE_olefin'])
-        dp.fill_carrier_data(casepath, value_or_data=9, columns=['Import limit'], carriers=['PE_olefin'])
+        dp.fill_carrier_data(casepath, value_or_data=9, columns=['Import limit'], carriers=['ammonia'])
         dp.fill_carrier_data(casepath, value_or_data=10000, columns=['Import price'], carriers=['PE_olefin', 'ammonia'])
 
         # No export limit
@@ -500,7 +500,7 @@ if execute == 1:
 
         # Import for demand
         dp.fill_carrier_data(casepath, value_or_data=26, columns=['Import limit'], carriers=['PE_olefin'])
-        dp.fill_carrier_data(casepath, value_or_data=9, columns=['Import limit'], carriers=['PE_olefin'])
+        dp.fill_carrier_data(casepath, value_or_data=9, columns=['Import limit'], carriers=['ammonia'])
         dp.fill_carrier_data(casepath, value_or_data=10000, columns=['Import price'], carriers=['PE_olefin', 'ammonia'])
 
         # No export limit
