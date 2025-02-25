@@ -8,12 +8,12 @@ from adopt_net0.utilities import fix_installed_capacities, installed_capacities_
 
 
 #Run Chemelot cluster case
-execute = 0
+execute = 1
 
 if execute == 1:
     # Specify the path to your input data
     casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_gf_"
-    resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/EmissionScope/"
+    resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/EmissionScope Greenfield/"
     json_filepath = Path(casepath) / "ConfigModel.json"
 
     node = 'Chemelot'
@@ -135,7 +135,7 @@ execute = 1
 if execute == 1:
     # Specify the base path to your input data
     casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_"
-    resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/EmissionScope/"
+    resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/EmissionScope Brownfield/"
 
 
     # select simulation types

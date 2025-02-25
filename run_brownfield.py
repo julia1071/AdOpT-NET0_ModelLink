@@ -131,7 +131,7 @@ execute = 1
 if execute == 1:
     # Specify the base path to your input data
     casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_"
-    resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/EmissionLimit/"
+    resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/EmissionLimit Brownfield/"
 
 
     # select simulation types
@@ -190,13 +190,13 @@ if execute == 1:
         # Set case name
         if nr_DD_days > 0:
             pyhub[interval].data.model_config['reporting']['case_name'][
-                'value'] = (interval + '_minC_bf_' +
+                'value'] = (interval + '_minC_' +
                             'DD' + str(pyhub[interval].data.model_config['optimization']['typicaldays']['N']['value']))
             pyhub[interval].data.time_series['clustered'][
                 interval, node, 'CarbonCost', 'global', 'price'] = 150.31
         else:
             pyhub[interval].data.model_config['reporting']['case_name'][
-                'value'] = interval + '_minC_bf_fullres'
+                'value'] = interval + '_minC_fullres'
 
         pyhub[interval].data.time_series['full'][interval, node, 'CarbonCost', 'global', 'price'] = 150.31
 
