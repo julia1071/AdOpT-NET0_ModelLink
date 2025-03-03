@@ -8,7 +8,7 @@ from matplotlib.ticker import PercentFormatter
 from adopt_net0 import extract_datasets_from_h5group
 
 # Define the data path
-result_types = ['Greenfield', 'Brownfield', 'EmissionScope Greenfield', 'EmissionScope Brownfield']  # Add multiple result types
+result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield', 'EmissionScope Greenfield', 'EmissionScope Brownfield']  # Add multiple result types
 
 data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long.xlsx'
 
@@ -29,7 +29,7 @@ for result_type in result_types:
     )
 
     # Define the index rows
-    index = ["path", "costs_tot", "emissions_tot"]
+    index = ["path", "costs_interval", "sunk_costs", "costs_tot", "emissions_tot"]
 
     # Create the DataFrame for this result type with NaN values
     result_data = pd.DataFrame(np.nan, index=index, columns=columns)
@@ -45,16 +45,24 @@ for result_type in result_types:
             print(f"Warning: Summary file not found for {result_type} - {location}")
             continue
 
+        tec_costs = {}
         for case in summary_results['case']:
-            for interval in result_data.columns.levels[2]:
+            for i, interval in enumerate(result_data.columns.levels[2]):
                 if pd.notna(case) and interval in case:
                     h5_path = Path(summary_results.loc[summary_results['case'] == case, 'time_stamp'].iloc[
                                        0]) / "optimization_results.h5"
                     result_data.loc["path", (result_type, location, interval)] = h5_path
-                    result_data.loc["costs_tot", (result_type, location, interval)] = \
+                    result_data.loc["costs_interval", (result_type, location, interval)] = \
                         summary_results.loc[summary_results['case'] == case, 'total_npv'].iloc[0]
                     result_data.loc["emissions_tot", (result_type, location, interval)] = \
                         summary_results.loc[summary_results['case'] == case, 'emissions_pos'].iloc[0]
+                    tec_costs[interval] = summary_results.loc[summary_results['case'] == case, 'cost_capex_tecs'].iloc[0]
+
+                    if 'Brownfield' in result_type and interval != '2030':
+                        prev_interval = result_data.columns.levels[2][i - 1]
+                        result_data.loc["sunk_costs", (result_type, location, interval)] = tec_costs[prev_interval]
+                        result_data.loc["costs_tot", (result_type, location, interval)] = tec_costs[prev_interval] + \
+                            summary_results.loc[summary_results['case'] == case, 'total_npv'].iloc[0]
 
                     if h5_path.exists():
                         with h5py.File(h5_path, "r") as hdf_file:
