@@ -2,7 +2,8 @@ import json
 from pathlib import Path
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
-from adopt_net0.utilities import fix_technology_sizes_zero, installed_capacities_existing
+from adopt_net0.utilities import fix_technology_sizes_zero, installed_capacities_existing, \
+    installed_capacities_existing_from_file
 
 #Run Chemelot pathways
 execute = 0
@@ -122,15 +123,20 @@ execute = 1
 if execute == 1:
     # Specify the path to your input data
     casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_"
+    # resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/tests/"
     resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/Warmstart Brownfield/"
 
     # select simulation types
     node = 'Chemelot'
     scope3 = 1
     run_with_emission_limit = 1
+    # intervals = ['2040', '2050']
     intervals = ['2030', '2040', '2050']
     interval_emissionLim = {'2030': 1, '2040': 0.4, '2050': 0}
-    nr_DD_days = 10
+    nr_DD_days = 0
+    take_prev_solution = 0
+    emission_2030 = 530744.3269
+    h5_path_prev = Path("Z:/AdOpt_NET0/AdOpt_results/MY/EmissionLimit Brownfield/Chemelot/20250225154630_2030_minC_DD10-1/optimization_results.h5")
     pyhub = {}
 
     pathways_ammonia = {"conventional": ["SteamReformer"],
@@ -157,14 +163,14 @@ if execute == 1:
     tech_status.update({tech: True for pathway in pathways_ethylene.values() for tech in pathway})
 
     # Define the order of pathways to unfix
-    unfix_order_pathways = [
-        {"ethylene": ["advanced"]}
-    ]
     # unfix_order_pathways = [
-    #     {"ethylene": ["methanol1", "methanol2"], "ammonia": ["electric", "electrolyzer"]},
-    #     {"ethylene": ["advanced", "hydrocarbon_upgrading"]},
-    #     {"ethylene": ["CC", "electric"], "ammonia": "CC"}
+    #     {"ethylene": ["advanced"]}
     # ]
+    unfix_order_pathways = [
+        {"ethylene": ["advanced", "hydrocarbon_upgrading"]},
+        {"ethylene": ["methanol1", "methanol2"], "ammonia": ["electric", "electrolyzer"]},
+        {"ethylene": ["CC", "electric"], "ammonia": "CC"}
+    ]
 
     for i, interval in enumerate(intervals):
         # change config file
@@ -180,10 +186,14 @@ if execute == 1:
         else:
             prev_interval = intervals[i - 1]
             model_config['optimization']['objective']['value'] = "costs_emissionlimit"
-            if nr_DD_days > 0:
-                limit = interval_emissionLim[interval] * pyhub[prev_interval].model['clustered'].var_emissions_net.value
+            if interval == '2040' and take_prev_solution:
+                limit = interval_emissionLim[interval] * emission_2030
             else:
-                limit = interval_emissionLim[interval] * pyhub[prev_interval].model['full'].var_emissions_net.value
+                if nr_DD_days > 0:
+                    limit = interval_emissionLim[interval] * pyhub[prev_interval].model[
+                        'clustered'].var_emissions_net.value
+                else:
+                    limit = interval_emissionLim[interval] * pyhub[prev_interval].model['full'].var_emissions_net.value
             model_config['optimization']['emission_limit']['value'] = limit
 
         # Scope 3 analysis yes/no
@@ -203,13 +213,17 @@ if execute == 1:
             json.dump(model_config, json_file, indent=4)
 
         # Installed capacities
-        if i != 0:
-            prev_interval = intervals[i - 1]
-            installed_capacities_existing(pyhub, interval, prev_interval, node, casepath_interval)
+        if interval != '2030':
+            if take_prev_solution and interval == '2040':
+                if h5_path_prev.exists():
+                    installed_capacities_existing_from_file(interval, '2030', node, casepath_interval, h5_path_prev)
+            else:
+                prev_interval = intervals[i - 1]
+                installed_capacities_existing(pyhub, interval, prev_interval, node, casepath_interval)
 
         # Construct and solve the model
         pyhub[interval] = ModelHub()
-        pyhub[interval].read_data(casepath_interval)
+        pyhub[interval].read_data(casepath_interval, start_period=0, end_period=24)
 
         # construct model
         pyhub[interval].construct_model()

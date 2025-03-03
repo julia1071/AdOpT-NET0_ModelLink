@@ -1,7 +1,11 @@
 import json
 from pathlib import Path
 
+import h5py
+import pandas as pd
 from pyomo.environ import SolverFactory
+
+# from adopt_net0.result_management.read_results import extract_datasets_from_h5group
 
 
 def get_gurobi_parameters(solveroptions: dict):
@@ -153,3 +157,60 @@ def installed_capacities_existing(m, scenario, prev_scenario, node, casepath):
     with open(json_tec_file_path, "w") as json_tec_file:
         json.dump(json_tec, json_tec_file, indent=4)
 
+
+def installed_capacities_existing_from_file(scenario, prev_scenario, node, casepath, h5_path_prev):
+    """
+    Set the capacity of a technology to a minimum capacity for the next brownfield simulation
+    """
+    size_tecs_existing = {}
+
+    with h5py.File(h5_path_prev, "r") as hdf_file:
+        nodedata = extract_datasets_from_h5group2(hdf_file["design/nodes"])
+        df_nodedata = pd.DataFrame(nodedata)
+
+        for tec_name in df_nodedata.columns.levels[2]:
+            if (prev_scenario, node, tec_name, 'size') in df_nodedata.columns:
+                prev_tec_size = df_nodedata[(prev_scenario, node, tec_name, 'size')].iloc[0]
+
+                if prev_tec_size > 0:
+                    if 'existing' in tec_name:
+                        tec_name = tec_name[:-9]
+                    size_tecs_existing[tec_name] = prev_tec_size
+
+    # Read the JSON technology file
+    casepath = Path(casepath)
+    json_tec_file_path = (
+            casepath / scenario / "node_data" / node / "Technologies.json"
+    )
+    with open(json_tec_file_path, "r") as json_tec_file:
+        json_tec = json.load(json_tec_file)
+
+    json_tec['existing'] = size_tecs_existing
+    with open(json_tec_file_path, "w") as json_tec_file:
+        json.dump(json_tec, json_tec_file, indent=4)
+
+
+def extract_datasets_from_h5group2(group, prefix: tuple = ()) -> dict:
+    """
+    Extracts datasets from a group within a h5 file
+
+    Gets all datasets from a group of a h5 file and writes it to a multi-index
+    dataframe using a recursive function
+
+    :param group: froup of h5 file
+    :param tuple prefix: required to search through the structure of the h5 tree if there are multiple subgroups in the
+     group you specified, empty by default meaning it starts searching from the group specified.
+    :return: dataframe containing all datasets in group
+    :rtype: pd.DataFrame
+    """
+    data = {}
+    for key, value in group.items():
+        if isinstance(value, h5py.Group):
+            data.update(extract_datasets_from_h5group2(value, prefix + (key,)))
+        elif isinstance(value, h5py.Dataset):
+            if value.shape == ():
+                data[prefix + (key,)] = [value[()]]
+            else:
+                data[prefix + (key,)] = value[:]
+
+    return data
