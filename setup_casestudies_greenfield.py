@@ -71,7 +71,7 @@ if execute == 1:
         # Read climate data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -151,7 +151,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=732, columns=['Import price'], carriers=['naphtha'])
         dp.fill_carrier_data(casepath, value_or_data=141, columns=['Import price'], carriers=['methane_bio'])
         dp.fill_carrier_data(casepath, value_or_data=1830, columns=['Import price'], carriers=['naphtha_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=318, columns=['Import price'], carriers=['CO2_DAC'])
+        dp.fill_carrier_data(casepath, value_or_data=618, columns=['Import price'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
         dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
@@ -245,7 +245,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -293,11 +293,11 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=0)
 
         # Demand data
-        dp.fill_carrier_data(casepath, value_or_data=143, columns=['Demand'], carriers=['ammonia'])
-        dp.fill_carrier_data(casepath, value_or_data=47, columns=['Demand'], carriers=['CO2'])
-        dp.fill_carrier_data(casepath, value_or_data=240, columns=['Demand'], carriers=['PE_olefin'])
+        dp.fill_carrier_data(casepath, value_or_data=135, columns=['Demand'], carriers=['ammonia'])
+        dp.fill_carrier_data(casepath, value_or_data=44, columns=['Demand'], carriers=['CO2'])
+        dp.fill_carrier_data(casepath, value_or_data=218, columns=['Demand'], carriers=['PE_olefin'])
         dp.fill_carrier_data(casepath, value_or_data=0, columns=['Demand'], carriers=['steam'])
-        dp.fill_carrier_data(casepath, value_or_data=87, columns=['Demand'], carriers=['electricity'])
+        dp.fill_carrier_data(casepath, value_or_data=82, columns=['Demand'], carriers=['electricity'])
         dp.fill_carrier_data(casepath, value_or_data=7, columns=['Demand'], carriers=['feedgas'])
 
         # Import limits
@@ -313,12 +313,12 @@ if execute == 1:
         # dp.fill_carrier_data(casepath, value_or_data=2907, columns=['Import limit'], carriers=['CO2_DAC'])
         # dp.fill_carrier_data(casepath, value_or_data=559, columns=['Import limit'], carriers=['ethanol'])
         # dp.fill_carrier_data(casepath, value_or_data=173, columns=['Import limit'], carriers=['propane'])
-        dp.fill_carrier_data(casepath, value_or_data=421, columns=['Import limit'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=338, columns=['Import limit'], carriers=['MPW'])
 
         # Import for demand
-        dp.fill_carrier_data(casepath, value_or_data=26, columns=['Import limit'], carriers=['PE_olefin'])
-        dp.fill_carrier_data(casepath, value_or_data=9, columns=['Import limit'], carriers=['ammonia'])
-        dp.fill_carrier_data(casepath, value_or_data=10000, columns=['Import price'], carriers=['PE_olefin', 'ammonia'])
+        # dp.fill_carrier_data(casepath, value_or_data=26, columns=['Import limit'], carriers=['PE_olefin'])
+        # dp.fill_carrier_data(casepath, value_or_data=9, columns=['Import limit'], carriers=['ammonia'])
+        # dp.fill_carrier_data(casepath, value_or_data=10000, columns=['Import price'], carriers=['PE_olefin', 'ammonia'])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
@@ -334,7 +334,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=732, columns=['Import price'], carriers=['naphtha'])
         dp.fill_carrier_data(casepath, value_or_data=141, columns=['Import price'], carriers=['methane_bio'])
         dp.fill_carrier_data(casepath, value_or_data=1830, columns=['Import price'], carriers=['naphtha_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=318, columns=['Import price'], carriers=['CO2_DAC'])
+        dp.fill_carrier_data(casepath, value_or_data=475, columns=['Import price'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
         dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
@@ -367,8 +367,8 @@ if execute == 1:
                 data = pd.read_csv(file_path, delimiter=';')
 
                 # Set the price to 300 and subsidy to 0 for all rows
-                data['price'] = 300
-                data['subsidy'] = 300
+                data['price'] = 150.33
+                data['subsidy'] = 150.33
 
                 # Save the modified CSV file
                 data.to_csv(file_path, index=False, sep=';')
@@ -428,7 +428,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -461,7 +461,7 @@ if execute == 1:
                 dp.copy_technology_data(casepath, datapath)
 
                 # Add additional tecs
-                set_tecfiles = ["MEA_large", "CO2electrolysis_2050"]
+                set_tecfiles = ["MEA_large"]
                 for tec in set_tecfiles:
                     output_folder = (
                             casepath / period / "node_data" / node_name / "technology_data"
@@ -476,12 +476,12 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=0)
 
         # Demand data
-        dp.fill_carrier_data(casepath, value_or_data=152, columns=['Demand'], carriers=['ammonia'])
-        dp.fill_carrier_data(casepath, value_or_data=50, columns=['Demand'], carriers=['CO2'])
-        dp.fill_carrier_data(casepath, value_or_data=266, columns=['Demand'], carriers=['PE_olefin'])
+        dp.fill_carrier_data(casepath, value_or_data=135, columns=['Demand'], carriers=['ammonia'])
+        dp.fill_carrier_data(casepath, value_or_data=44, columns=['Demand'], carriers=['CO2'])
+        dp.fill_carrier_data(casepath, value_or_data=218, columns=['Demand'], carriers=['PE_olefin'])
         dp.fill_carrier_data(casepath, value_or_data=0, columns=['Demand'], carriers=['steam'])
-        dp.fill_carrier_data(casepath, value_or_data=92, columns=['Demand'], carriers=['electricity'])
-        dp.fill_carrier_data(casepath, value_or_data=8, columns=['Demand'], carriers=['feedgas'])
+        dp.fill_carrier_data(casepath, value_or_data=82, columns=['Demand'], carriers=['electricity'])
+        dp.fill_carrier_data(casepath, value_or_data=7, columns=['Demand'], carriers=['feedgas'])
 
         # Import limits
         dp.fill_carrier_data(casepath, value_or_data=2500, columns=['Import limit'], carriers=['electricity'])
@@ -496,12 +496,12 @@ if execute == 1:
         # dp.fill_carrier_data(casepath, value_or_data=3218, columns=['Import limit'], carriers=['CO2_DAC'])
         # dp.fill_carrier_data(casepath, value_or_data=619, columns=['Import limit'], carriers=['ethanol'])
         # dp.fill_carrier_data(casepath, value_or_data=192, columns=['Import limit'], carriers=['propane'])
-        dp.fill_carrier_data(casepath, value_or_data=518, columns=['Import limit'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=338, columns=['Import limit'], carriers=['MPW'])
 
         # Import for demand
-        dp.fill_carrier_data(casepath, value_or_data=26, columns=['Import limit'], carriers=['PE_olefin'])
-        dp.fill_carrier_data(casepath, value_or_data=9, columns=['Import limit'], carriers=['ammonia'])
-        dp.fill_carrier_data(casepath, value_or_data=10000, columns=['Import price'], carriers=['PE_olefin', 'ammonia'])
+        # dp.fill_carrier_data(casepath, value_or_data=26, columns=['Import limit'], carriers=['PE_olefin'])
+        # dp.fill_carrier_data(casepath, value_or_data=9, columns=['Import limit'], carriers=['ammonia'])
+        # dp.fill_carrier_data(casepath, value_or_data=10000, columns=['Import price'], carriers=['PE_olefin', 'ammonia'])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=2000, columns=['Export limit'],
@@ -517,7 +517,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=732, columns=['Import price'], carriers=['naphtha'])
         dp.fill_carrier_data(casepath, value_or_data=148, columns=['Import price'], carriers=['methane_bio'])
         dp.fill_carrier_data(casepath, value_or_data=1830, columns=['Import price'], carriers=['naphtha_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=318, columns=['Import price'], carriers=['CO2_DAC'])
+        dp.fill_carrier_data(casepath, value_or_data=355, columns=['Import price'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
         dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
@@ -550,8 +550,8 @@ if execute == 1:
                 data = pd.read_csv(file_path, delimiter=';')
 
                 # Set the price to 400 and subsidy to 0 for all rows
-                data['price'] = 400
-                data['subsidy'] = 400
+                data['price'] = 150.33
+                data['subsidy'] = 150.33
 
                 # Save the modified CSV file
                 data.to_csv(file_path, index=False, sep=';')
