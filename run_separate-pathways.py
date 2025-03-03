@@ -122,7 +122,7 @@ execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_"
+    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/Warmstarts/MY_Chemelot_bf_"
     # resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/tests/"
     resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/Warmstart Brownfield/"
 
@@ -139,8 +139,7 @@ if execute == 1:
     h5_path_prev = Path("Z:/AdOpt_NET0/AdOpt_results/MY/EmissionLimit Brownfield/Chemelot/20250225154630_2030_minC_DD10-1/optimization_results.h5")
     pyhub = {}
 
-    pathways_ammonia = {"conventional": ["SteamReformer"],
-                        "CC": ["SteamReformer_CC"],
+    pathways_ammonia = {"conventional_CC": ["SteamReformer"],
                         "electric": ["ElectricSMR_m", "WGS_m"],
                         "electrolyzer": ["AEC", "HaberBosch"],
                         }
@@ -163,14 +162,14 @@ if execute == 1:
     tech_status.update({tech: True for pathway in pathways_ethylene.values() for tech in pathway})
 
     # Define the order of pathways to unfix
-    # unfix_order_pathways = [
-    #     {"ethylene": ["advanced"]}
-    # ]
     unfix_order_pathways = [
-        {"ethylene": ["advanced", "hydrocarbon_upgrading"]},
-        {"ethylene": ["methanol1", "methanol2"], "ammonia": ["electric", "electrolyzer"]},
-        {"ethylene": ["CC", "electric"], "ammonia": "CC"}
+        {"ethylene": ["advanced"]}
     ]
+    # unfix_order_pathways = [
+    #     {"ethylene": ["advanced", "hydrocarbon_upgrading"]},
+    #     {"ethylene": ["methanol1", "methanol2"], "ammonia": ["electric", "electrolyzer"]},
+    #     {"ethylene": ["conventional_CC", "electric"], "ammonia": "conventional_CC"}
+    # ]
 
     for i, interval in enumerate(intervals):
         # change config file
@@ -223,7 +222,7 @@ if execute == 1:
 
         # Construct and solve the model
         pyhub[interval] = ModelHub()
-        pyhub[interval].read_data(casepath_interval, start_period=0, end_period=24)
+        pyhub[interval].read_data(casepath_interval)
 
         # construct model
         pyhub[interval].construct_model()
