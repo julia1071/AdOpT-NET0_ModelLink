@@ -121,7 +121,7 @@ execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY/MY_Chemelot_bf_"
+    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_"
     resultpath = "Z:/AdOpt_NET0/AdOpt_results/MY/Warmstart Brownfield/"
 
     # select simulation types

@@ -19,9 +19,12 @@ if execute == 1:
     node = 'Chemelot'
     scope3 = 0
     run_with_emission_limit = 1
-    intervals = ['2030', '2040', '2050']
+    intervals = ['2040', '2050']
+    # intervals = ['2030', '2040', '2050']
     interval_emissionLim = {'2030': 1, '2040': 0.4, '2050': 0}
     nr_DD_days = 10
+    take_prev_solution = 1
+    emission_2040 = 1395339.647
     pyhub = {}
 
     for i, interval in enumerate(intervals):
@@ -38,7 +41,14 @@ if execute == 1:
         else:
             prev_interval = intervals[i - 1]
             model_config['optimization']['objective']['value'] = "costs_emissionlimit"
-            limit = interval_emissionLim[interval] * pyhub[prev_interval].model['full'].var_emissions_net.value
+            if interval == '2040' and take_prev_solution:
+                limit = interval_emissionLim[interval] * emission_2040
+            else:
+                if nr_DD_days > 0:
+                    limit = interval_emissionLim[interval] * pyhub[prev_interval].model[
+                        'clustered'].var_emissions_net.value
+                else:
+                    limit = interval_emissionLim[interval] * pyhub[prev_interval].model['full'].var_emissions_net.value
             model_config['optimization']['emission_limit']['value'] = limit
 
         # Scope 3 analysis yes/no
@@ -141,7 +151,7 @@ if execute == 1:
         # solver settings
         model_config['solveroptions']['timelim']['value'] = 240
         model_config['solveroptions']['mipgap']['value'] = 0.01
-        model_config['solveroptions']['threads']['value'] = 10
+        model_config['solveroptions']['threads']['value'] = 18
 
         #change save options
         model_config['reporting']['save_summary_path']['value'] = resultpath + node
