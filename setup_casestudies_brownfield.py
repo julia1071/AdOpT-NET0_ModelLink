@@ -81,7 +81,7 @@ if execute == 1:
                         "Storage_H2", "Storage_Battery", "Storage_Propylene",
                         "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer",
                         "syngas_mixer"]
-        set_tecs_existing = {"SteamReformer": 1060, "HaberBosch": 805, "CrackerFurnace": 495, "OlefinSeparation": 495}
+        set_tecs_existing = {"SteamReformer": 1078, "HaberBosch": 813, "CrackerFurnace": 499, "OlefinSeparation": 499}
 
         json_file_path = casepath / "Topology.json"
         with open(json_file_path, "r") as json_file:
