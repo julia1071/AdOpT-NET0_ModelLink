@@ -81,7 +81,7 @@ if execute == 1:
                         "Storage_H2", "Storage_Battery", "Storage_Propylene",
                         "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer",
                         "syngas_mixer"]
-        set_tecs_existing = {"SteamReformer": 1060, "HaberBosch": 805, "CrackerFurnace": 495, "OlefinSeparation": 495}
+        set_tecs_existing = {"SteamReformer": 1078, "HaberBosch": 813, "CrackerFurnace": 499, "OlefinSeparation": 499}
 
         json_file_path = casepath / "Topology.json"
         with open(json_file_path, "r") as json_file:
@@ -315,7 +315,7 @@ if execute == 1:
         # dp.fill_carrier_data(casepath, value_or_data=2907, columns=['Import limit'], carriers=['CO2_DAC'])
         # dp.fill_carrier_data(casepath, value_or_data=559, columns=['Import limit'], carriers=['ethanol'])
         # dp.fill_carrier_data(casepath, value_or_data=173, columns=['Import limit'], carriers=['propane'])
-        dp.fill_carrier_data(casepath, value_or_data=338, columns=['Import limit'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=381, columns=['Import limit'], carriers=['MPW'])
 
         # Import for demand
         # dp.fill_carrier_data(casepath, value_or_data=26, columns=['Import limit'], carriers=['PE_olefin'])
@@ -503,7 +503,7 @@ if execute == 1:
         # dp.fill_carrier_data(casepath, value_or_data=3218, columns=['Import limit'], carriers=['CO2_DAC'])
         # dp.fill_carrier_data(casepath, value_or_data=619, columns=['Import limit'], carriers=['ethanol'])
         # dp.fill_carrier_data(casepath, value_or_data=192, columns=['Import limit'], carriers=['propane'])
-        dp.fill_carrier_data(casepath, value_or_data=338, columns=['Import limit'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=424, columns=['Import limit'], carriers=['MPW'])
 
         # Import for demand
         # dp.fill_carrier_data(casepath, value_or_data=26, columns=['Import limit'], carriers=['PE_olefin'])
