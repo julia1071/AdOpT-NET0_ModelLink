@@ -22,7 +22,7 @@ if execute == 1:
     else:
         # Specify the path to your input data
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_gf_2030")
-        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
+        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250303_MY_Data_Chemelot")
 
     firsttime = 0
     if firsttime:
@@ -196,7 +196,7 @@ execute = 1
 if execute == 1:
     # Specify the path to your input data
     casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_gf_2040")
-    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
+    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250303_MY_Data_Chemelot")
 
     firsttime = 0
     if firsttime:
@@ -380,7 +380,7 @@ execute = 1
 if execute == 1:
     # Specify the path to your input data
     casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_gf_2050")
-    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/241205_MY_Data_Chemelot")
+    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250303_MY_Data_Chemelot")
 
     firsttime = 0
     if firsttime:
