@@ -19,11 +19,11 @@ if execute == 1:
     node = 'Chemelot'
     scope3 = 0
     run_with_emission_limit = 1
-    intervals = ['2040', '2050']
-    # intervals = ['2030', '2040', '2050']
-    interval_emissionLim = {'2030': 1, '2040': 0.4, '2050': 0}
+    # intervals = ['2040', '2050']
+    intervals = ['2030', '2040', '2050']
+    interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
     nr_DD_days = 10
-    take_prev_solution = 1
+    take_prev_solution = 0
     emission_2040 = 1395339.647
     pyhub = {}
 
@@ -108,7 +108,7 @@ if execute == 1:
 
 
 #Run Chemelot cluster case
-execute = 1
+execute = 0
 
 
 if execute == 1:
@@ -121,7 +121,7 @@ if execute == 1:
     scope3 = 0
     run_with_emission_limit = 1
     intervals = ['2030', '2040', '2050']
-    interval_emissionLim = {'2030': 1, '2040': 0.4, '2050': 0}
+    interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
     nr_DD_days = 10
     pyhub = {}
 

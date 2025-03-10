@@ -130,29 +130,30 @@ if execute == 1:
     node = 'Chemelot'
     scope3 = 1
     run_with_emission_limit = 1
-    # intervals = ['2040', '2050']
-    intervals = ['2030', '2040', '2050']
-    interval_emissionLim = {'2030': 1, '2040': 0.4, '2050': 0}
+    intervals = ['2040', '2050']
+    # intervals = ['2030', '2040', '2050']
+    interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
     nr_DD_days = 0
-    take_prev_solution = 0
-    emission_2030 = 530744.3269
-    h5_path_prev = Path("Z:/AdOpt_NET0/AdOpt_results/MY/EmissionLimit Brownfield/Chemelot/20250225154630_2030_minC_DD10-1/optimization_results.h5")
+    take_prev_solution = 1
+    emission_2030 = 530358.4136
+    h5_path_prev = Path("Z:/AdOpt_NET0/AdOpt_results/MY/EmissionLimit Brownfield/Chemelot/20250303182130_2030_minC_DD10-1/optimization_results.h5")
     pyhub = {}
 
     pathways_ammonia = {"conventional_CC": ["SteamReformer"],
                         "electric": ["ElectricSMR_m", "WGS_m"],
                         "electrolyzer": ["AEC", "HaberBosch"],
+                        "storage": ["Storage_Ammonia", "Storage_CO2", "Storage_H2",
+                            "Storage_Battery"]
                         }
     pathways_ethylene = {"conventional_CC": ["CrackerFurnace"],
                          "electric": ["CrackerFurnace_Electric"],
                          "methanol1": ["RWGS", "MeOHsynthesis", "MTO"],
                          "methanol2": ["MPW2methanol", "MTO"],
                          "hydrocarbon_upgrading": ["EDH", "PDH"],
-                         "advanced": ["DirectMeOHsynthesis", "CO2electrolysis"]
+                         "advanced": ["DirectMeOHsynthesis", "CO2electrolysis"],
+                         "storage": ["Storage_Ethylene", "Storage_Battery", "Storage_Propylene"]
                          }
     pathways_auxiliary = {"Boiler_Industrial_NG", "Boiler_El",
-                          "Storage_Ammonia", "Storage_CO2", "Storage_Ethylene", "Storage_H2",
-                          "Storage_Battery", "Storage_Propylene",
                           "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer",
                           "HBfeed_mixer", "syngas_mixer",
                           "HaberBosch", "ASU", "OlefinSeparation"}
@@ -163,7 +164,8 @@ if execute == 1:
 
     # Define the order of pathways to unfix
     unfix_order_pathways = [
-        {"ethylene": ["advanced"]}
+        {"ethylene": ["advanced"]},
+        {"ethylene": ["storage"], "ammonia": ["storage"]}
     ]
     # unfix_order_pathways = [
     #     {"ethylene": ["advanced", "hydrocarbon_upgrading"]},
