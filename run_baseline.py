@@ -166,6 +166,7 @@ if execute == 1:
         model_config['solveroptions']['timelim']['value'] = 240
         model_config['solveroptions']['mipgap']['value'] = 0.01
         model_config['solveroptions']['threads']['value'] = 12
+        model_config['solveroptions']['nodefilestart']['value'] = 200
 
         #change save options
         model_config['reporting']['save_summary_path']['value'] = resultpath + node
