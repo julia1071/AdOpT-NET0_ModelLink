@@ -1,7 +1,9 @@
 import pytest
 import pandas as pd
+import os
 
 import adopt_net0.data_preprocessing as dp
+from adopt_net0.data_management.utilities import calculate_dni
 from adopt_net0.data_management.utilities import check_input_data_consistency
 from tests.utilities import (
     select_random_list_from_list,
@@ -51,8 +53,23 @@ def test_data_climate_data_loading(request):
                 / node
                 / "ClimateData.csv",
                 sep=";",
+                index_col=0,
             )
             assert not climate_data[period][node].empty
+
+            # calculate dni and check if its ok
+            node_locations = pd.read_csv(
+                case_study_folder_path / "NodeLocations.csv", sep=";", index_col=0
+            )
+            lon = node_locations.loc[node, "lon"]
+            lat = node_locations.loc[node, "lat"]
+
+            climate_data_check = climate_data[period][node]
+            climate_data_check["dni_correct"] = climate_data_check["dni"]
+            climate_data_check = climate_data_check.drop(columns=["dni"])
+            climate_data_check["dni_check"] = calculate_dni(
+                climate_data_check, lon, lat
+            )
 
 
 def test_data_fill_carrier_data(request):
@@ -126,11 +143,98 @@ def test_copy_technology_data(request):
             )
             technologies = load_json(path)
             technologies["existing"] = {"TestTec_Conv1": 5}
-            technologies["new"] = ["TestTec_Conv2"]
+            technologies["new"] = ["TestTec_Conv2", "TestTec_GasTurbine_simple_CCS"]
             save_json(technologies, path)
 
     # Copy to folder
     dp.copy_technology_data(case_study_folder_path, technology_data_folder_path)
+
+    # Check it jsons are there
+    check_input_data_consistency(case_study_folder_path)
+
+
+def test_copy_network_data(request):
+    """
+    Tests standard behavior of fill_carrier_data
+    - Tests if df is indeed filled
+    """
+    case_study_folder_path = request.config.case_study_folder_path
+    network_data_folder_path = request.config.network_data_folder_path
+
+    investment_periods, nodes, carriers = get_topology_data(case_study_folder_path)
+    periods_to_add_to = select_random_list_from_list(investment_periods)
+
+    # Create networks
+    for period in periods_to_add_to:
+        path = case_study_folder_path / period / "Networks.json"
+        networks = load_json(path)
+        networks["new"] = ["TestNetworkSimple"]
+        save_json(networks, path)
+
+        os.makedirs(
+            case_study_folder_path
+            / period
+            / "network_topology"
+            / "new"
+            / "TestNetworkSimple"
+        )
+
+        connection = pd.read_csv(
+            case_study_folder_path
+            / period
+            / "network_topology"
+            / "new"
+            / "connection.csv",
+            sep=";",
+            index_col=0,
+        )
+        connection.to_csv(
+            case_study_folder_path
+            / period
+            / "network_topology"
+            / "new"
+            / "TestNetworkSimple"
+            / "connection.csv",
+            sep=";",
+        )
+        os.remove(
+            case_study_folder_path
+            / period
+            / "network_topology"
+            / "new"
+            / "connection.csv"
+        )
+
+        distance = pd.read_csv(
+            case_study_folder_path
+            / period
+            / "network_topology"
+            / "new"
+            / "distance.csv",
+            sep=";",
+            index_col=0,
+        )
+        distance.loc["city", "rural"] = 50
+        distance.loc["rural", "city"] = 50
+        distance.to_csv(
+            case_study_folder_path
+            / period
+            / "network_topology"
+            / "new"
+            / "TestNetworkSimple"
+            / "distance.csv",
+            sep=";",
+        )
+        os.remove(
+            case_study_folder_path
+            / period
+            / "network_topology"
+            / "new"
+            / "distance.csv"
+        )
+
+    # Copy to folder
+    dp.copy_network_data(case_study_folder_path, network_data_folder_path)
 
     # Check it jsons are there
     check_input_data_consistency(case_study_folder_path)

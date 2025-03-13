@@ -20,9 +20,12 @@ def get_summary(model, solution, folder_path: Path, model_info: dict, data) -> d
     :param solution: Pyomo solver results
     :param Path folder_path: folder path of optimization run
     :param dict model_info: information of the last solve done by the model
+    :param data: Input data of the model
     :return: a dictionary containing the most important model results (i.e., summary_dict)
     :rtype: dict
     """
+    config = model_info["config"]
+
     # SUMMARY: create dictionary
     summary_dict = {}
 
@@ -257,7 +260,7 @@ def write_optimization_results_to_h5(model, solution, model_info: dict, data) ->
                     netw_specific_group = g_period_netw_design.create_group(netw_name)
                     b_netw = b_period.network_block[netw_name]
                     data.network_data[period][netw_name].write_results_netw_design(
-                        netw_specific_group, b_netw
+                        netw_specific_group, b_netw, config, data
                     )
 
         # TIME-INDEPENDENT RESULTS: NODES [g]

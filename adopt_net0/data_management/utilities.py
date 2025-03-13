@@ -4,6 +4,7 @@ import pvlib
 import os
 import json
 
+from ..components.networks import *
 from ..components.technologies import *
 
 import logging
@@ -13,7 +14,9 @@ log = logging.getLogger(__name__)
 
 def calculate_dni(data: pd.DataFrame, lon: float, lat: float) -> pd.Series:
     """
-    Calculate direct normal irradiance from ghi and dhi
+    Calculate direct normal irradiance from ghi and dhi. The function assumes that
+    the ghi and dhi are given as an average value for the timestep and dni is
+    calculated using the position of the sun in the middle of the timestep.
 
     :param pd.DataFrame data: climate data with columns ghi and dhi
     :param float lon: longitude
@@ -21,7 +24,11 @@ def calculate_dni(data: pd.DataFrame, lon: float, lat: float) -> pd.Series:
     :return data: climate data including dni
     :rtype: pd.Series
     """
-    zenith = pvlib.solarposition.get_solarposition(data.index, lat, lon)
+    timesteps = pd.to_datetime(data.index)
+    timestep_length = pd.to_datetime(data.index[1]) - pd.to_datetime(data.index[0])
+    timesteps = timesteps + (timestep_length / 2)
+
+    zenith = pvlib.solarposition.get_solarposition(timesteps, lat, lon)
     data["dni"] = pvlib.irradiance.dni(
         data["ghi"].to_numpy(), data["dhi"].to_numpy(), zenith["zenith"].to_numpy()
     )
@@ -31,7 +38,23 @@ def calculate_dni(data: pd.DataFrame, lon: float, lat: float) -> pd.Series:
     return data["dni"]
 
 
-def select_technology(tec_data: dict):
+def network_factory(netw_data: dict):
+    """
+    Returns the correct subclass for a network
+
+    :param dict netw_data: dictonary derived from the network json files
+    :return: Network Class
+    """
+    # Generic netw
+    if netw_data["network_type"] == "fluid":
+        return Fluid(netw_data)
+    elif netw_data["network_type"] == "electricity":
+        return Electricity(netw_data)
+    elif netw_data["network_type"] == "simple":
+        return Simple(netw_data)
+
+
+def technology_factory(tec_data: dict):
     """
     Returns the correct subclass for a technology
 
@@ -66,7 +89,7 @@ def select_technology(tec_data: dict):
         return CCPP(tec_data)
 
 
-def read_tec_data(tec_name: str, load_path: Path):
+def create_technology_class(tec_name: str, load_path: Path):
     """
     Loads the technology data from load_path and preprocesses it.
 
@@ -78,12 +101,29 @@ def read_tec_data(tec_name: str, load_path: Path):
     """
     tec_data = open_json(tec_name, load_path)
     tec_data["name"] = tec_name
-    tec_data = select_technology(tec_data)
+    tec_data = technology_factory(tec_data)
 
     # CCS
     if tec_data.component_options.ccs_possible:
         tec_data.ccs_data = open_json(tec_data.component_options.ccs_type, load_path)
     return tec_data
+
+
+def create_network_class(netw_name: str, load_path: Path):
+    """
+    Loads the network data from load_path and preprocesses it.
+
+    :param str netw_name: network name
+    :param Path load_path: load path
+    #:param dict location: Dictonary with node location
+
+    :return: Network Class
+    """
+    netw_data = open_json(netw_name, load_path)
+    netw_data["name"] = netw_name
+    netw_data = network_factory(netw_data)
+
+    return netw_data
 
 
 def open_json(tec: str, load_path: Path) -> dict:

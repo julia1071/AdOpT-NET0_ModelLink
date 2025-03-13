@@ -18,7 +18,7 @@ def load_climate_data_from_api(folder_path: str | Path, dataset: str = "JRC"):
     The data is written to the file
 
     :param str folder_path: Path to the folder containing node data and NodeLocations.csv
-    :param str dataset: Dataset to import from, can be JRC (only onshore) or ERA5 (global)
+    :param str dataset: Dataset to import from, can be JRC (only onshore)
     """
     # Convert to Path
     if isinstance(folder_path, str):
@@ -29,6 +29,9 @@ def load_climate_data_from_api(folder_path: str | Path, dataset: str = "JRC"):
     node_locations_df = pd.read_csv(
         node_locations_path, sep=";", names=["node", "lon", "lat", "alt"], header=0
     )
+
+    if node_locations_df.isnull().values.any():
+        raise Exception("Please specify longitude, latitude and altitude for each node")
 
     # Read nodes and investment_periods from the JSON file
     json_file_path = os.path.join(folder_path, "Topology.json")
@@ -45,21 +48,9 @@ def load_climate_data_from_api(folder_path: str | Path, dataset: str = "JRC"):
         for node_name in topology["nodes"]:
             # Read lon, lat, and alt for this node name from node_locations_df
             node_data = node_locations_df[node_locations_df["node"] == node_name]
-            lon = (
-                node_data["lon"].values[0]
-                if not pd.isnull(node_data["lon"].values[0])
-                else 5.5
-            )
-            lat = (
-                node_data["lat"].values[0]
-                if not pd.isnull(node_data["lat"].values[0])
-                else 52.5
-            )
-            alt = (
-                node_data["alt"].values[0]
-                if not pd.isnull(node_data["alt"].values[0])
-                else 10
-            )
+            lon = node_data["lon"].values[0]
+            lat = node_data["lat"].values[0]
+            alt = node_data["alt"].values[0]
 
             if dataset == "JRC":
                 # Fetch climate data for the node
@@ -174,7 +165,9 @@ def copy_technology_data(folder_path: str | Path, tec_data_path: str | Path = No
 
     if tec_data_path is None:
         tec_data_path = Path(
-            os.path.join(os.path.dirname(__file__) + "/../data/technology_data")
+            os.path.join(
+                os.path.dirname(__file__) + "/../database/templates/technology_data"
+            )
         )
     else:
         if isinstance(tec_data_path, str):
@@ -200,11 +193,7 @@ def copy_technology_data(folder_path: str | Path, tec_data_path: str | Path = No
             )
             # Copy JSON files corresponding to technology names to output folder
             for tec_name in tecs_at_node:
-                tec_json_file_path = find_json_path(tec_data_path, tec_name)
-                if tec_json_file_path:
-                    shutil.copy(tec_json_file_path, output_folder)
-                else:
-                    warnings.warn(f"Technology {tec_name} not found")
+                _copy_data(tec_data_path, tec_name, output_folder)
 
 
 def copy_network_data(folder_path: str | Path, ntw_data_path: str | Path = None):
@@ -226,7 +215,9 @@ def copy_network_data(folder_path: str | Path, ntw_data_path: str | Path = None)
 
     if ntw_data_path is None:
         ntw_data_path = Path(
-            os.path.join(os.path.dirname(__file__) + "/../data/network_data")
+            os.path.join(
+                os.path.dirname(__file__) + "/../database/templates/network_data"
+            )
         )
     else:
         if isinstance(ntw_data_path, str):
@@ -247,9 +238,7 @@ def copy_network_data(folder_path: str | Path, ntw_data_path: str | Path = None)
         output_folder = folder_path / period / "network_data"
         # Copy JSON files corresponding to technology names to output folder
         for ntw_name in ntws_at_node:
-            ntw_json_file_path = find_json_path(ntw_data_path, ntw_name)
-            if ntw_json_file_path:
-                shutil.copy(ntw_json_file_path, output_folder)
+            _copy_data(ntw_data_path, ntw_name, output_folder)
 
 
 def find_json_path(data_path: str | Path, name: str) -> Path | None:
@@ -305,7 +294,7 @@ def import_jrc_climate_data(
     if response.status_code == 200:
         print("Importing Climate Data successful")
     else:
-        print(response)
+        raise Exception(response)
     data = response.json()
     climate_data = data["outputs"]["tmy_hourly"]
 
@@ -339,3 +328,37 @@ def import_jrc_climate_data(
         answer["dataframe"]["ws" + str(ws)] = wind_speed[ws]
 
     return answer
+
+
+def _copy_data(path, json_name, output_folder):
+    """
+    Finds the JSON files and copies it to the desired output folder.
+
+    This function finds the JSON file of the component, and it copies it to the output folder.
+    It also reads the JSON file, checks if CCS is possible and, if so, it copies the
+    corresponding CCS JSON file to the output folder.
+
+    :param str | Path path: Path to the folder containing the case study data.
+    :param str | Component name json_name: Name of the JSON file.
+    :param str | Path output_folder: Path to the folder containing the technology data.
+    """
+    component_json_path = find_json_path(path, json_name)
+    if component_json_path:
+        shutil.copy(component_json_path, output_folder)
+        # Adding copy CCS when possible
+        with open(component_json_path, "r") as json_data_file:
+            json_data = json.load(json_data_file)
+        if (
+            "ccs" in json_data["Performance"]
+            and json_data["Performance"]["ccs"]["possible"]
+        ):
+            ccs_name = json_data["Performance"]["ccs"]["ccs_type"]
+            ccs_json_path = find_json_path(path, ccs_name)
+            ccs_output_path = os.path.join(
+                output_folder, os.path.basename(ccs_json_path)
+            )
+            # Copy CCS JSON if it doesn't exist yet
+            if not os.path.exists(ccs_output_path):
+                _copy_data(path, ccs_name, output_folder)
+    else:
+        warnings.warn(f"{json_name} not found")

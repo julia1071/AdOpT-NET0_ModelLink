@@ -5,10 +5,13 @@
 
 Welcome to AdOpT-NET0 documentation!
 =====================================
-Energyhub is a Python Library for bottom-up multi energy system modelling. It can model conversion technologies and
+AdOpT-NET0 is a Python Library for bottom-up multi energy system modelling. It can model conversion technologies and
 networks for any carrier and optimize the design and operation of your energy system.
-We recommend to start with the :ref:`installation<installation>` and the
-:ref:`workflow for (first-time) users<workflow>`.
+We recommend to start with the :ref:`installation<installation>`, the
+:ref:`workflow for (first-time) users<workflow>`, and the
+:ref:`exemplary case studies <case-studies>`.
+
+The package also comes with a database of predefined technologies and networks (read more about this :ref:`here <database>`
 
 Table of Content
 ==================
@@ -18,11 +21,12 @@ Table of Content
 
    Installation
    ModellingWorkflow
+   CaseStudies
+   DataBase
    AdvancedTopics
    SourceCode
    ForDevelopers
-   CaseStudies
-
+   FAQ
 
 Indices and tables
 ==================

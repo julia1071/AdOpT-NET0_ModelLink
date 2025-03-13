@@ -162,6 +162,15 @@ class ComponentOptions:
                 self.energyconsumption = 0
 
         # disable bidirectional for networks and storage
+        if "network_type" in component_data:
+            if "bidirectional_network" in component_data["Performance"]:
+                self.bidirectional_network = component_data["Performance"][
+                    "bidirectional_network"
+                ]
+            self.bidirectional_network_precise = get_attribute_from_dict(
+                component_data["Performance"], "bidirectional_network_precise", 1
+            )
+
         if "allow_only_one_direction" in component_data["Performance"]:
             self.allow_only_one_direction = component_data["Performance"][
                 "allow_only_one_direction"
@@ -170,7 +179,6 @@ class ComponentOptions:
                 self.allow_only_one_direction_precise = get_attribute_from_dict(
                     component_data["Performance"], "allow_only_one_direction_precise", 1
                 )
-
         # other technology specific options
         self.other = {}
 
