@@ -51,7 +51,7 @@ for result_type in result_types:
                 if pd.notna(case) and interval in case:
                     h5_path = Path(summary_results.loc[summary_results['case'] == case, 'time_stamp'].iloc[
                                        0]) / "optimization_results.h5"
-                    result_data.loc["path", (result_type, location, interval)] = h5_path
+                    result_data.at["path", (result_type, location, interval)] = h5_path
                     result_data.loc["costs_interval", (result_type, location, interval)] = \
                         summary_results.loc[summary_results['case'] == case, 'total_npv'].iloc[0]
                     result_data.loc["emissions_tot", (result_type, location, interval)] = \
