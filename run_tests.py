@@ -72,14 +72,13 @@ if execute == 1:
         if nr_DD_days > 0:
             pyhub[interval].data.model_config['reporting']['case_name'][
                 'value'] = (interval + '_minC_' +
-                            'DD' + str(pyhub[interval].data.model_config['optimization']['typicaldays']['N']['value'])) \
-                           + '_with_decommission'
+                            'DD' + str(pyhub[interval].data.model_config['optimization']['typicaldays']['N']['value']))
 
             pyhub[interval].data.time_series['clustered'][
                 interval, node, 'CarbonCost', 'global', 'price'] = 150.31
         else:
             pyhub[interval].data.model_config['reporting']['case_name'][
-                'value'] = interval + '_minC_fullres_with_decommission'
+                'value'] = interval + '_minC_fullres'
 
         pyhub[interval].data.time_series['full'][interval, node, 'CarbonCost', 'global', 'price'] = 150.31
 
