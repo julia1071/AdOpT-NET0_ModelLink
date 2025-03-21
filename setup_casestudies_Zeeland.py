@@ -23,7 +23,7 @@ if execute_greenfield:
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Zeeland_gf_2030")
         datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250318_MY_Data_Zeeland")
 
-        firsttime = 1
+        firsttime = 0
         if firsttime:
             # Create template files
             dp.create_optimization_templates(casepath)
@@ -70,7 +70,7 @@ if execute_greenfield:
             # Read climate data
             dp.load_climate_data_from_api(casepath)
 
-        read_techs = 1
+        read_techs = 0
         if read_techs or read_all_greenfield:
             set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                             "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -127,7 +127,7 @@ if execute_greenfield:
                                  carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'ethanol',
                                            'propane', 'MPW', 'CO2_DAC'])
             # Import limit plastic waste
-            dp.fill_carrier_data(casepath, value_or_data=338, columns=['Import limit'], carriers=['MPW'])
+            dp.fill_carrier_data(casepath, value_or_data=469, columns=['Import limit'], carriers=['MPW'])
 
             # No export limit
             dp.fill_carrier_data(casepath, value_or_data=4000, columns=['Export limit'],
@@ -190,7 +190,7 @@ if execute_greenfield:
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Zeeland_gf_2040")
         datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250318_MY_Data_Zeeland")
 
-        firsttime = 1
+        firsttime = 0
         if firsttime:
             # Create template files
             dp.create_optimization_templates(casepath)
@@ -237,7 +237,7 @@ if execute_greenfield:
             # Read climate data and fill carried data
             dp.load_climate_data_from_api(casepath)
 
-        read_techs = 1
+        read_techs = 0
         if read_techs or read_all_greenfield:
             set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                             "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -299,7 +299,7 @@ if execute_greenfield:
                                            'propane', 'MPW', 'CO2_DAC'])
 
             # Import limit plastic waste
-            dp.fill_carrier_data(casepath, value_or_data=338, columns=['Import limit'], carriers=['MPW'])
+            dp.fill_carrier_data(casepath, value_or_data=529, columns=['Import limit'], carriers=['MPW'])
 
             # No export limit
             dp.fill_carrier_data(casepath, value_or_data=4000, columns=['Export limit'],
@@ -362,7 +362,7 @@ if execute_greenfield:
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Zeeland_gf_2050")
         datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250318_MY_Data_Zeeland")
 
-        firsttime = 1
+        firsttime = 0
         if firsttime:
             # Create template files
             dp.create_optimization_templates(casepath)
@@ -409,7 +409,7 @@ if execute_greenfield:
             # Read climate data and fill carried data
             dp.load_climate_data_from_api(casepath)
 
-        read_techs = 1
+        read_techs = 0
         if read_techs or read_all_greenfield:
             set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                             "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -471,7 +471,7 @@ if execute_greenfield:
                                            'propane', 'MPW', 'CO2_DAC'])
 
             # Import limit plastic waste
-            dp.fill_carrier_data(casepath, value_or_data=338, columns=['Import limit'], carriers=['MPW'])
+            dp.fill_carrier_data(casepath, value_or_data=588, columns=['Import limit'], carriers=['MPW'])
 
             # No export limit
             dp.fill_carrier_data(casepath, value_or_data=4000, columns=['Export limit'],
@@ -537,7 +537,7 @@ if execute_brownfield:
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Zeeland_bf_2030")
         datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250318_MY_Data_Zeeland_bf")
 
-        firsttime = 1
+        firsttime = 0
         if firsttime:
             # Create template files
             dp.create_optimization_templates(casepath)
@@ -584,7 +584,7 @@ if execute_brownfield:
             # Read climate data
             dp.load_climate_data_from_api(casepath)
 
-        read_techs = 1
+        read_techs = 0
         if read_techs or read_all_brownfield:
             set_tecs_new = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                             "CrackerFurnace_Electric",
@@ -644,7 +644,7 @@ if execute_brownfield:
                                            'propane', 'MPW', 'CO2_DAC'])
 
             # Import limit plastic waste
-            dp.fill_carrier_data(casepath, value_or_data=338, columns=['Import limit'], carriers=['MPW'])
+            dp.fill_carrier_data(casepath, value_or_data=469, columns=['Import limit'], carriers=['MPW'])
 
             # No export limit
             dp.fill_carrier_data(casepath, value_or_data=4000, columns=['Export limit'],
@@ -706,7 +706,7 @@ if execute_brownfield:
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Zeeland_bf_2040")
         datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250318_MY_Data_Zeeland_bf")
 
-        firsttime = 1
+        firsttime = 0
         if firsttime:
             # Create template files
             dp.create_optimization_templates(casepath)
@@ -753,7 +753,7 @@ if execute_brownfield:
             # Read climate data and fill carried data
             dp.load_climate_data_from_api(casepath)
 
-        read_techs = 1
+        read_techs = 0
         if read_techs or read_all_brownfield:
             set_tecs = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace_Electric",
@@ -816,7 +816,7 @@ if execute_brownfield:
                                            'propane', 'MPW', 'CO2_DAC'])
 
             # Import limit plastic waste
-            dp.fill_carrier_data(casepath, value_or_data=338, columns=['Import limit'], carriers=['MPW'])
+            dp.fill_carrier_data(casepath, value_or_data=529, columns=['Import limit'], carriers=['MPW'])
 
             # No export limit
             dp.fill_carrier_data(casepath, value_or_data=4000, columns=['Export limit'],
@@ -882,7 +882,7 @@ if execute_brownfield:
         casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Zeeland_bf_2050")
         datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250318_MY_Data_Zeeland_bf")
 
-        firsttime = 1
+        firsttime = 0
         if firsttime:
             # Create template files
             dp.create_optimization_templates(casepath)
@@ -929,7 +929,7 @@ if execute_brownfield:
             # Read climate data and fill carried data
             dp.load_climate_data_from_api(casepath)
 
-        read_techs = 1
+        read_techs = 0
         if read_techs or read_all_brownfield:
             set_tecs = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace_Electric",
@@ -993,7 +993,7 @@ if execute_brownfield:
                                            'propane', 'MPW', 'CO2_DAC'])
 
             # Import limit plastic waste
-            dp.fill_carrier_data(casepath, value_or_data=338, columns=['Import limit'], carriers=['MPW'])
+            dp.fill_carrier_data(casepath, value_or_data=588, columns=['Import limit'], carriers=['MPW'])
 
             # No export limit
             dp.fill_carrier_data(casepath, value_or_data=4000, columns=['Export limit'],

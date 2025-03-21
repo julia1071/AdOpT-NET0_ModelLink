@@ -71,7 +71,7 @@ if execute == 1:
         # Read climate data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -250,7 +250,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -318,8 +318,8 @@ if execute == 1:
         # dp.fill_carrier_data(casepath, value_or_data=2907, columns=['Import limit'], carriers=['CO2_DAC'])
         # dp.fill_carrier_data(casepath, value_or_data=559, columns=['Import limit'], carriers=['ethanol'])
         # dp.fill_carrier_data(casepath, value_or_data=173, columns=['Import limit'], carriers=['propane'])
-        # dp.fill_carrier_data(casepath, value_or_data=381, columns=['Import limit'], carriers=['MPW'])
-        dp.fill_carrier_data(casepath, value_or_data=338, columns=['Import limit'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=381, columns=['Import limit'], carriers=['MPW'])
+        # dp.fill_carrier_data(casepath, value_or_data=338, columns=['Import limit'], carriers=['MPW'])
 
         # Import for demand
         # dp.fill_carrier_data(casepath, value_or_data=26, columns=['Import limit'], carriers=['PE_olefin'])
@@ -439,7 +439,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -507,8 +507,8 @@ if execute == 1:
         # dp.fill_carrier_data(casepath, value_or_data=3218, columns=['Import limit'], carriers=['CO2_DAC'])
         # dp.fill_carrier_data(casepath, value_or_data=619, columns=['Import limit'], carriers=['ethanol'])
         # dp.fill_carrier_data(casepath, value_or_data=192, columns=['Import limit'], carriers=['propane'])
-        # dp.fill_carrier_data(casepath, value_or_data=424, columns=['Import limit'], carriers=['MPW'])
-        dp.fill_carrier_data(casepath, value_or_data=338, columns=['Import limit'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=424, columns=['Import limit'], carriers=['MPW'])
+        # dp.fill_carrier_data(casepath, value_or_data=338, columns=['Import limit'], carriers=['MPW'])
 
 
         # Import for demand
