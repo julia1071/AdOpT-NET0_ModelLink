@@ -4,10 +4,11 @@ import pandas as pd
 import adopt_net0.data_preprocessing as dp
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
-from adopt_net0.utilities import fix_installed_capacities, installed_capacities_existing
+from adopt_net0.utilities import fix_installed_capacities, installed_capacities_existing, \
+    installed_capacities_existing_from_file
 
 #Run Chemelot cluster case brownfield
-execute = 1
+execute = 0
 
 
 if execute == 1:
@@ -19,9 +20,14 @@ if execute == 1:
     sensitivity = 'OptBIO'
     scope3 = 1
     run_with_emission_limit = 1
+    # intervals = ['2040', '2050']
     intervals = ['2030', '2040', '2050']
     interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
     nr_DD_days = 10
+    prev_from_file = 0
+    emission_2030 = 531218.1986
+    h5_path_prev = Path(
+        "Z:/AdOpt_NET0/AdOpt_results/MY/EmissionLimit Brownfield/OptBIO/20250326093222_2030_minC_DD10-1/optimization_results.h5")
     pyhub = {}
 
     for i, interval in enumerate(intervals):
@@ -38,10 +44,14 @@ if execute == 1:
         else:
             prev_interval = intervals[i - 1]
             model_config['optimization']['objective']['value'] = "costs_emissionlimit"
-            if nr_DD_days > 0:
-                limit = interval_emissionLim[interval] * pyhub[prev_interval].model['clustered'].var_emissions_net.value
+            if interval == '2040' and prev_from_file:
+                limit = interval_emissionLim[interval] * emission_2030
             else:
-                limit = interval_emissionLim[interval] * pyhub[prev_interval].model['full'].var_emissions_net.value
+                if nr_DD_days > 0:
+                    limit = interval_emissionLim[interval] * pyhub[prev_interval].model[
+                        'clustered'].var_emissions_net.value
+                else:
+                    limit = interval_emissionLim[interval] * pyhub[prev_interval].model['full'].var_emissions_net.value
             model_config['optimization']['emission_limit']['value'] = limit
 
         # Scope 3 analysis yes/no
@@ -61,9 +71,13 @@ if execute == 1:
         with open(json_filepath, 'w') as json_file:
             json.dump(model_config, json_file, indent=4)
 
-        if i != 0:
+        if interval != '2030':
             prev_interval = intervals[i - 1]
-            installed_capacities_existing(pyhub, interval, prev_interval, sensitivity, casepath_interval)
+            if prev_from_file and interval == '2040':
+                if h5_path_prev.exists():
+                    installed_capacities_existing_from_file(interval, '2030', 'Chemelot', casepath_interval, h5_path_prev)
+            else:
+                installed_capacities_existing(pyhub, interval, prev_interval, 'Chemelot', casepath_interval)
 
         # Construct and solve the model
         pyhub[interval] = ModelHub()

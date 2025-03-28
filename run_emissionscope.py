@@ -8,7 +8,7 @@ from adopt_net0.utilities import fix_installed_capacities, installed_capacities_
 
 
 #Run Chemelot cluster case
-execute = 0
+execute = 1
 
 if execute == 1:
     # Specify the path to your input data
@@ -19,11 +19,11 @@ if execute == 1:
     node = 'Chemelot'
     scope3 = 0
     run_with_emission_limit = 1
-    # intervals = ['2040', '2050']
-    intervals = ['2030', '2040', '2050']
+    intervals = ['2050']
+    # intervals = ['2030', '2040', '2050']
     interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
     nr_DD_days = 10
-    take_prev_solution = 0
+    take_prev_solution = 1
     emission_2040 = 1395339.647
     pyhub = {}
 
@@ -43,6 +43,8 @@ if execute == 1:
             model_config['optimization']['objective']['value'] = "costs_emissionlimit"
             if interval == '2040' and take_prev_solution:
                 limit = interval_emissionLim[interval] * emission_2040
+            elif interval == '2050' and take_prev_solution:
+                limit = 0
             else:
                 if nr_DD_days > 0:
                     limit = interval_emissionLim[interval] * pyhub[prev_interval].model[
@@ -57,7 +59,7 @@ if execute == 1:
         # solver settings
         model_config['solveroptions']['timelim']['value'] = 240
         model_config['solveroptions']['mipgap']['value'] = 0.01
-        model_config['solveroptions']['threads']['value'] = 9
+        model_config['solveroptions']['threads']['value'] = 12
         model_config['solveroptions']['nodefilestart']['value'] = 200
 
         #change save options
@@ -109,7 +111,7 @@ if execute == 1:
 
 
 #Run Chemelot cluster case
-execute = 1
+execute = 0
 
 
 if execute == 1:
@@ -152,7 +154,7 @@ if execute == 1:
         # solver settings
         model_config['solveroptions']['timelim']['value'] = 240
         model_config['solveroptions']['mipgap']['value'] = 0.01
-        model_config['solveroptions']['threads']['value'] = 9
+        model_config['solveroptions']['threads']['value'] = 12
         model_config['solveroptions']['nodefilestart']['value'] = 200
 
         #change save options
