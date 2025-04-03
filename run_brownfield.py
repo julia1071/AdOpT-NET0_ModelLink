@@ -52,7 +52,7 @@ if execute == 1:
         # solver settings
         model_config['solveroptions']['timelim']['value'] = 240
         model_config['solveroptions']['mipgap']['value'] = 0.01
-        model_config['solveroptions']['threads']['value'] = 16
+        model_config['solveroptions']['threads']['value'] = 12
         model_config['solveroptions']['nodefilestart']['value'] = 200
 
         #change save options
@@ -90,7 +90,7 @@ if execute == 1:
         pyhub[interval].solve()
 
 
-#Run Chemelot cluster case
+#Run Chemelot cluster case without emission limit
 execute = 0
 
 
