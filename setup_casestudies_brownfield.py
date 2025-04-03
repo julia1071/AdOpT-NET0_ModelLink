@@ -12,7 +12,7 @@ read_all = 0
 
 #Create data Chemelot cluster short term
 execute = 1
-noRR = 1
+noRR = 0
 
 if execute == 1:
     if noRR:
@@ -71,7 +71,7 @@ if execute == 1:
         # Read climate data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all:
         set_tecs_new = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace_Electric",
@@ -111,7 +111,7 @@ if execute == 1:
                 if tec_json_file_path:
                     shutil.copy(tec_json_file_path, output_folder)
 
-    read_car = 1
+    read_car = 0
     if read_car or read_all:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -251,7 +251,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all:
         set_tecs = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -294,7 +294,7 @@ if execute == 1:
                     if tec_json_file_path:
                         shutil.copy(tec_json_file_path, output_folder)
 
-    read_car = 1
+    read_car = 0
     if read_car or read_all:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -444,7 +444,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all:
         set_tecs = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -488,7 +488,7 @@ if execute == 1:
                     if tec_json_file_path:
                         shutil.copy(tec_json_file_path, output_folder)
 
-    read_car = 1
+    read_car = 0
     if read_car or read_all:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
