@@ -76,8 +76,11 @@ for result_type in result_types:
                                 + tec_costs[first_interval] + summary_results.loc[summary_results['case'] == case, 'total_npv'].iloc[0]
 
                     # Calculate total cumulative costs
-                    if interval == '2050':
-                        result_data.loc["costs_tot_cumulative", (result_type, location, interval)] = sum(total_costs.values()) * 10
+                    if 'Brownfield' in result_type:
+                        if interval == '2050':
+                            result_data.loc["costs_tot_cumulative", (result_type, location, interval)] = sum(total_costs.values()) * 10
+                    elif 'Greenfield' in result_type:
+                        result_data.loc["costs_tot_cumulative", (result_type, location, interval)] = total_costs[interval] * 30
 
                     if h5_path.exists():
                         with h5py.File(h5_path, "r") as hdf_file:
