@@ -20,8 +20,9 @@ if execute == 1:
     scope3 = 1
     run_with_emission_limit = 1
     intervals = ['2030', '2040', '2050']
+    # intervals = ['2040', '2050']
     interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
-    nr_DD_days = 10
+    nr_DD_days = 1
     pyhub = {}
 
     for i, interval in enumerate(intervals):
@@ -66,7 +67,7 @@ if execute == 1:
 
         # Construct and solve the model
         pyhub[interval] = ModelHub()
-        pyhub[interval].read_data(casepath_interval)
+        pyhub[interval].read_data(casepath_interval, start_period=0, end_period=24*2)
 
         # Set case name
         if nr_DD_days > 0:
