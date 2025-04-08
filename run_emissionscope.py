@@ -58,7 +58,7 @@ if execute == 1:
 
         # solver settings
         model_config['solveroptions']['timelim']['value'] = 24*30
-        model_config['solveroptions']['mipgap']['value'] = 0.01
+        model_config['solveroptions']['mipgap']['value'] = 0.02
         model_config['solveroptions']['threads']['value'] = 12
         model_config['solveroptions']['nodefilestart']['value'] = 200
 
@@ -161,7 +161,7 @@ if execute == 1:
 
         # solver settings
         model_config['solveroptions']['timelim']['value'] = 24*30
-        model_config['solveroptions']['mipgap']['value'] = 0.01
+        model_config['solveroptions']['mipgap']['value'] = 0.02
         model_config['solveroptions']['threads']['value'] = 12
         model_config['solveroptions']['nodefilestart']['value'] = 200
 
