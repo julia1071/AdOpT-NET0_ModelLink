@@ -66,13 +66,13 @@ for result_type in result_types:
                         prev_interval = result_data.columns.levels[2][i - 1]
                         if interval == '2040':
                             result_data.loc["sunk_costs", (result_type, location, interval)] = tec_costs[prev_interval]
-                            result_data.loc["costs_tot", (result_type, location, interval)] = tec_costs[prev_interval] + \
+                            result_data.loc["costs_tot_interval", (result_type, location, interval)] = tec_costs[prev_interval] + \
                                 summary_results.loc[summary_results['case'] == case, 'total_npv'].iloc[0]
                         if interval == '2050':
                             first_interval = result_data.columns.levels[2][i - 2]
                             result_data.loc["sunk_costs", (result_type, location, interval)] = tec_costs[
                                 prev_interval] + tec_costs[first_interval]
-                            result_data.loc["costs_tot", (result_type, location, interval)] = tec_costs[prev_interval] + \
+                            result_data.loc["costs_tot_interval", (result_type, location, interval)] = tec_costs[prev_interval] + \
                                 + tec_costs[first_interval] + summary_results.loc[summary_results['case'] == case, 'total_npv'].iloc[0]
 
                     # Calculate total cumulative costs
