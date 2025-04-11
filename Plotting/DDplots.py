@@ -6,7 +6,7 @@ from matplotlib.ticker import PercentFormatter
 from adopt_net0 import extract_datasets_from_h5group
 
 # Define the data path
-run_for = 'gf'
+run_for = 'bf'
 interval = '2030'
 resultfolder = "Z:/AdOpt_NET0/AdOpt_results/MY/DesignDays/CH_2030_" + run_for
 
@@ -125,15 +125,22 @@ else:
     ax1.set_ylim(-100, 10)
     handles, labels = ax1.get_legend_handles_labels()
     ax1.legend(handles, labels, loc='center left')
+    xmin, xmax = ax1.get_xlim()
+    ax1.set_xticks(range(int(xmin), int(xmax) + 1, 10))
 
 # Add grid and combine legends
 ax1.grid(True, alpha=0.2)
 
 # # Save and show plot
 savepath = 'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Research/Multiyear Modeling/MY_Plots/'
-plt.savefig(f"{savepath}complexity_{run_for}_{plot_type}.pdf", format='pdf')
-plt.savefig(f"{savepath}complexity_{run_for}_{plot_type}.svg", format='svg')
+
+plt.tight_layout()  # Apply before saving (optional, still helps with layout)
+
+plt.savefig(f"{savepath}complexity_{run_for}_{plot_type}.pdf", format='pdf', bbox_inches='tight', pad_inches=0.05)
+plt.savefig(f"{savepath}complexity_{run_for}_{plot_type}.svg", format='svg', bbox_inches='tight', pad_inches=0.05)
+
 plt.show()
+
 
 # Show the plot
 # plt.show()
