@@ -108,6 +108,20 @@ if execute_greenfield:
                     if tec_json_file_path:
                         shutil.copy(tec_json_file_path, output_folder)
 
+                    spec_tec_size = {"AEC": 1900, "RWGS": 283, "MeOHsynthesis": 838, "MTO": 1380, "SteamReformer": 1949,
+                                     "ElectricSMR_m": 3248, "WGS_m": 598, "HaberBosch": 2472, "CrackerFurnace": 824,
+                                     "CrackerFurnace_Electric": 978, "OlefinSeparation": 978, "ASU": 172,
+                                     "Boiler_Industrial_NG": 3074, "Boiler_El": 1900, "EDH": 730, "PDH": 218,
+                                     "MPW2methanol": 469}
+                    for tec in spec_tec_size.keys():
+                        tech_data_file = find_json_path(output_folder, tec)
+                        with open(tech_data_file, "r") as json_tecdata_file:
+                            tech_data = json.load(json_tecdata_file)
+
+                        tech_data["size_max"] = spec_tec_size[tec]
+                        with open(tech_data_file, "w") as json_tecdata_file:
+                            json.dump(tech_data, json_tecdata_file, indent=4)
+
         read_car = 0
         if read_car or read_all_greenfield:
             # Fill carrier data
@@ -271,13 +285,27 @@ if execute_greenfield:
 
                     # Add additional tecs
                     set_tecfiles = ["MEA_large"]
+                    output_folder = (
+                            casepath / period / "node_data" / node_name / "technology_data"
+                    )
                     for tec in set_tecfiles:
-                        output_folder = (
-                                casepath / period / "node_data" / node_name / "technology_data"
-                        )
                         tec_json_file_path = find_json_path(datapath, tec)
                         if tec_json_file_path:
                             shutil.copy(tec_json_file_path, output_folder)
+
+                    spec_tec_size = {"AEC": 3250, "RWGS": 460, "MeOHsynthesis": 988, "MTO": 1287, "SteamReformer": 1949,
+                                     "ElectricSMR_m": 3248, "WGS_m": 598, "HaberBosch": 2472, "CrackerFurnace": 824,
+                                     "CrackerFurnace_Electric": 1373, "OlefinSeparation": 1373, "ASU": 172,
+                                     "Boiler_Industrial_NG": 3179, "Boiler_El": 3250, "EDH": 730, "PDH": 218,
+                                     "MPW2methanol": 529, "DirectMeOHsynthesis": 483, "CO2electrolysis": 283}
+                    for tec in spec_tec_size.keys():
+                        tech_data_file = find_json_path(output_folder, tec)
+                        with open(tech_data_file, "r") as json_tecdata_file:
+                            tech_data = json.load(json_tecdata_file)
+
+                        tech_data["size_max"] = spec_tec_size[tec]
+                        with open(tech_data_file, "w") as json_tecdata_file:
+                            json.dump(tech_data, json_tecdata_file, indent=4)
 
         read_car = 0
         if read_car or read_all_greenfield:
@@ -443,13 +471,27 @@ if execute_greenfield:
 
                     # Add additional tecs
                     set_tecfiles = ["MEA_large"]
+                    output_folder = (
+                            casepath / period / "node_data" / node_name / "technology_data"
+                    )
                     for tec in set_tecfiles:
-                        output_folder = (
-                                casepath / period / "node_data" / node_name / "technology_data"
-                        )
                         tec_json_file_path = find_json_path(datapath, tec)
                         if tec_json_file_path:
                             shutil.copy(tec_json_file_path, output_folder)
+
+                    spec_tec_size = {"AEC": 4600, "RWGS": 636, "MeOHsynthesis": 1138, "MTO": 1408, "SteamReformer": 1949,
+                                     "ElectricSMR_m": 3248, "WGS_m": 598, "HaberBosch": 2472, "CrackerFurnace": 824,
+                                     "CrackerFurnace_Electric": 1373, "OlefinSeparation": 1373, "ASU": 172,
+                                     "Boiler_Industrial_NG": 3179, "Boiler_El": 4600, "EDH": 730, "PDH": 218,
+                                     "MPW2methanol": 588, "DirectMeOHsynthesis": 669, "CO2electrolysis": 401}
+                    for tec in spec_tec_size.keys():
+                        tech_data_file = find_json_path(output_folder, tec)
+                        with open(tech_data_file, "r") as json_tecdata_file:
+                            tech_data = json.load(json_tecdata_file)
+
+                        tech_data["size_max"] = spec_tec_size[tec]
+                        with open(tech_data_file, "w") as json_tecdata_file:
+                            json.dump(tech_data, json_tecdata_file, indent=4)
 
         read_car = 0
         if read_car or read_all_greenfield:
@@ -624,6 +666,20 @@ if execute_brownfield:
                     if tec_json_file_path:
                         shutil.copy(tec_json_file_path, output_folder)
 
+                    spec_tec_size = {"AEC": 1900, "RWGS": 283, "MeOHsynthesis": 838, "MTO": 1380, "SteamReformer": 1949,
+                                     "ElectricSMR_m": 3248, "WGS_m": 598, "HaberBosch": 2472, "CrackerFurnace": 824,
+                                     "CrackerFurnace_Electric": 978, "OlefinSeparation": 978, "ASU": 172,
+                                     "Boiler_Industrial_NG": 3074, "Boiler_El": 1900, "EDH": 730, "PDH": 218,
+                                     "MPW2methanol": 469}
+                    for tec in spec_tec_size.keys():
+                        tech_data_file = find_json_path(output_folder, tec)
+                        with open(tech_data_file, "r") as json_tecdata_file:
+                            tech_data = json.load(json_tecdata_file)
+
+                        tech_data["size_max"] = spec_tec_size[tec]
+                        with open(tech_data_file, "w") as json_tecdata_file:
+                            json.dump(tech_data, json_tecdata_file, indent=4)
+
         read_car = 0
         if read_car or read_all_brownfield:
             # Fill carrier data
@@ -787,14 +843,28 @@ if execute_brownfield:
                     dp.copy_technology_data(casepath, datapath)
 
                     # Add additional tecs
+                    output_folder = (
+                            casepath / period / "node_data" / node_name / "technology_data"
+                    )
                     set_tecfiles = ["MEA_large", "SteamReformer", "CrackerFurnace", "OlefinSeparation"]
                     for tec in set_tecfiles:
-                        output_folder = (
-                                casepath / period / "node_data" / node_name / "technology_data"
-                        )
                         tec_json_file_path = find_json_path(datapath, tec)
                         if tec_json_file_path:
                             shutil.copy(tec_json_file_path, output_folder)
+
+                    spec_tec_size = {"AEC": 3250, "RWGS": 460, "MeOHsynthesis": 988, "MTO": 1287, "SteamReformer": 1949,
+                                     "ElectricSMR_m": 3248, "WGS_m": 598, "HaberBosch": 2472, "CrackerFurnace": 824,
+                                     "CrackerFurnace_Electric": 1373, "OlefinSeparation": 1373, "ASU": 172,
+                                     "Boiler_Industrial_NG": 3179, "Boiler_El": 3250, "EDH": 730, "PDH": 218,
+                                     "MPW2methanol": 529, "DirectMeOHsynthesis": 483, "CO2electrolysis": 283}
+                    for tec in spec_tec_size.keys():
+                        tech_data_file = find_json_path(output_folder, tec)
+                        with open(tech_data_file, "r") as json_tecdata_file:
+                            tech_data = json.load(json_tecdata_file)
+
+                        tech_data["size_max"] = spec_tec_size[tec]
+                        with open(tech_data_file, "w") as json_tecdata_file:
+                            json.dump(tech_data, json_tecdata_file, indent=4)
 
         read_car = 0
         if read_car or read_all_brownfield:
@@ -965,13 +1035,28 @@ if execute_brownfield:
 
                     # Add additional tecs
                     set_tecfiles = ["MEA_large", "SteamReformer", "CrackerFurnace", "OlefinSeparation"]
+                    output_folder = (
+                            casepath / period / "node_data" / node_name / "technology_data"
+                    )
                     for tec in set_tecfiles:
-                        output_folder = (
-                                casepath / period / "node_data" / node_name / "technology_data"
-                        )
                         tec_json_file_path = find_json_path(datapath, tec)
                         if tec_json_file_path:
                             shutil.copy(tec_json_file_path, output_folder)
+
+                    spec_tec_size = {"AEC": 4600, "RWGS": 636, "MeOHsynthesis": 1138, "MTO": 1408,
+                                     "SteamReformer": 1949,
+                                     "ElectricSMR_m": 3248, "WGS_m": 598, "HaberBosch": 2472, "CrackerFurnace": 824,
+                                     "CrackerFurnace_Electric": 1373, "OlefinSeparation": 1373, "ASU": 172,
+                                     "Boiler_Industrial_NG": 3179, "Boiler_El": 4600, "EDH": 730, "PDH": 218,
+                                     "MPW2methanol": 588, "DirectMeOHsynthesis": 669, "CO2electrolysis": 401}
+                    for tec in spec_tec_size.keys():
+                        tech_data_file = find_json_path(output_folder, tec)
+                        with open(tech_data_file, "r") as json_tecdata_file:
+                            tech_data = json.load(json_tecdata_file)
+
+                        tech_data["size_max"] = spec_tec_size[tec]
+                        with open(tech_data_file, "w") as json_tecdata_file:
+                            json.dump(tech_data, json_tecdata_file, indent=4)
 
         read_car = 0
         if read_car or read_all_brownfield:
