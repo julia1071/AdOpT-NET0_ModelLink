@@ -22,7 +22,7 @@ if execute == 1:
     interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
     nr_DD_days = 10
     take_prev_solution = 0
-    prev_emission = 'no'
+    prev_emission = 540875.012
     pyhub = {}
 
     for i, interval in enumerate(intervals):
@@ -54,7 +54,7 @@ if execute == 1:
         # solver settings
         model_config['solveroptions']['timelim']['value'] = 24*30
         model_config['solveroptions']['mipgap']['value'] = 0.02
-        model_config['solveroptions']['threads']['value'] = 12
+        model_config['solveroptions']['threads']['value'] = 8
         model_config['solveroptions']['nodefilestart']['value'] = 200
 
         #change save options
