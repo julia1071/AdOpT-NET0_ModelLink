@@ -29,7 +29,7 @@ for result_type in result_types:
     )
 
     # Define the index rows
-    index = ["path", "costs_interval", "sunk_costs", "costs_tot", "emissions_tot"]
+    index = ["path", "costs_obj_interval", "sunk_costs", "costs_tot_interval", "emissions_net"]
 
     # Create the DataFrame for this result type with NaN values
     result_data = pd.DataFrame(np.nan, index=index, columns=columns)
@@ -53,15 +53,15 @@ for result_type in result_types:
                     h5_path = Path(summary_results.loc[summary_results['case'] == case, 'time_stamp'].iloc[
                                        0]) / "optimization_results.h5"
                     result_data.at["path", (result_type, location, interval)] = h5_path
-                    result_data.loc["costs_interval", (result_type, location, interval)] = \
+                    result_data.loc["costs_obj_interval", (result_type, location, interval)] = \
                         summary_results.loc[summary_results['case'] == case, 'total_npv'].iloc[0]
-                    result_data.loc["emissions_tot", (result_type, location, interval)] = \
-                        summary_results.loc[summary_results['case'] == case, 'emissions_pos'].iloc[0]
+                    result_data.loc["emissions_net", (result_type, location, interval)] = \
+                        summary_results.loc[summary_results['case'] == case, 'emissions_net'].iloc[0]
                     tec_costs[interval] = summary_results.loc[summary_results['case'] == case, 'cost_capex_tecs'].iloc[0]
                     total_costs[interval] = summary_results.loc[summary_results['case'] == case, 'total_npv'].iloc[
                         0]
 
-                    #Calculate sunk costs for brownfield
+                    #Calculate sunk costs and cumulative costs for brownfield
                     if 'Brownfield' in result_type and interval != '2030':
                         prev_interval = result_data.columns.levels[2][i - 1]
                         if interval == '2040':
@@ -74,12 +74,11 @@ for result_type in result_types:
                                 prev_interval] + tec_costs[first_interval]
                             result_data.loc["costs_tot_interval", (result_type, location, interval)] = tec_costs[prev_interval] + \
                                 + tec_costs[first_interval] + summary_results.loc[summary_results['case'] == case, 'total_npv'].iloc[0]
+                            result_data.loc["costs_tot_cumulative", (result_type, location, interval)] = sum(
+                                total_costs.values()) * 10 + tec_costs[prev_interval] * 10 + tec_costs[first_interval] * 10
 
-                    # Calculate total cumulative costs
-                    if 'Brownfield' in result_type:
-                        if interval == '2050':
-                            result_data.loc["costs_tot_cumulative", (result_type, location, interval)] = sum(total_costs.values()) * 10
-                    elif 'Greenfield' in result_type:
+                    # Calculate total cumulative costs for Greenfield
+                    if 'Greenfield' in result_type:
                         result_data.loc["costs_tot_cumulative", (result_type, location, interval)] = total_costs[interval] * 30
 
                     if h5_path.exists():
