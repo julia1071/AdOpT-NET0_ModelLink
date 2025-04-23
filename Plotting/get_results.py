@@ -29,7 +29,7 @@ for result_type in result_types:
     )
 
     # Define the index rows
-    index = ["path", "costs_obj_interval", "sunk_costs", "costs_tot_interval", "emissions_net"]
+    index = ["path", "costs_obj_interval", "sunk_costs", "costs_tot_interval", "costs_tot_cumulative", "emissions_net"]
 
     # Create the DataFrame for this result type with NaN values
     result_data = pd.DataFrame(np.nan, index=index, columns=columns)
@@ -62,8 +62,11 @@ for result_type in result_types:
                         0]
 
                     #Calculate sunk costs and cumulative costs for brownfield
-                    if 'Brownfield' in result_type and interval != '2030':
+                    if 'Brownfield' in result_type:
                         prev_interval = result_data.columns.levels[2][i - 1]
+                        if interval == '2030':
+                            result_data.loc["costs_tot_interval", (result_type, location, interval)] = \
+                                summary_results.loc[summary_results['case'] == case, 'total_npv'].iloc[0]
                         if interval == '2040':
                             result_data.loc["sunk_costs", (result_type, location, interval)] = tec_costs[prev_interval]
                             result_data.loc["costs_tot_interval", (result_type, location, interval)] = tec_costs[prev_interval] + \
