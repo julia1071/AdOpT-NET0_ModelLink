@@ -8,7 +8,8 @@ from matplotlib.ticker import PercentFormatter
 from adopt_net0 import extract_datasets_from_h5group
 
 # Define the data path
-result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield', 'EmissionScope Greenfield', 'EmissionScope Brownfield']  # Add multiple result types
+# result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield'] # Add multiple result types
+result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield', 'EmissionScope Greenfield', 'EmissionScope Brownfield']
 
 data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long.xlsx'
 
@@ -49,6 +50,8 @@ for result_type in result_types:
         total_costs = {}
         for case in summary_results['case']:
             for i, interval in enumerate(result_data.columns.levels[2]):
+                # if location == 'TightEmission'  and interval == '2030':
+                #     interval = interval + '_tight'
                 if pd.notna(case) and interval in case:
                     h5_path = Path(summary_results.loc[summary_results['case'] == case, 'time_stamp'].iloc[
                                        0]) / "optimization_results.h5"
@@ -91,26 +94,48 @@ for result_type in result_types:
 
                             for tec in df_nodedata.columns.levels[2]:
                                 output_name = f'size_{tec}'
-                                if (interval, location, tec, 'size') in df_nodedata.columns:
-                                    result_data.loc[output_name, (result_type, location, interval)] = \
-                                        df_nodedata[(interval, location, tec, 'size')].iloc[0]
+                                if location == 'TightEmission':
+                                    if (interval, 'Chemelot', tec, 'size') in df_nodedata.columns:
+                                        result_data.loc[output_name, (result_type, location, interval)] = \
+                                            df_nodedata[(interval, 'Chemelot', tec, 'size')].iloc[0]
+                                    else:
+                                        result_data.loc[output_name, (result_type, location, interval)] = 0
                                 else:
-                                    result_data.loc[output_name, (result_type, location, interval)] = 0
+                                    if (interval, location, tec, 'size') in df_nodedata.columns:
+                                        result_data.loc[output_name, (result_type, location, interval)] = \
+                                            df_nodedata[(interval, location, tec, 'size')].iloc[0]
+                                    else:
+                                        result_data.loc[output_name, (result_type, location, interval)] = 0
 
                             ebalance = extract_datasets_from_h5group(hdf_file["operation/energy_balance"])
                             df_ebalance = pd.DataFrame(ebalance)
-                            cars_at_node = df_ebalance[interval, location].columns.droplevel([1]).unique()
+                            if location == 'TightEmission':
+                                cars_at_node = df_ebalance[interval, 'Chemelot'].columns.droplevel([1]).unique()
 
-                            for car in cars_at_node:
-                                parameters = ["import", "export"]
-                                for para in parameters:
-                                    output_name = f"{car}/{para}_max"
-                                    if (interval, location, car, para) in df_ebalance.columns:
-                                        car_output = df_ebalance[interval, location, car, para]
-                                        result_data.loc[output_name, (result_type, location, interval)] = max(
-                                            car_output)
-                                    else:
-                                        result_data.loc[output_name, (result_type, location, interval)] = 0
+                                for car in cars_at_node:
+                                    parameters = ["import", "export"]
+                                    for para in parameters:
+                                        output_name = f"{car}/{para}_max"
+                                        if (interval, 'Chemelot', car, para) in df_ebalance.columns:
+                                            car_output = df_ebalance[interval, 'Chemelot', car, para]
+                                            result_data.loc[output_name, (result_type, location, interval)] = max(
+                                                car_output)
+                                        else:
+                                            result_data.loc[output_name, (result_type, location, interval)] = 0
+
+                            else:
+                                cars_at_node = df_ebalance[interval, location].columns.droplevel([1]).unique()
+
+                                for car in cars_at_node:
+                                    parameters = ["import", "export"]
+                                    for para in parameters:
+                                        output_name = f"{car}/{para}_max"
+                                        if (interval, location, car, para) in df_ebalance.columns:
+                                            car_output = df_ebalance[interval, location, car, para]
+                                            result_data.loc[output_name, (result_type, location, interval)] = max(
+                                                car_output)
+                                        else:
+                                            result_data.loc[output_name, (result_type, location, interval)] = 0
 
     # Store results for this result_type
     all_results.append(result_data)

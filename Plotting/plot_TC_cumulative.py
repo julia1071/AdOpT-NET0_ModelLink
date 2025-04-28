@@ -1,131 +1,166 @@
 import numpy as np
 import pandas as pd
 import os
-
 from matplotlib import pyplot as plt
+import matplotlib.font_manager as fm
 from openpyxl.reader.excel import load_workbook
 
-# Load the Excel file
+# --- Configurable options ---
 file_path = "C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long.xlsx"
+metric = "emissions"       # Choose: "costs" or "emissions"
+scale_type = "total"   # Choose: "total" or "per_tonne"
+saveas = 'both'  # Options: "no", "svg", "pdf", "both"
+filename = 'TC_baseline_' + metric + '_' + scale_type
+
+# Set font to Open Sans
+font_path = 'C:/Windows/Fonts/OpenSans-Regular.ttf'  # Make sure this path is correct
+if os.path.exists(font_path):
+    open_sans = fm.FontProperties(fname=font_path)
+    plt.rcParams['font.family'] = open_sans.get_name()
+else:
+    print("Open Sans font not found, using default.")
+    plt.rcParams['font.family'] = 'sans-serif'
+
+
+# --- Load and prepare data ---
 df = pd.read_excel(file_path, sheet_name="Sheet1", header=None)
-
-# Use the first and third rows as headers
-top_header = df.iloc[0].ffill()  # Forward fill merged cells
-# top_header = top_header.replace({"EmissionLimit Greenfield": "Greenfield (Scope 1, 2, and 3)", "EmissionLimit Brownfield": "Brownfield (Scope 1, 2, and 3)",
-#                                  "EmissionScope Greenfield": "Greenfield (Scope 1 and 2)", "EmissionScope Brownfield":
-#                                      "Brownfield (Scope 1 and 2)",})
+top_header = df.iloc[0].ffill()
 sub_header = df.iloc[2].ffill()
-# sub_header = df.iloc[2].replace({"2030": "Short-term", "2040": "Mid-term", "2050": "Long-term"})
-
-# sub_header = df.iloc[2].astype(str)  # Convert to string
 df.columns = pd.MultiIndex.from_arrays([top_header, sub_header])
-
-# Rename first column header
-top_header = top_header.copy()  # Avoid modifying the original header list
+top_header = top_header.copy()
 top_header.iloc[0] = ""
 sub_header.iloc[0] = "Result type"
 df = df.iloc[4:].reset_index(drop=True)
 
-# Define the filter criteria
-keywords = [
-    "costs_interval", "sunk_costs", "costs_tot_interval", "costs_tot_cumulative", "emissions_tot"
-]
-
-# Extract first column name
+keywords = ["costs_obj_interval", "sunk_costs", "costs_tot_interval", "costs_tot_cumulative", "emissions_net"]
+total_product = 3089300
+total_product_cum = total_product * 30
 first_column_name = df.columns[0]
-
-# Filter rows based on keywords
 filtered_df = df[df[first_column_name].astype(str).str.startswith(tuple(keywords))]
 
-# Prepare figure
-fig, ax = plt.subplots(figsize=(10, 5))
-
-# Bar positions
-x = np.arange(8)
-bar_width = 0.8
-
-# Colors
-colors = ["#4C72B0", "#55A868", "#C44E52", "#8172B2"]
-brownfield_color = "#DD8452"
-
-# Labels
-x_labels = ['Greenfield\n2030', 'Greenfield\n2040', 'Greenfield\n2050', 'Brownfield',
-            'Greenfield\n2030', 'Greenfield\n2040', 'Greenfield\n2050', 'Brownfield']
-section_titles = ['EmissionLimit', 'EmissionScope']
-
-
-# --- Extract values from your multiindex dataframe ---
-# Helper function to get data
 def get_val(df, label, year, cost_type):
     try:
-        first_column_name = df.columns[0]
         return float(df.loc[df[first_column_name] == cost_type, (label, year)].values[0])
     except:
         return 0
 
-
-# Build values
-greenfield_limit = [get_val(filtered_df, 'EmissionLimit Greenfield', year, "costs_tot_cumulative") for year in
-                    ['2030', '2040', '2050']]
-brownfield_limit = [get_val(filtered_df, 'EmissionLimit Brownfield', year, "costs_tot_interval") * 10 for year in
-                    ['2030', '2040', '2050']]
+# --- Extract values ---
+greenfield_limit = [get_val(filtered_df, 'EmissionLimit Greenfield', y, "costs_tot_cumulative") / 1e6 for y in ['2030', '2040', '2050']]
+brownfield_limit = [get_val(filtered_df, 'EmissionLimit Brownfield', y, "costs_tot_interval") * 10 /1e6  for y in ['2030', '2040', '2050']]
 brownfield_limit_sum = sum(brownfield_limit)
 
-greenfield_scope = [get_val(filtered_df,'EmissionScope Greenfield', year, "costs_tot_cumulative") for year in
-                    ['2030', '2040', '2050']]
-brownfield_scope = [get_val(filtered_df,'EmissionScope Brownfield', year, "costs_tot_interval") * 10 for year in
-                    ['2030', '2040', '2050']]
+greenfield_scope = [get_val(filtered_df, 'EmissionScope Greenfield', y, "costs_tot_cumulative") / 1e6 for y in ['2030', '2040', '2050']]
+brownfield_scope = [get_val(filtered_df, 'EmissionScope Brownfield', y, "costs_tot_interval") * 10 / 1e6 for y in ['2030', '2040', '2050']]
 brownfield_scope_sum = sum(brownfield_scope)
 
-# --- Plot bars ---
-# EmissionLimit section
-bars1 = ax.bar(x[:3], greenfield_limit, color=colors, label='Greenfield')
-bar1b = ax.bar(x[3], brownfield_limit[0], color=brownfield_color)
-bar1b2 = ax.bar(x[3], brownfield_limit[1], bottom=brownfield_limit[0], color='lightgray')
-bar1b3 = ax.bar(x[3], brownfield_limit[2], bottom=brownfield_limit[0] + brownfield_limit[1], color='darkgray')
+total_em_limit = [get_val(filtered_df, 'EmissionLimit Greenfield', y, "emissions_net") * 30 / 1e6 for y in ['2030', '2040', '2050']]
+total_em_limit_bf = [get_val(filtered_df, 'EmissionLimit Brownfield', y, "emissions_net") * 10 / 1e6 for y in ['2030', '2040', '2050']]
+total_em_scope = [get_val(filtered_df, 'EmissionScope Greenfield', y, "emissions_net") * 30 / 1e6 for y in ['2030', '2040', '2050']]
+total_em_scope_bf = [get_val(filtered_df, 'EmissionScope Brownfield', y, "emissions_net") * 10 / 1e6 for y in ['2030', '2040', '2050']]
 
-# EmissionScope section
-bars2 = ax.bar(x[4:7], greenfield_scope, color=colors, label='Greenfield')
-bar2b = ax.bar(x[7], brownfield_scope[0], color=brownfield_color)
-bar2b2 = ax.bar(x[7], brownfield_scope[1], bottom=brownfield_scope[0], color='lightgray')
-bar2b3 = ax.bar(x[7], brownfield_scope[2], bottom=brownfield_scope[0] + brownfield_scope[1], color='darkgray')
+# --- Data Selection ---
+if metric == "costs":
+    ylabel_base = "Cluster costs"
+    unit = "M€" if scale_type == "total" else "€/tonne product"
+    gf_limit_vals = greenfield_limit
+    bf_limit_vals = brownfield_limit
+    gf_scope_vals = greenfield_scope
+    bf_scope_vals = brownfield_scope
+    if scale_type == "per_tonne":
+        #recalculate for brownfield
+        bf_limit_total = sum(total_em_limit_bf)
+        bf_limit_avg = sum(total_em_limit_bf) / len(total_em_limit_bf)
+        bf_limit_fractions = [(v / bf_limit_total if bf_limit_total > 0 else 0) for v in bf_limit_vals]
+        bf_scope_total = sum(total_em_scope_bf)
+        bf_scope_avg = sum(total_em_scope_bf) / len(total_em_scope_bf)
+        bf_scope_fractions = [(v / bf_scope_total if bf_scope_total > 0 else 0) for v in bf_scope_vals]
 
-# --- Add dashed line separator ---
+        gf_limit_vals = [val * 1e6 / total_product_cum for val in gf_limit_vals]
+        bf_limit_vals = [fraction * bf_limit_avg * 1e6 / (total_product * 10) for fraction in bf_limit_fractions]
+        gf_scope_vals = [val * 1e6 / total_product_cum for val in gf_scope_vals]
+        bf_scope_vals = [fraction * bf_scope_avg * 1e6 / (total_product * 10) for fraction in bf_scope_fractions]
+else:
+    ylabel_base = "Cluster emissions"
+    unit = "MtCO$_2$" if scale_type == "total" else "tCO$_2$/tonne product"
+    gf_limit_vals = total_em_limit
+    bf_limit_vals = total_em_limit_bf
+    gf_scope_vals = total_em_scope
+    bf_scope_vals = total_em_scope_bf
+    if scale_type == "per_tonne":
+        #recalculate for brownfield
+        bf_limit_total = sum(total_em_limit_bf)
+        bf_limit_avg = sum(total_em_limit_bf) / len(total_em_limit_bf)
+        bf_limit_fractions = [(v / bf_limit_total if bf_limit_total > 0 else 0) for v in bf_limit_vals]
+        bf_scope_total = sum(total_em_scope_bf)
+        bf_scope_avg = sum(total_em_scope_bf) / len(total_em_scope_bf)
+        bf_scope_fractions = [(v / bf_scope_total if bf_scope_total > 0 else 0) for v in bf_scope_vals]
+
+        gf_limit_vals = [val * 1e6 / total_product_cum for val in gf_limit_vals]
+        bf_limit_vals = [fraction * bf_limit_avg * 1e6 / (total_product * 10) for fraction in bf_limit_fractions]
+        gf_scope_vals = [val * 1e6 / total_product_cum for val in gf_scope_vals]
+        bf_scope_vals = [fraction * bf_scope_avg * 1e6 / (total_product * 10) for fraction in bf_scope_fractions]
+
+# --- Plotting ---
+fig, ax = plt.subplots(figsize=(10, 3))
+x = np.arange(8)
+
+colors = ["#7F9183", "#7F9183", "#7F9183", "#7F9183"]
+brownfield_color = ["#765B56", "#C3B0AC", "#DDD5D0"]
+x_labels = ['Greenfield\n2030', 'Greenfield\n2040', 'Greenfield\n2050', 'Brownfield',
+            'Greenfield\n2030', 'Greenfield\n2040', 'Greenfield\n2050', 'Brownfield']
+
+# EmissionLimit / Cost bars
+ax.bar(x[:3], gf_limit_vals, color=colors, label='Greenfield')
+ax.bar(x[3], bf_limit_vals[0], color=brownfield_color[0])
+ax.bar(x[3], bf_limit_vals[1], bottom=bf_limit_vals[0], color=brownfield_color[1])
+ax.bar(x[3], bf_limit_vals[2], bottom=bf_limit_vals[0] + bf_limit_vals[1], color=brownfield_color[2])
+
+# EmissionScope / Cost bars
+ax.bar(x[4:7], gf_scope_vals, color=colors)
+ax.bar(x[7], bf_scope_vals[0], color=brownfield_color[0])
+ax.bar(x[7], bf_scope_vals[1], bottom=bf_scope_vals[0], color=brownfield_color[1])
+ax.bar(x[7], bf_scope_vals[2], bottom=bf_scope_vals[0] + bf_scope_vals[1], color=brownfield_color[2])
+
+# Dashed line between sections
 ax.axvline(x=3.5, color='black', linestyle='dashed')
 
-# --- Labels and formatting ---
+# Labels
 ax.set_xticks(x)
 ax.set_xticklabels(x_labels)
-ax.set_ylabel("System costs [M€]")
-# ax.set_title("Total system costs under different emission targets")
-
-# Annotate section titles
-ax.text(1.5, ax.get_ylim()[1] * 1.02, "Scope 1, 2 & 3", ha='center', fontsize=10)
-ax.text(5.5, ax.get_ylim()[1] * 1.02, "Scope 1 & 2", ha='center', fontsize=10)
+ax.set_ylabel(f"{ylabel_base} [{unit}]")
+ax.text(1.5, ax.get_ylim()[1] * 1.05, "Scope 1, 2 & 3", ha='center', fontsize=10) #change for text position
+ax.text(5.5, ax.get_ylim()[1] * 1.05, "Scope 1 & 2", ha='center', fontsize=10)
 
 # Legend
 custom_legend = [
     plt.Rectangle((0, 0), 1, 1, color=colors[0], label='Greenfield'),
-    plt.Rectangle((0, 0), 1, 1, color=brownfield_color, label='Brownfield (2030)'),
-    plt.Rectangle((0, 0), 1, 1, color='lightgray', label='Brownfield (2040)'),
-    plt.Rectangle((0, 0), 1, 1, color='darkgray', label='Brownfield (2050)'),
+    plt.Rectangle((0, 0), 1, 1, color=brownfield_color[0], label='Brownfield (2030)'),
+    plt.Rectangle((0, 0), 1, 1, color=brownfield_color[1], label='Brownfield (2040)'),
+    plt.Rectangle((0, 0), 1, 1, color=brownfield_color[2], label='Brownfield (2050)'),
 ]
 ax.legend(handles=custom_legend, loc='upper left')
 
-plt.tight_layout()
-filename = 'TC_baseline'
-saveas = 'both'
-if saveas == 'svg':
-    savepath = f'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Research/Multiyear Modeling/MY_Plots/{filename}.svg'
-    plt.savefig(savepath, format='svg')
-elif saveas == 'pdf':
-    savepath = f'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Research/Multiyear Modeling/MY_Plots/{filename}.pdf'
-    plt.savefig(savepath, format='pdf')
-elif saveas == 'both':
-    savepath = f'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Research/Multiyear Modeling/MY_Plots/{filename}.pdf'
-    plt.savefig(savepath, format='pdf')
-    savepath = f'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Research/Multiyear Modeling/MY_Plots/{filename}.svg'
-    plt.savefig(savepath, format='svg')
+# #axes limit
+# if scale_type == 'per_tonne':
+#     if metric == 'costs':
+#         ax.set_ylim(0, 1500)
+#     else:
+#         ax.set_ylim(0, 0.28)
+# else:
+#     if metric == 'costs':
+#         ax.set_ylim(0, 1500)
+#     else:
+#         ax.set_ylim(0, 0.3)
 
 
+
+# --- Optional saving ---
+if saveas in ['svg', 'pdf', 'both']:
+    basepath = 'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Research/Multiyear Modeling/MY_Plots'
+    if saveas in ['pdf', 'both']:
+        plt.savefig(os.path.join(basepath, f"{filename}.pdf"), format='pdf')
+    if saveas in ['svg', 'both']:
+        plt.savefig(os.path.join(basepath, f"{filename}.svg"), format='svg')
+
+plt.tight_layout(h_pad=1.5)
 plt.show()

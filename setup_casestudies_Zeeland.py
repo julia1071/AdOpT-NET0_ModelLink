@@ -8,7 +8,7 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 import pandas as pd
 
 #global functions
-execute_greenfield = 1
+execute_greenfield = 0
 execute_brownfield = 1
 read_all_greenfield = 0
 read_all_brownfield = 0
@@ -636,7 +636,7 @@ if execute_brownfield:
                             "Storage_H2", "Storage_Battery", "Storage_Propylene",
                             "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "PE_mixer", "CO2_mixer", "HBfeed_mixer",
                             "syngas_mixer"]
-            set_tecs_existing = {"SteamReformer": 1078, "HaberBosch": 813, "CrackerFurnace": 499, "OlefinSeparation": 499}
+            set_tecs_existing = {"SteamReformer": 1657, "HaberBosch": 1248, "CrackerFurnace": 696, "OlefinSeparation": 696}
 
             json_file_path = casepath / "Topology.json"
             with open(json_file_path, "r") as json_file:
