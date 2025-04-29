@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
+import matplotlib.font_manager as fm
 from matplotlib.colors import to_rgba
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
@@ -325,6 +326,78 @@ def plot_import_profiles(import_profiles, el_price, el_price2, el_emissionrate,
     plt.figlegend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, 0.01), ncol=3)
 
 
+def plot_import_vs_price(import_profiles, el_price, interval, label_map=None, colors=None):
+    """
+    Scatter plot of electricity import vs. electricity price with broken x-axis.
+
+    Parameters:
+    - import_profiles: dict of Series, each representing electricity import over time
+    - el_price: Series of electricity price over time
+    - interval: string to append to each label (e.g. "2025", "Hourly")
+    """
+    greenfield_color = "#7F9183"
+    brownfield_color = "#765B56"
+
+    # Set up figure with axis break
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 6), sharey=True, gridspec_kw={'width_ratios': [3, 1]})
+
+    for key, profile in import_profiles.items():
+        # Determine label based on key content
+        if 'Greenfield' in key[0]:
+            label = f'Greenfield {interval}'
+            color = greenfield_color
+        elif 'Brownfield' in key[0]:
+            label = f'Brownfield {interval}'
+            color = brownfield_color
+        else:
+            label = f'{key} {interval}'
+            color = 'gray'
+
+        # Align index
+        common_index = profile.index.intersection(el_price.index)
+        x = el_price.loc[common_index]
+        y = profile.loc[common_index]
+
+        # Mask by x value
+        mask_low = x <= 150
+        mask_high = x > 150
+
+        ax1.scatter(x[mask_low], y[mask_low], label=label, color=color, s=10, alpha=1)
+        ax2.scatter(x[mask_high], y[mask_high], color=color, s=10, alpha=1)
+
+    # Set axis limits and breaks
+    ax1.set_xlim(0, 150)
+    ax2.set_xlim(9000, 10100)
+    ax1.set_ylim(0, max(profile.max() for profile in import_profiles.values()) * 1.1)
+
+    # Hide spines between axes
+    ax1.spines['right'].set_visible(False)
+    ax2.spines['left'].set_visible(False)
+    ax1.tick_params(labelright=False)
+    ax2.tick_params(labelleft=False)
+
+    # Draw axis break indicators
+    d = .015
+    kwargs = dict(transform=ax1.transAxes, color='k', clip_on=False)
+    ax1.plot((1 - d, 1 + d), (-d, +d), **kwargs)
+    ax1.plot((1 - d, 1 + d), (1 - d, 1 + d), **kwargs)
+    kwargs.update(transform=ax2.transAxes)
+    ax2.plot((-d, +d), (-d, +d), **kwargs)
+    ax2.plot((-d, +d), (1 - d, 1 + d), **kwargs)
+
+    # Labels and formatting
+    # fig.suptitle(f'Electricity Import vs. Price with Axis Break ({interval})')
+    ax1.set_xlabel('Electricity Price [€/MWh]')
+    # ax2.set_xlabel('Electricity Price [€/MWh]')
+    ax1.set_ylabel('Electricity Import [MW]')
+    ax1.grid(True, alpha=0.3)
+    ax2.grid(True, alpha=0.3)
+    ax1.legend()
+
+    plt.tight_layout()
+    plt.subplots_adjust(wspace=0.05)
+
+
 def plot_operation_profiles(operation_profiles, el_price2, el_emissionrate, relative=False, overlay=None, colors=None):
     """
     Plot operation profiles with optional overlays and custom colors
@@ -432,38 +505,58 @@ def plot_storage_level(operation_profiles, colors=None, zoom_techs=None):
     for ax, ((_, _, _, tec), profile), color in zip(axes, storage_profiles.items(), color_cycle):
         label = tech_labels[tec]
 
-        ax.fill_between(range(len(profile)), profile, color=color, alpha=0.6, label=label)
+        # Convert ammonia from tonnes to MWh for plotting
+        if tec == "Storage_Ammonia":
+            profile_mwh = profile * 5.2
+            ax.fill_between(range(len(profile_mwh)), profile_mwh, color=color, alpha=0.6, label=label)
+            ax.set_ylabel('Storage level [MWh]')
+            ax.set_title(label)
+            ax.grid(True, alpha=0.3)
 
-        ax.set_title(label)
-        ax.set_ylabel('Storage level [MWh]' if any(x in tec for x in ["Battery", "H2"]) else 'Storage level [ton]')
-        ax.grid(True, alpha=0.3)
+            # Secondary y-axis for tonnes
+            ax_right = ax.twinx()
+            ax_right.set_ylim(ax.get_ylim()[0] / 5.2, ax.get_ylim()[1] / 5.2)
+            ax_right.set_ylabel("Storage level [ton]")
 
-        # Optional summer zoom inset
+        else:
+            ax.fill_between(range(len(profile)), profile, color=color, alpha=0.6, label=label)
+            ax.set_ylabel('Storage level [MWh]' if "Battery" in tec or "H2" in tec else 'Storage level [ton]')
+            ax.set_title(label)
+            ax.grid(True, alpha=0.3)
+
+        # Optional summer week zoom inset
         if tec in zoom_techs:
             summer_start = 168 * 25
             summer_end = summer_start + 168
             zoom_ax = inset_axes(ax, width="40%", height="35%", loc='upper right', borderpad=2)
-            zoom_ax.fill_between(range(summer_start, summer_end),
-                                 profile[summer_start:summer_end],
-                                 color=color, alpha=0.6)
+
+            if tec == "Storage_Ammonia":
+                zoom_ax.fill_between(range(summer_start, summer_end),
+                                     profile_mwh[summer_start:summer_end],
+                                     color=color, alpha=0.6)
+            else:
+                zoom_ax.fill_between(range(summer_start, summer_end),
+                                     profile[summer_start:summer_end],
+                                     color=color, alpha=0.6)
+
             zoom_ax.set_title("Summer week", fontsize=8)
             zoom_ax.tick_params(labelsize=6)
             zoom_ax.grid(True, alpha=0.3)
             zoom_ax.set_xlim(summer_start, summer_end)
 
     axes[-1].set_xlabel('Time (hours)')
-
     plt.tight_layout(h_pad=1.5)
 
 
 
 def main():
+    # set_result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield']  # Add multiple result types
     set_result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield', 'EmissionScope Greenfield',
                         'EmissionScope Brownfield']  # Add multiple result types
     result_type = 'EmissionLimit Greenfield'
     interval = '2030'
 
-    get_data = 0
+    get_data = 1
 
     if get_data == 1:
         fetch_and_process_data_import(RESULT_FOLDER, DATA_TO_EXCEL_PATH, set_result_types, interval)
@@ -500,8 +593,9 @@ def main():
                                 colors=custom_colors_operation)
         name = f"{interval}_{result_type.replace(' ', '_')}"
     elif plot == "electricity_import":
-        plot_import_profiles(import_profiles, el_price, el_price2, el_emissionrate, relative=False, overlay=overlay,
-                             colors=custom_colors_import)
+        # plot_import_profiles(import_profiles, el_price, el_price2, el_emissionrate, relative=False, overlay=overlay,
+        #                      colors=custom_colors_import)
+        plot_import_vs_price(import_profiles, el_price, interval)
         name = f"{interval}"
     elif plot == "storage_level":
         plot_storage_level(storage_profiles, colors=custom_colors_storage, zoom_techs=["Storage_Battery", "Storage_H2"])
@@ -509,7 +603,7 @@ def main():
 
     filename = plot + '_' + name
 
-    saveas = 'both'
+    saveas = 'pdf'
     if saveas == 'svg':
         savepath = f'C:/Users/5637635/Documents/OneDrive - Universiteit Utrecht/Research/Multiyear Modeling/MY_Plots/{filename}.svg'
         plt.savefig(savepath, format='svg')

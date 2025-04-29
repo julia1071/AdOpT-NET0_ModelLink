@@ -8,19 +8,20 @@ from openpyxl.reader.excel import load_workbook
 # --- Configurable options ---
 file_path = "C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long.xlsx"
 metric = "emissions"       # Choose: "costs" or "emissions"
-scale_type = "total"   # Choose: "total" or "per_tonne"
-saveas = 'both'  # Options: "no", "svg", "pdf", "both"
+scale_type = "per_tonne"   # Choose: "total" or "per_tonne"
+saveas = 'pdf'  # Options: "no", "svg", "pdf", "both"
 filename = 'TC_baseline_' + metric + '_' + scale_type
+stacked = 0
 
 # Set font to Open Sans
-font_path = 'C:/Windows/Fonts/OpenSans-Regular.ttf'  # Make sure this path is correct
-if os.path.exists(font_path):
-    open_sans = fm.FontProperties(fname=font_path)
-    plt.rcParams['font.family'] = open_sans.get_name()
-else:
-    print("Open Sans font not found, using default.")
-    plt.rcParams['font.family'] = 'sans-serif'
-
+# font_path = 'C:/Windows/Fonts/OpenSans-Regular.ttf'  # Make sure this path is correct
+# if os.path.exists(font_path):
+#     open_sans = fm.FontProperties(fname=font_path)
+#     plt.rcParams['font.family'] = open_sans.get_name()
+# else:
+#     print("Open Sans font not found, using default.")
+#     plt.rcParams['font.family'] = 'sans-serif'
+plt.rcParams['font.family'] = 'serif'
 
 # --- Load and prepare data ---
 df = pd.read_excel(file_path, sheet_name="Sheet1", header=None)
@@ -43,6 +44,7 @@ def get_val(df, label, year, cost_type):
         return float(df.loc[df[first_column_name] == cost_type, (label, year)].values[0])
     except:
         return 0
+
 
 # --- Extract values ---
 greenfield_limit = [get_val(filtered_df, 'EmissionLimit Greenfield', y, "costs_tot_cumulative") / 1e6 for y in ['2030', '2040', '2050']]
@@ -68,17 +70,17 @@ if metric == "costs":
     bf_scope_vals = brownfield_scope
     if scale_type == "per_tonne":
         #recalculate for brownfield
-        bf_limit_total = sum(total_em_limit_bf)
-        bf_limit_avg = sum(total_em_limit_bf) / len(total_em_limit_bf)
-        bf_limit_fractions = [(v / bf_limit_total if bf_limit_total > 0 else 0) for v in bf_limit_vals]
-        bf_scope_total = sum(total_em_scope_bf)
-        bf_scope_avg = sum(total_em_scope_bf) / len(total_em_scope_bf)
-        bf_scope_fractions = [(v / bf_scope_total if bf_scope_total > 0 else 0) for v in bf_scope_vals]
+        # bf_limit_total = sum(total_em_limit_bf)
+        # bf_limit_avg = sum(total_em_limit_bf) / len(total_em_limit_bf)
+        # bf_limit_fractions = [(v / bf_limit_total if bf_limit_total > 0 else 0) for v in bf_limit_vals]
+        # bf_scope_total = sum(total_em_scope_bf)
+        # bf_scope_avg = sum(total_em_scope_bf) / len(total_em_scope_bf)
+        # bf_scope_fractions = [(v / bf_scope_total if bf_scope_total > 0 else 0) for v in bf_scope_vals]
 
         gf_limit_vals = [val * 1e6 / total_product_cum for val in gf_limit_vals]
-        bf_limit_vals = [fraction * bf_limit_avg * 1e6 / (total_product * 10) for fraction in bf_limit_fractions]
+        bf_limit_vals = [val * 1e6 / (total_product * 10) for val in bf_limit_vals]
         gf_scope_vals = [val * 1e6 / total_product_cum for val in gf_scope_vals]
-        bf_scope_vals = [fraction * bf_scope_avg * 1e6 / (total_product * 10) for fraction in bf_scope_fractions]
+        bf_scope_vals = [val * 1e6 / (total_product * 10) for val in bf_scope_vals]
 else:
     ylabel_base = "Cluster emissions"
     unit = "MtCO$_2$" if scale_type == "total" else "tCO$_2$/tonne product"
@@ -88,70 +90,139 @@ else:
     bf_scope_vals = total_em_scope_bf
     if scale_type == "per_tonne":
         #recalculate for brownfield
-        bf_limit_total = sum(total_em_limit_bf)
-        bf_limit_avg = sum(total_em_limit_bf) / len(total_em_limit_bf)
-        bf_limit_fractions = [(v / bf_limit_total if bf_limit_total > 0 else 0) for v in bf_limit_vals]
-        bf_scope_total = sum(total_em_scope_bf)
-        bf_scope_avg = sum(total_em_scope_bf) / len(total_em_scope_bf)
-        bf_scope_fractions = [(v / bf_scope_total if bf_scope_total > 0 else 0) for v in bf_scope_vals]
+        # bf_limit_total = sum(total_em_limit_bf)
+        # bf_limit_avg = sum(total_em_limit_bf) / len(total_em_limit_bf)
+        # bf_limit_fractions = [(v / bf_limit_total if bf_limit_total > 0 else 0) for v in bf_limit_vals]
+        # bf_scope_total = sum(total_em_scope_bf)
+        # bf_scope_avg = sum(total_em_scope_bf) / len(total_em_scope_bf)
+        # bf_scope_fractions = [(v / bf_scope_total if bf_scope_total > 0 else 0) for v in bf_scope_vals]
 
         gf_limit_vals = [val * 1e6 / total_product_cum for val in gf_limit_vals]
-        bf_limit_vals = [fraction * bf_limit_avg * 1e6 / (total_product * 10) for fraction in bf_limit_fractions]
+        bf_limit_vals = [val * 1e6 / (total_product * 10) for val in bf_limit_vals]
         gf_scope_vals = [val * 1e6 / total_product_cum for val in gf_scope_vals]
-        bf_scope_vals = [fraction * bf_scope_avg * 1e6 / (total_product * 10) for fraction in bf_scope_fractions]
+        bf_scope_vals = [val * 1e6 / (total_product * 10) for val in bf_scope_vals]
 
-# --- Plotting ---
-fig, ax = plt.subplots(figsize=(10, 3))
-x = np.arange(8)
+if stacked:
+    # --- Plotting ---
+    fig, ax = plt.subplots(figsize=(10, 3))
+    x = np.arange(8)
 
-colors = ["#7F9183", "#7F9183", "#7F9183", "#7F9183"]
-brownfield_color = ["#765B56", "#C3B0AC", "#DDD5D0"]
-x_labels = ['Greenfield\n2030', 'Greenfield\n2040', 'Greenfield\n2050', 'Brownfield',
-            'Greenfield\n2030', 'Greenfield\n2040', 'Greenfield\n2050', 'Brownfield']
+    colors = ["#7F9183", "#7F9183", "#7F9183", "#7F9183"]
+    brownfield_color = ["#765B56", "#C3B0AC", "#DDD5D0"]
+    x_labels = ['Greenfield\n2030', 'Greenfield\n2040', 'Greenfield\n2050', 'Brownfield',
+                'Greenfield\n2030', 'Greenfield\n2040', 'Greenfield\n2050', 'Brownfield']
 
-# EmissionLimit / Cost bars
-ax.bar(x[:3], gf_limit_vals, color=colors, label='Greenfield')
-ax.bar(x[3], bf_limit_vals[0], color=brownfield_color[0])
-ax.bar(x[3], bf_limit_vals[1], bottom=bf_limit_vals[0], color=brownfield_color[1])
-ax.bar(x[3], bf_limit_vals[2], bottom=bf_limit_vals[0] + bf_limit_vals[1], color=brownfield_color[2])
+    # EmissionLimit / Cost bars
+    ax.bar(x[:3], gf_limit_vals, color=colors, label='Greenfield')
+    ax.bar(x[3], bf_limit_vals[0], color=brownfield_color[0])
+    ax.bar(x[3], bf_limit_vals[1], bottom=bf_limit_vals[0], color=brownfield_color[1])
+    ax.bar(x[3], bf_limit_vals[2], bottom=bf_limit_vals[0] + bf_limit_vals[1], color=brownfield_color[2])
 
-# EmissionScope / Cost bars
-ax.bar(x[4:7], gf_scope_vals, color=colors)
-ax.bar(x[7], bf_scope_vals[0], color=brownfield_color[0])
-ax.bar(x[7], bf_scope_vals[1], bottom=bf_scope_vals[0], color=brownfield_color[1])
-ax.bar(x[7], bf_scope_vals[2], bottom=bf_scope_vals[0] + bf_scope_vals[1], color=brownfield_color[2])
+    # EmissionScope / Cost bars
+    ax.bar(x[4:7], gf_scope_vals, color=colors)
+    ax.bar(x[7], bf_scope_vals[0], color=brownfield_color[0])
+    ax.bar(x[7], bf_scope_vals[1], bottom=bf_scope_vals[0], color=brownfield_color[1])
+    ax.bar(x[7], bf_scope_vals[2], bottom=bf_scope_vals[0] + bf_scope_vals[1], color=brownfield_color[2])
 
-# Dashed line between sections
-ax.axvline(x=3.5, color='black', linestyle='dashed')
+    # Dashed line between sections
+    ax.axvline(x=3.5, color='black', linestyle='dashed')
 
-# Labels
-ax.set_xticks(x)
-ax.set_xticklabels(x_labels)
-ax.set_ylabel(f"{ylabel_base} [{unit}]")
-ax.text(1.5, ax.get_ylim()[1] * 1.05, "Scope 1, 2 & 3", ha='center', fontsize=10) #change for text position
-ax.text(5.5, ax.get_ylim()[1] * 1.05, "Scope 1 & 2", ha='center', fontsize=10)
+    # Labels
+    ax.set_xticks(x)
+    ax.set_xticklabels(x_labels)
+    ax.set_ylabel(f"{ylabel_base} [{unit}]")
+    ax.text(1.5, ax.get_ylim()[1] * 1.05, "Scope 1, 2 & 3", ha='center', fontsize=10) #change for text position
+    ax.text(5.5, ax.get_ylim()[1] * 1.05, "Scope 1 & 2", ha='center', fontsize=10)
 
-# Legend
-custom_legend = [
-    plt.Rectangle((0, 0), 1, 1, color=colors[0], label='Greenfield'),
-    plt.Rectangle((0, 0), 1, 1, color=brownfield_color[0], label='Brownfield (2030)'),
-    plt.Rectangle((0, 0), 1, 1, color=brownfield_color[1], label='Brownfield (2040)'),
-    plt.Rectangle((0, 0), 1, 1, color=brownfield_color[2], label='Brownfield (2050)'),
-]
-ax.legend(handles=custom_legend, loc='upper left')
+    # Legend
+    custom_legend = [
+        plt.Rectangle((0, 0), 1, 1, color=colors[0], label='Greenfield'),
+        plt.Rectangle((0, 0), 1, 1, color=brownfield_color[0], label='Brownfield (2030)'),
+        plt.Rectangle((0, 0), 1, 1, color=brownfield_color[1], label='Brownfield (2040)'),
+        plt.Rectangle((0, 0), 1, 1, color=brownfield_color[2], label='Brownfield (2050)'),
+    ]
+    ax.legend(handles=custom_legend, loc='upper left')
 
-# #axes limit
-# if scale_type == 'per_tonne':
-#     if metric == 'costs':
-#         ax.set_ylim(0, 1500)
-#     else:
-#         ax.set_ylim(0, 0.28)
-# else:
-#     if metric == 'costs':
-#         ax.set_ylim(0, 1500)
-#     else:
-#         ax.set_ylim(0, 0.3)
+    # #axes limit
+    # if scale_type == 'per_tonne':
+    #     if metric == 'costs':
+    #         ax.set_ylim(0, 1500)
+    #     else:
+    #         ax.set_ylim(0, 0.28)
+    # else:
+    #     if metric == 'costs':
+    #         ax.set_ylim(0, 1500)
+    #     else:
+    #         ax.set_ylim(0, 0.3)
 
+
+else:
+    # --- Plotting ---
+    fig, ax = plt.subplots(figsize=(10, 4))
+
+    years = ['2030', '2040', '2050']
+    n_years = len(years)
+
+    # X positions
+    group_width = 1  # space between year groups
+    bar_width = 0.35
+    x_greenfield = np.arange(n_years) * group_width - bar_width / 2
+    x_brownfield = np.arange(n_years) * group_width + bar_width / 2
+
+    # Colors
+    greenfield_color = "#7F9183"
+    brownfield_color = "#765B56"
+
+    # --- Plotting ---
+    # EmissionLimit bars
+    ax.bar(x_greenfield[0], gf_limit_vals[0], width=bar_width, color=greenfield_color, label='Greenfield')
+    ax.bar(x_brownfield[0], bf_limit_vals[0], width=bar_width, color=brownfield_color)
+
+    ax.bar(x_greenfield[1], gf_limit_vals[1], width=bar_width, color=greenfield_color)
+    ax.bar(x_brownfield[1], bf_limit_vals[1], width=bar_width, color=brownfield_color)
+
+    ax.bar(x_greenfield[2], gf_limit_vals[2], width=bar_width, color=greenfield_color)
+    ax.bar(x_brownfield[2], bf_limit_vals[2], width=bar_width, color=brownfield_color)
+
+    # EmissionScope bars
+    offset = group_width * (n_years) + 1  # add some space after first section
+
+    ax.bar(x_greenfield[0] + offset, gf_scope_vals[0], width=bar_width, color=greenfield_color)
+    ax.bar(x_brownfield[0] + offset, bf_scope_vals[0], width=bar_width, color=brownfield_color)
+
+    ax.bar(x_greenfield[1] + offset, gf_scope_vals[1], width=bar_width, color=greenfield_color)
+    ax.bar(x_brownfield[1] + offset, bf_scope_vals[1], width=bar_width, color=brownfield_color)
+
+    ax.bar(x_greenfield[2] + offset, gf_scope_vals[2], width=bar_width, color=greenfield_color)
+    ax.bar(x_brownfield[2] + offset, bf_scope_vals[2], width=bar_width, color=brownfield_color)
+
+    # --- Decorations ---
+    # X ticks: center at year groups
+    xticks_positions = list((x_greenfield + x_brownfield) / 2) + list(
+        ((x_greenfield + offset) + (x_brownfield + offset)) / 2)
+    xticks_labels = years + years
+
+    ax.set_xticks(xticks_positions)
+    ax.set_xticklabels(xticks_labels)
+
+    # Dashed line between Limit and Scope
+    ax.axvline(x=(x_brownfield[2] + x_greenfield[0] + offset) / 2, color='black', linestyle='dashed')
+
+    # Labels
+    ax.set_ylabel(f"{ylabel_base} [{unit}]")
+
+    # Text annotations
+    ax.text((x_brownfield[2] + x_greenfield[0]) / 2, ax.get_ylim()[1] * 1.05, "Scope 1, 2 & 3", ha='center',
+            fontsize=10)
+    ax.text((x_brownfield[2] + x_greenfield[0] + 2 * offset) / 2, ax.get_ylim()[1] * 1.05, "Scope 1 & 2",
+            ha='center', fontsize=10)
+
+    # Legend
+    custom_legend = [
+        plt.Rectangle((0, 0), 1, 1, color=greenfield_color, label='Greenfield'),
+        plt.Rectangle((0, 0), 1, 1, color=brownfield_color, label='Brownfield'),
+    ]
+    ax.legend(handles=custom_legend, loc='upper center')
 
 
 # --- Optional saving ---
@@ -162,5 +233,6 @@ if saveas in ['svg', 'pdf', 'both']:
     if saveas in ['svg', 'both']:
         plt.savefig(os.path.join(basepath, f"{filename}.svg"), format='svg')
 
-plt.tight_layout(h_pad=1.5)
+# plt.tight_layout(h_pad=1.5)
+plt.tight_layout()
 plt.show()

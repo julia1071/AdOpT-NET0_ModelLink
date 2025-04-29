@@ -7,11 +7,21 @@ from pathlib import Path
 from matplotlib.ticker import PercentFormatter
 from adopt_net0 import extract_datasets_from_h5group
 
-# Define the data path
-# result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield'] # Add multiple result types
-result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield', 'EmissionScope Greenfield', 'EmissionScope Brownfield']
+#options
+sensitivity = 1
+zeeland = 0
 
-data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long.xlsx'
+if sensitivity:
+    data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long_sensitivity.xlsx'
+    result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield'] # Add multiple result types
+elif zeeland:
+    data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long_Zeeland.xlsx'
+    result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield']  # Add multiple result types
+else:
+    data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long.xlsx'
+    result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield', 'EmissionScope Greenfield',
+                    'EmissionScope Brownfield']
+
 
 # Initialize an empty dictionary to collect DataFrame results
 all_results = []
@@ -20,14 +30,33 @@ for result_type in result_types:
     resultfolder = f"Z:/AdOpt_NET0/AdOpt_results/MY/{result_type}"
 
     # Define the multi-level index for rows
-    columns = pd.MultiIndex.from_product(
-        [
-            [str(result_type)],
-            ["Chemelot"],
-            ["2030", "2040", "2050"]
-        ],
-        names=["Resulttype", "Location", "Interval"]
-    )
+    if sensitivity:
+        columns = pd.MultiIndex.from_product(
+            [
+                [str(result_type)],
+                ["MPWemission", "OptBIO", "TightEmission"],
+                ["2030", "2040", "2050"]
+            ],
+            names=["Resulttype", "Location", "Interval"]
+        )
+    elif zeeland:
+        columns = pd.MultiIndex.from_product(
+            [
+                [str(result_type)],
+                ["Zeeland"],
+                ["2030", "2040", "2050"]
+            ],
+            names=["Resulttype", "Location", "Interval"]
+        )
+    else:
+        columns = pd.MultiIndex.from_product(
+            [
+                [str(result_type)],
+                ["Chemelot"],
+                ["2030", "2040", "2050"]
+            ],
+            names=["Resulttype", "Location", "Interval"]
+        )
 
     # Define the index rows
     index = ["path", "costs_obj_interval", "sunk_costs", "costs_tot_interval", "costs_tot_cumulative", "emissions_net"]
@@ -50,7 +79,7 @@ for result_type in result_types:
         total_costs = {}
         for case in summary_results['case']:
             for i, interval in enumerate(result_data.columns.levels[2]):
-                # if location == 'TightEmission'  and interval == '2030':
+                # if sensitivity  and interval == '2030':
                 #     interval = interval + '_tight'
                 if pd.notna(case) and interval in case:
                     h5_path = Path(summary_results.loc[summary_results['case'] == case, 'time_stamp'].iloc[
@@ -94,7 +123,7 @@ for result_type in result_types:
 
                             for tec in df_nodedata.columns.levels[2]:
                                 output_name = f'size_{tec}'
-                                if location == 'TightEmission':
+                                if sensitivity:
                                     if (interval, 'Chemelot', tec, 'size') in df_nodedata.columns:
                                         result_data.loc[output_name, (result_type, location, interval)] = \
                                             df_nodedata[(interval, 'Chemelot', tec, 'size')].iloc[0]
@@ -109,7 +138,7 @@ for result_type in result_types:
 
                             ebalance = extract_datasets_from_h5group(hdf_file["operation/energy_balance"])
                             df_ebalance = pd.DataFrame(ebalance)
-                            if location == 'TightEmission':
+                            if sensitivity:
                                 cars_at_node = df_ebalance[interval, 'Chemelot'].columns.droplevel([1]).unique()
 
                                 for car in cars_at_node:
