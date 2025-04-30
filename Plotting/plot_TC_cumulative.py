@@ -7,7 +7,7 @@ from openpyxl.reader.excel import load_workbook
 
 # --- Configurable options ---
 file_path = "C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long.xlsx"
-metric = "emissions"       # Choose: "costs" or "emissions"
+metric = "costs"       # Choose: "costs" or "emissions"
 scale_type = "per_tonne"   # Choose: "total" or "per_tonne"
 saveas = 'pdf'  # Options: "no", "svg", "pdf", "both"
 filename = 'TC_baseline_' + metric + '_' + scale_type
@@ -158,7 +158,7 @@ if stacked:
 
 else:
     # --- Plotting ---
-    fig, ax = plt.subplots(figsize=(10, 4))
+    fig, ax = plt.subplots(figsize=(10, 3))
 
     years = ['2030', '2040', '2050']
     n_years = len(years)
@@ -173,8 +173,7 @@ else:
     greenfield_color = "#7F9183"
     brownfield_color = "#765B56"
 
-    # --- Plotting ---
-    # EmissionLimit bars
+    # --- EmissionLimit bars ---
     ax.bar(x_greenfield[0], gf_limit_vals[0], width=bar_width, color=greenfield_color, label='Greenfield')
     ax.bar(x_brownfield[0], bf_limit_vals[0], width=bar_width, color=brownfield_color)
 
@@ -184,8 +183,8 @@ else:
     ax.bar(x_greenfield[2], gf_limit_vals[2], width=bar_width, color=greenfield_color)
     ax.bar(x_brownfield[2], bf_limit_vals[2], width=bar_width, color=brownfield_color)
 
-    # EmissionScope bars
-    offset = group_width * (n_years) + 1  # add some space after first section
+    # --- EmissionScope bars ---
+    offset = group_width * (n_years) + 1  # space between Limit and Scope
 
     ax.bar(x_greenfield[0] + offset, gf_scope_vals[0], width=bar_width, color=greenfield_color)
     ax.bar(x_brownfield[0] + offset, bf_scope_vals[0], width=bar_width, color=brownfield_color)
@@ -197,7 +196,6 @@ else:
     ax.bar(x_brownfield[2] + offset, bf_scope_vals[2], width=bar_width, color=brownfield_color)
 
     # --- Decorations ---
-    # X ticks: center at year groups
     xticks_positions = list((x_greenfield + x_brownfield) / 2) + list(
         ((x_greenfield + offset) + (x_brownfield + offset)) / 2)
     xticks_labels = years + years
@@ -208,21 +206,38 @@ else:
     # Dashed line between Limit and Scope
     ax.axvline(x=(x_brownfield[2] + x_greenfield[0] + offset) / 2, color='black', linestyle='dashed')
 
-    # Labels
+    # Horizontal price line (only for costs)
+    if metric == "costs":
+        price_line = ax.axhline(y=880, color='grey', linestyle='--', linewidth=1)
+
+    # Y-axis label
     ax.set_ylabel(f"{ylabel_base} [{unit}]")
 
-    # Text annotations
+    # Section labels
     ax.text((x_brownfield[2] + x_greenfield[0]) / 2, ax.get_ylim()[1] * 1.05, "Scope 1, 2 & 3", ha='center',
             fontsize=10)
-    ax.text((x_brownfield[2] + x_greenfield[0] + 2 * offset) / 2, ax.get_ylim()[1] * 1.05, "Scope 1 & 2",
-            ha='center', fontsize=10)
+    ax.text((x_brownfield[2] + x_greenfield[0] + 2 * offset) / 2, ax.get_ylim()[1] * 1.05, "Scope 1 & 2", ha='center',
+            fontsize=10)
 
-    # Legend
+    # --- Custom legend ---
     custom_legend = [
         plt.Rectangle((0, 0), 1, 1, color=greenfield_color, label='Greenfield'),
         plt.Rectangle((0, 0), 1, 1, color=brownfield_color, label='Brownfield'),
     ]
+
+    if metric == "costs":
+        custom_legend.append(
+            plt.Line2D([0], [0], color='grey', linestyle='--', linewidth=1, label='Weighted average\nproduct price')
+        )
+
     ax.legend(handles=custom_legend, loc='upper center')
+
+#Print costs and difference
+print(bf_limit_vals)
+print(gf_limit_vals)
+print(gf_scope_vals)
+print(bf_scope_vals)
+
 
 
 # --- Optional saving ---

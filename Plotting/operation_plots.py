@@ -339,7 +339,7 @@ def plot_import_vs_price(import_profiles, el_price, interval, label_map=None, co
     brownfield_color = "#765B56"
 
     # Set up figure with axis break
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 6), sharey=True, gridspec_kw={'width_ratios': [3, 1]})
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(6, 4), sharey=True, gridspec_kw={'width_ratios': [3, 1]})
 
     for key, profile in import_profiles.items():
         # Determine label based on key content
@@ -362,11 +362,11 @@ def plot_import_vs_price(import_profiles, el_price, interval, label_map=None, co
         mask_low = x <= 150
         mask_high = x > 150
 
-        ax1.scatter(x[mask_low], y[mask_low], label=label, color=color, s=10, alpha=1)
-        ax2.scatter(x[mask_high], y[mask_high], color=color, s=10, alpha=1)
+        ax1.scatter(x[mask_low], y[mask_low], label=label, color=color, s=10, alpha=0.5)
+        ax2.scatter(x[mask_high], y[mask_high], color=color, s=10, alpha=0.5)
 
     # Set axis limits and breaks
-    ax1.set_xlim(0, 150)
+    ax1.set_xlim(0, 170)
     ax2.set_xlim(9000, 10100)
     ax1.set_ylim(0, max(profile.max() for profile in import_profiles.values()) * 1.1)
 
@@ -550,13 +550,13 @@ def plot_storage_level(operation_profiles, colors=None, zoom_techs=None):
 
 
 def main():
-    # set_result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield']  # Add multiple result types
-    set_result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield', 'EmissionScope Greenfield',
-                        'EmissionScope Brownfield']  # Add multiple result types
+    set_result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield']  # Add multiple result types
+    # set_result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield', 'EmissionScope Greenfield',
+    #                     'EmissionScope Brownfield']  # Add multiple result types
     result_type = 'EmissionLimit Greenfield'
-    interval = '2030'
+    interval = '2040'
 
-    get_data = 1
+    get_data = 0
 
     if get_data == 1:
         fetch_and_process_data_import(RESULT_FOLDER, DATA_TO_EXCEL_PATH, set_result_types, interval)
@@ -586,7 +586,7 @@ def main():
     custom_colors_import = ['#3F826D', '#E15F51', '#545E75', '#F2D0A4']
     custom_colors_storage = ['#3F826D', '#E15F51', '#545E75', '#F2D0A4']
     overlay = "emission"
-    plot = "storage_level"
+    plot = "electricity_import"
 
     if plot == "technology_operation":
         plot_operation_profiles(operation_profiles, el_price2, el_emissionrate, relative=True, overlay=overlay,
