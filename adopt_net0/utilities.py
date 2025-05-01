@@ -126,38 +126,42 @@ def fix_installed_capacities(m, scenario, prev_scenario, node, exceptions):
     return m
 
 
-def installed_capacities_existing(m, scenario, prev_scenario, node, casepath):
+def installed_capacities_existing(m, scenario, prev_scenario, node, casepath, delayed=0):
     """
     Set the capacity of a technology to a minimum capacity for the next brownfield simulation
     """
-    prev_model = m[prev_scenario].model[m[prev_scenario].info_solving_algorithms["aggregation_model"]].periods[prev_scenario]
+    if not delayed:
+        prev_model = m[prev_scenario].model[m[prev_scenario].info_solving_algorithms["aggregation_model"]].periods[prev_scenario]
 
-    b_node_prev = prev_model.node_blocks[node]
+        b_node_prev = prev_model.node_blocks[node]
 
     size_tecs_existing = {}
 
-    # Loop through all technologies
-    for tec_name in b_node_prev.set_technologies:
-        if tec_name.endswith("_existing"):
-            # Standalone existing technology (no new counterpart)
-            base_tec_name = tec_name.replace("_existing", "")
-            if base_tec_name not in b_node_prev.set_technologies:
-                prev_existing_size = b_node_prev.tech_blocks_active[tec_name].var_size.value or 0
-                if prev_existing_size > 0:
-                    size_tecs_existing[base_tec_name] = prev_existing_size
-            continue  # Skip processing it as a "new" technology
+    if delayed:
+        size_tecs_existing = {"SteamReformer": 1078, "HaberBosch": 813, "CrackerFurnace": 499, "OlefinSeparation": 499}
+    else:
+        # Loop through all technologies
+        for tec_name in b_node_prev.set_technologies:
+            if tec_name.endswith("_existing"):
+                # Standalone existing technology (no new counterpart)
+                base_tec_name = tec_name.replace("_existing", "")
+                if base_tec_name not in b_node_prev.set_technologies:
+                    prev_existing_size = b_node_prev.tech_blocks_active[tec_name].var_size.value or 0
+                    if prev_existing_size > 0:
+                        size_tecs_existing[base_tec_name] = prev_existing_size
+                continue  # Skip processing it as a "new" technology
 
-        # New technology case
-        prev_tec_size = b_node_prev.tech_blocks_active[tec_name].var_size.value or 0
+            # New technology case
+            prev_tec_size = b_node_prev.tech_blocks_active[tec_name].var_size.value or 0
 
-        existing_tec_name = tec_name + "_existing"
-        prev_existing_size = 0
+            existing_tec_name = tec_name + "_existing"
+            prev_existing_size = 0
 
-        if existing_tec_name in b_node_prev.set_technologies:
-            prev_existing_size = b_node_prev.tech_blocks_active[existing_tec_name].var_size.value or 0
+            if existing_tec_name in b_node_prev.set_technologies:
+                prev_existing_size = b_node_prev.tech_blocks_active[existing_tec_name].var_size.value or 0
 
-        if prev_tec_size + prev_existing_size > 0:
-            size_tecs_existing[tec_name] = prev_tec_size + prev_existing_size
+            if prev_tec_size + prev_existing_size > 0:
+                size_tecs_existing[tec_name] = prev_tec_size + prev_existing_size
 
 
     # Read the JSON technology file

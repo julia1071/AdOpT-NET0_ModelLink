@@ -24,7 +24,8 @@ if execute == 1:
     interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
     nr_DD_days = 10
     take_prev_solution = 1
-    emission_2040 = 1587293.557
+    emission_2030 = 2125515.334
+    # emission_2040 = 1587293.557
     pyhub = {}
 
     for i, interval in enumerate(intervals):
@@ -42,7 +43,7 @@ if execute == 1:
             prev_interval = intervals[i - 1]
             model_config['optimization']['objective']['value'] = "costs_emissionlimit"
             if interval == '2040' and take_prev_solution:
-                limit = interval_emissionLim[interval] * emission_2040
+                limit = interval_emissionLim[interval] * emission_2030
             elif interval == '2050' and take_prev_solution:
                 limit = 0
             else:
@@ -111,7 +112,7 @@ if execute == 1:
 
 
 #Run Chemelot cluster case brownfield
-execute = 1
+execute = 0
 
 
 if execute == 1:
