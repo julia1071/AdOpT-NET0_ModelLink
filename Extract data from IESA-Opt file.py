@@ -9,7 +9,7 @@ simulation_years=['2030','2040','2050']
 list_sheets= ['EnergyCosts','Configuration_Stock']
 nrows=[40, 320]#!Same order as list_sheets! =Number of rows in excel sheet -1
 
-#Define the corresponding properties of the sheets and the specific data that you want to extract.
+#Define the corresponding properties of the sheets and the specific data that you want to extract .
 header_energycosts = 'Activity'
 filter_energycosts = ['Naphtha', 'Bio Naphtha', 'Bio Ethanol', 'Electricity EU', 'Sugars', 'Manure']
 
