@@ -21,10 +21,10 @@ if execute == 1:
         datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250314_MY_Data_Chemelot_bf_noRR")
     else:
         # Specify the path to your input data
-        casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2030")
-        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250303_MY_Data_Chemelot_bf")
+        casepath = Path("U:/Data AdOpt-NET0/Test/Case path/MY_Chemelot_bf_2030")
+        datapath = Path("U:/Data AdOpt-NET0/Test/Data path/250303_MY_Data_Chemelot_bf")
 
-    firsttime = 0
+    firsttime = 1
     if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -215,10 +215,10 @@ if execute == 1:
         datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250314_MY_Data_Chemelot_bf_noRR")
     else:
         # Specify the path to your input data
-        casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2040")
-        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250303_MY_Data_Chemelot_bf")
+        casepath = Path("U:/Data AdOpt-NET0/Test/Case path/MY_Chemelot_bf_2040")
+        datapath = Path("U:/Data AdOpt-NET0/Test/Data path/250303_MY_Data_Chemelot_bf")
 
-    firsttime = 0
+    firsttime = 1
     if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -423,10 +423,10 @@ if execute == 1:
         datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250314_MY_Data_Chemelot_bf_noRR")
     else:
         # Specify the path to your input data
-        casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/MY/MY_Chemelot_bf_2050")
-        datapath = Path("Z:/AdOpt_NET0/AdOpt_data/MY/250303_MY_Data_Chemelot_bf")
+        casepath = Path("U:/Data AdOpt-NET0/Test/Case path/MY_Chemelot_bf_2050")
+        datapath = Path("U:/Data AdOpt-NET0/Test/Data path/250303_MY_Data_Chemelot_bf")
 
-    firsttime = 0
+    firsttime = 1
     if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
