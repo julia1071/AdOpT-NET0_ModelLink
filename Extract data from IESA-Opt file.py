@@ -1,15 +1,15 @@
 import pandas as pd
 import sys
 
-# Replace 'your_file.xlsx' with the path to your Excel file
-file_path = "U:/IESA-Opt_latestversion/Output/2025-05-07_17.30/2025-05-07_17.30_General.xlsx"
+# Replace 'your_file.xlsx' with the path to your Excel file - this can be linked to the main iteration by including {i+1 in the file name as in "Run AIMMS on Python"}
+file_path = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/ResultsModelLinking_General.xlsx."
 
 #Define simulation years cluster model and the excel sheets from which you want to extract data in IESA-Opt
 simulation_years=['2030','2040','2050']
 list_sheets= ['EnergyCosts','Configuration_Stock']
 nrows=[40, 320]#!Same order as list_sheets! =Number of rows in excel sheet -1
 
-#Define the corresponding properties of the sheets and the specific data that you want to extract .
+#Define the corresponding properties of the sheets and the specific data that you want to extract.
 header_energycosts = 'Activity'
 filter_energycosts = ['Naphtha', 'Bio Naphtha', 'Bio Ethanol', 'Electricity EU', 'Sugars', 'Manure']
 
@@ -21,7 +21,7 @@ headers = [header_energycosts,header_stock]
 filters= [filter_energycosts, filter_stock]
 
 # Function to extract data by looping through the years and sheets
-def extract_data_iesa_opt(simulation_years, list_sheets, nrows, filters, headers):
+def extract_data_iesa_opt(simulation_years, list_sheets, nrows, filters, headers,file_path):
     if len(list_sheets) != len(nrows) or len(list_sheets) != len(headers) or len(list_sheets) != len(filters):
         print("Error: The number of rows (nrows) does not match the number of sheets.")
         sys.exit()
@@ -54,7 +54,7 @@ def extract_data_iesa_opt(simulation_years, list_sheets, nrows, filters, headers
     #Return the final results dictionary
     return results_year_sheet
 
-results= extract_data_iesa_opt(simulation_years,list_sheets,nrows,filters,headers)
+results= extract_data_iesa_opt(simulation_years,list_sheets,nrows,filters,headers,file_path)
 print(results)
 
 #Get specific values from created dictionary
