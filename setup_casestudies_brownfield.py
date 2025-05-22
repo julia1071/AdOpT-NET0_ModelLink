@@ -8,7 +8,7 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 import pandas as pd
 
 #global functions
-read_all = 0
+read_all = 1
 
 #Create data Chemelot cluster short term
 execute = 1
@@ -24,7 +24,7 @@ if execute == 1:
         casepath = Path("U:/Data AdOpt-NET0/Test/Case path/MY_Chemelot_bf_2030")
         datapath = Path("U:/Data AdOpt-NET0/Test/Data path/250303_MY_Data_Chemelot_bf")
 
-    firsttime = 1
+    firsttime = 0
     if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -115,7 +115,7 @@ if execute == 1:
                                  "ElectricSMR_m": 2114, "WGS_m": 389, "HaberBosch": 1609, "CrackerFurnace": 594,
                                  "CrackerFurnace_Electric": 386, "OlefinSeparation": 594, "ASU": 112,
                                  "Boiler_Industrial_NG": 2053, "Boiler_El": 750, "EDH": 526, "PDH": 157,
-                                 "MPW2methanol": 338}
+                                 "MPW2methanol": 338} #The maximum technology size that is used in the optimization. This effectively reduces the solution space.
                 for tec in spec_tec_size.keys():
                     tech_data_file = find_json_path(output_folder, tec)
                     with open(tech_data_file, "r") as json_tecdata_file:
@@ -125,7 +125,7 @@ if execute == 1:
                     with open(tech_data_file, "w") as json_tecdata_file:
                         json.dump(tech_data, json_tecdata_file, indent=4)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -218,7 +218,7 @@ if execute == 1:
         casepath = Path("U:/Data AdOpt-NET0/Test/Case path/MY_Chemelot_bf_2040")
         datapath = Path("U:/Data AdOpt-NET0/Test/Data path/250303_MY_Data_Chemelot_bf")
 
-    firsttime = 1
+    firsttime = 0
     if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -323,7 +323,7 @@ if execute == 1:
                     with open(tech_data_file, "w") as json_tecdata_file:
                         json.dump(tech_data, json_tecdata_file, indent=4)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -426,7 +426,7 @@ if execute == 1:
         casepath = Path("U:/Data AdOpt-NET0/Test/Case path/MY_Chemelot_bf_2050")
         datapath = Path("U:/Data AdOpt-NET0/Test/Data path/250303_MY_Data_Chemelot_bf")
 
-    firsttime = 1
+    firsttime = 0
     if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -532,7 +532,7 @@ if execute == 1:
                     with open(tech_data_file, "w") as json_tecdata_file:
                         json.dump(tech_data, json_tecdata_file, indent=4)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)

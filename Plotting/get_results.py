@@ -2,13 +2,12 @@ import os
 import h5py
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+
 from pathlib import Path
-from matplotlib.ticker import PercentFormatter
 from adopt_net0 import extract_datasets_from_h5group
 
 #options
-sensitivity = 1
+sensitivity = 0
 zeeland = 0
 
 if sensitivity:
@@ -18,16 +17,15 @@ elif zeeland:
     data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long_Zeeland.xlsx'
     result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield']  # Add multiple result types
 else:
-    data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long.xlsx'
-    result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield', 'EmissionScope Greenfield',
-                    'EmissionScope Brownfield']
+    data_to_excel_path = 'U:/Data AdOpt-NET0/Test/Result path/EL_Chemelot/technology_sizes.xlsx'
+    result_types = ['EmissionLimit Brownfield']
 
 
 # Initialize an empty dictionary to collect DataFrame results
 all_results = []
 
 for result_type in result_types:
-    resultfolder = f"Z:/AdOpt_NET0/AdOpt_results/MY/{result_type}"
+    resultfolder = f"U:/Data AdOpt-NET0/Test/Result path/EL_Chemelot/{result_type}"
 
     # Define the multi-level index for rows
     if sensitivity:
@@ -116,6 +114,7 @@ for result_type in result_types:
                     if 'Greenfield' in result_type:
                         result_data.loc["costs_tot_cumulative", (result_type, location, interval)] = total_costs[interval] * 30
 
+                    # Function to get capacities for different technologies.
                     if h5_path.exists():
                         with h5py.File(h5_path, "r") as hdf_file:
                             nodedata = extract_datasets_from_h5group(hdf_file["design/nodes"])

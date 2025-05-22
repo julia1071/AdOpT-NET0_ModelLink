@@ -24,8 +24,8 @@ if execute == 1:
     intervals = ['2030', '2040', '2050']
     # intervals = ['2030', '2040', '2050']
     interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
-    nr_DD_days = 10
-    prev_from_file = 1
+    nr_DD_days = 0
+    prev_from_file = 0
     emission_2030 = 522907.4304
     h5_path_prev = Path(
         "U:/Data AdOpt-NET0/Test/Result path/optimization_results.h5")
@@ -61,8 +61,8 @@ if execute == 1:
         # solver settings
         model_config['solveroptions']['timelim']['value'] = 24*30
         model_config['solveroptions']['mipgap']['value'] = 0.01
-        model_config['solveroptions']['threads']['value'] = 12
-        model_config['solveroptions']['nodefilestart']['value'] = 200
+        #model_config['solveroptions']['threads']['value'] = 12
+        #model_config['solveroptions']['nodefilestart']['value'] = 200
 
         #change save options
         model_config['reporting']['save_summary_path']['value'] = resultpath + node
@@ -83,7 +83,8 @@ if execute == 1:
 
         # Construct and solve the model
         pyhub[interval] = ModelHub()
-        pyhub[interval].read_data(casepath_interval)
+        pyhub[interval].read_data(casepath_interval,start_period=0,end_period=10)
+        #Everything after read data doesn't change the main case study but only in the model run.
 
         # Set case name
         if nr_DD_days > 0:
@@ -96,6 +97,7 @@ if execute == 1:
             pyhub[interval].data.model_config['reporting']['case_name'][
                 'value'] = interval + '_minC_fullres'
 
+        # Input values IESA-Opt here!
         pyhub[interval].data.time_series['full'][interval, node, 'CarbonCost', 'global', 'price'] = 150.31
 
         # Start brownfield optimization
