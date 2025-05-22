@@ -9,7 +9,7 @@ if run_from_server:
 else:
     aimms_path = "C:\\Program Files\\Aimms-25.3.4.2-x64-VS2022.exe" #Path on your local computer
 
-iterations = 3 #Now I adjust this manually but it could be coded such that the loop stops on a certain condition when comparing data.
+iterations = 1 #Now I adjust this manually but it could be coded such that the loop stops on a certain condition when comparing data.
 
 # Define the file path to the model and the procedures that you want to run,.
 command = [
