@@ -1,14 +1,10 @@
-import os
 from pathlib import Path
 import pandas as pd
 import h5py
 from adopt_net0 import extract_datasets_from_h5group
-from update_input_file_IESA import update_multiple_techs_and_years
-from openpyxl import load_workbook
-from openpyxl.utils import get_column_letter, column_index_from_string
+
 
 # --- Configuration ---
-result_type = 'EmissionLimit_Brownfield'
 result_folder = Path("U:/Data AdOpt-NET0/Test/Result path/EL_Chemelot")
 intervals = ["2030", "2040", "2050"]
 location = "Chemelot"
@@ -59,8 +55,8 @@ for key, value in tech_size_dict.items():
 tech_to_id = {"Boiler_El_existing": "HTI01_16","Boiler_Industrial_NG": "HTI01_01","CrackerFurnace_Electric": "ICH01_05",
               "CrackerFurnace_existing": "ICH01_01" ,"EDH_existing": "ICH01_11","HaberBosch_existing": "Amm01_01"}
 
-updates = {}
 
+updates = {}
 for (loc, year, tech), value in tech_size_dict.items():
     tech_id = tech_to_id.get(tech)
     if tech_id is None:
@@ -70,14 +66,3 @@ for (loc, year, tech), value in tech_size_dict.items():
     updates[tech_id][int(year)] = float(value) #Here, a function can be inserted to translate the value to the proper units.
 print(updates)
 
-file_path="U:/IESA-Opt-ModelLinking/data/20250430_detailed - kopie.xlsx"
-
-result = update_multiple_techs_and_years(file_path,
-                                sheet_name="Technologies",
-                                tech_id_col="A",
-                                tech_id_row_start=7,
-                                merged_row=2,
-                                header_row=5,
-                                merged_name="Minimum use in a year",
-                                update_data=updates)
-print(result)

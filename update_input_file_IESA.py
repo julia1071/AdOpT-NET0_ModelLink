@@ -2,7 +2,11 @@
 import xlwings as xw
 import shutil
 
-# Excel must be installed on the server. This method is used because otherwise the rather "complicated" Excel input file for IESA-Opt gets corrupted.
+# Excel must be installed on the server.
+# This method is used because the "complicated" Excel input file for IESA-Opt gets corrupted while using openpyxl.
+
+template_path = "U:/IESA-Opt-ModelLinking/data/20250430_detailed - kopie.xlsx" #Create a template (base) input file.
+output_path = "U:/IESA-Opt-ModelLinking/data/20250430_detailed.xlsx" #Save the file with a name that is corresponding to the name defined in runDataReading AIMMS
 
 def update_multiple_techs_and_years(
         template_path: str,
@@ -40,18 +44,16 @@ def update_multiple_techs_and_years(
 
     # Step 4: Build mapping of year → column index
     year_to_column = {}
-    print("🔍 Scanning for year headers:")
     for col in range(merged_range.column, merged_range.last_cell.column + 1):
         cell = ws.range((header_row, col))
-        val = cell.formula  # Try formula first (works like openpyxl)
-        if val is None:
-            val = cell.value
-        print(f"Column {col}: raw='{val}' type={type(val)}")
+        val = cell.value
         try:
             year = int(float(str(val).strip()))
             year_to_column[year] = col
         except (ValueError, TypeError):
             continue
+
+    print("✅ Found years:", list(year_to_column.keys()))
 
     # Step 5: Build mapping of Tech_ID → row
     tech_id_to_row = {}
@@ -63,9 +65,6 @@ def update_multiple_techs_and_years(
             break
         tech_id_to_row[str(tech_id).strip()] = row
         row += 1
-
-    print("✅ Found Tech_IDs:", list(tech_id_to_row.keys()))
-    print("✅ Found years:", list(year_to_column.keys()))
 
     # Step 6: Write values
     for tech_id, year_vals in update_data.items():
@@ -88,9 +87,8 @@ def update_multiple_techs_and_years(
     return "✅ All values written successfully."
 
 
-template_path = "U:/IESA-Opt-ModelLinking/data/20250430_detailed - kopie.xlsx"
-output_path = "U:/IESA-Opt-ModelLinking/data/20250430_detailed.xlsx"
 
+#Example to check what the code does.
 updates = {
     "Res01_01": {2030: 0, 2050: 0},
     "Res01_02": {2030: 0, 2050: 0},

@@ -18,20 +18,20 @@ command = [
         "--run-only", "Run_IESA"
     ]
 
-#Pick the file path where AIMMS is saving the results of the optimization. The name of the initial results document can be adjusted in AIMMS "Settings_Solve_Transition".
+# Pick the file path where AIMMS is saving the results of the optimization.
+# The name of the initial results document can be adjusted in AIMMS "Settings_Solve_Transition".
+original_name_output = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/ResultsModelLinking_General.xlsx"
+
 #The input file name can be changed in AIMMS right clicking on the procedure "runDataReading" selecting attributes
 #!Make sure that the output folder is empty and does not contain results from a previous run!
-original_name_output = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/ResultsModelLinking_General.xlsx"
 original_name_input = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/20250430_detailed.xlsx"
 
+#Define the new name of the input and output file
 new_name_output = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/ResultsModelLinking_General_Iteration_"
 new_name_input = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/Input_Iteration_"
 
-#Excel sheet created with AIMMS to indicate that the optimization is done.
-
-
-def new_name_results_iesa(iterations,command, original_name_output, original_name_input, new_name_output, new_name_input):
-    for i in range (iterations): #This should be the main loop. One iteration of IESA is used for 2030,2040,2050. Cluster model is running for the three separate years.
+def run_aimms_change_name_files(iterations,command, original_name_output, original_name_input, new_name_output, new_name_input):
+    for i in range (iterations): #This is the main loop.
         print("Iteration:",i+1)
 
         # Run the command
@@ -45,7 +45,7 @@ def new_name_results_iesa(iterations,command, original_name_output, original_nam
             os.rename(original_name_output, nno)
             print(f"✔ File renamed to: {nno}")
         except FileNotFoundError:
-            print("❌ Original file not found. It may have already been moved.")
+            print(f"❌ Original file not found. Check if the output name in AIMMS corresponds to: {original_name_output}")
             break  # Stop if the original file no longer exists
         except FileExistsError:
             print(f"❌ File already exists: {nno}")
@@ -57,7 +57,7 @@ def new_name_results_iesa(iterations,command, original_name_output, original_nam
             os.rename(original_name_input, nni)
             print(f"✔ File renamed to: {nni}")
         except FileNotFoundError:
-            print("❌ Original file not found. It may have already been moved.")
+            print(f"❌ Original file not found. Check if the output name in AIMMS corresponds to: {original_name_input}")
             break  # Stop if the original file no longer exists
         except FileExistsError:
             print(f"❌ File already exists: {nni}")
@@ -66,4 +66,4 @@ def new_name_results_iesa(iterations,command, original_name_output, original_nam
 
         print("AIMMS exited with code:", ret)
 
-new_name_results_iesa(iterations,command, original_name_output,original_name_input,new_name_output,new_name_input)
+run_aimms_change_name_files(iterations,command, original_name_output,original_name_input,new_name_output,new_name_input)

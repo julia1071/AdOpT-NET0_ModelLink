@@ -84,7 +84,8 @@ if execute == 1:
         # Construct and solve the model
         pyhub[interval] = ModelHub()
         pyhub[interval].read_data(casepath_interval,start_period=0,end_period=10)
-        #Everything after read data doesn't change the main case study but only in the model run.
+
+        # Everything after read data doesn't change the main case study but only in the model run.
 
         # Set case name
         if nr_DD_days > 0:
