@@ -8,17 +8,7 @@ import shutil
 template_path = "U:/IESA-Opt-ModelLinking/data/20250430_detailed - kopie.xlsx" #Create a template (base) input file.
 output_path = "U:/IESA-Opt-ModelLinking/data/20250430_detailed.xlsx" #Save the file with a name that is corresponding to the name defined in runDataReading AIMMS
 
-def update_multiple_techs_and_years(
-        template_path: str,
-        output_path: str,
-        sheet_name: str,
-        tech_id_col: str,
-        tech_id_row_start: int,
-        merged_row: int,
-        header_row: int,
-        merged_name: str,
-        update_data: dict
-):
+def update_input_file_IESA(template_path,output_path, sheet_name, tech_id_col, tech_id_row_start, merged_row, header_row, merged_name, update_data):
     # Step 1: Copy the clean template to the target output path
     shutil.copy(template_path, output_path)
 
@@ -86,8 +76,6 @@ def update_multiple_techs_and_years(
     app.quit()
     return "✅ All values written successfully."
 
-
-
 #Example to check what the code does.
 updates = {
     "Res01_01": {2030: 0, 2050: 0},
@@ -95,7 +83,7 @@ updates = {
     "Res02_01": {2030: 0, 2050: 0}
 }
 
-result = update_multiple_techs_and_years(
+result = update_input_file_IESA(
     template_path=template_path,
     output_path=output_path,
     sheet_name="Technologies",

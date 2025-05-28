@@ -30,7 +30,7 @@ original_name_input = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/20250
 new_name_output = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/ResultsModelLinking_General_Iteration_"
 new_name_input = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/Input_Iteration_"
 
-def run_aimms_change_name_files(iterations,command, original_name_output, original_name_input, new_name_output, new_name_input):
+def run_IESA_change_name_files(iterations,command, original_name_output, original_name_input, new_name_output, new_name_input):
     for i in range (iterations): #This is the main loop.
         print("Iteration:",i+1)
 
@@ -42,7 +42,7 @@ def run_aimms_change_name_files(iterations,command, original_name_output, origin
         nni = f"{new_name_input}{i+1}.xlsx"
 
         try:
-            os.rename(original_name_output, nno)
+            os.rename(original_name_outputr, nno)
             print(f"✔ File renamed to: {nno}")
         except FileNotFoundError:
             print(f"❌ Original file not found. Check if the output name in AIMMS corresponds to: {original_name_output}")
@@ -66,4 +66,4 @@ def run_aimms_change_name_files(iterations,command, original_name_output, origin
 
         print("AIMMS exited with code:", ret)
 
-run_aimms_change_name_files(iterations,command, original_name_output,original_name_input,new_name_output,new_name_input)
+run_IESA_change_name_files(iterations,command, original_name_output,original_name_input,new_name_output,new_name_input)
