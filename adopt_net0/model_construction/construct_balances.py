@@ -417,7 +417,7 @@ def construct_emission_balance(model, data):
 
         # calculate total emissions from technologies, networks and importing/exporting carriers
         def init_emissions_pos(const):
-            if config['optimization']['scope_three_analysis']:
+            if config['optimization']['scope_three_analysis']['value']:
                 from_technologies = 0
             else:
                 from_technologies = sum(
@@ -444,7 +444,7 @@ def construct_emission_balance(model, data):
                 for node in model.set_nodes
             )
             if not config["energybalance"]["copperplate"]["value"]:
-                if config['optimization']['scope_three_analysis']:
+                if config['optimization']['scope_three_analysis']['value']:
                     from_networks = 0
                 else:
                     from_networks = sum(
@@ -469,7 +469,7 @@ def construct_emission_balance(model, data):
         b_emissionbalance.const_emissions_tot = pyo.Constraint(rule=init_emissions_pos)
 
         def init_emissions_neg(const):
-            if config['optimization']['scope_three_analysis']:
+            if config['optimization']['scope_three_analysis']['value']:
                 from_technologies = 0
             else:
                 from_technologies = sum(
@@ -740,7 +740,7 @@ def construct_system_cost(model, data):
 
         # Emission cost and revenues (if applicable)
         def init_carbon_revenue(const):
-            if config['optimization']['scope_three_analysis']:
+            if config['optimization']['scope_three_analysis']['value']:
                 revenue_carbon_from_technologies = 0
             else:
                 revenue_carbon_from_technologies = sum(
@@ -788,7 +788,7 @@ def construct_system_cost(model, data):
         b_period_cost.const_revenue_carbon = pyo.Constraint(rule=init_carbon_revenue)
 
         def init_carbon_cost(const):
-            if config['optimization']['scope_three_analysis']:
+            if config['optimization']['scope_three_analysis']['value']:
                 cost_carbon_from_technologies = 0
             else:
                 cost_carbon_from_technologies = sum(
@@ -817,7 +817,7 @@ def construct_system_cost(model, data):
                 for node in model.set_nodes
             )
             if not config["energybalance"]["copperplate"]["value"] and not config['optimization'][
-                'scope_three_analysis']:
+                'scope_three_analysis']['value']:
                 cost_carbon_from_networks = sum(
                     sum(
                         sum(

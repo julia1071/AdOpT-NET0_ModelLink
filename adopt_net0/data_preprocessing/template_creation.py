@@ -278,7 +278,16 @@ def initialize_configuration_templates() -> dict:
                 "is costs_emissionlimit",
                 "value": 0,
             },
-            "scope_three_analysis": 0,
+            "scope_three_analysis": {
+                "description": "Used to include scope 3 emissions in the analysis. Excludes direct process emissions.",
+                "value": 0,
+                "fossil_carriers": ["naphtha"],
+            },
+            "annual_demand": {
+                "description": "adds constraint that requires an annual minimum export (representing demand)",
+                "value": 0,
+                "carrier_demand": {"naphtha": 1000},
+            },
             "monte_carlo": {
                 "N": {
                     "description": "Number of Monte Carlo simulations (0 = off).",

@@ -45,7 +45,7 @@ if execute == 1:
             model_config['optimization']['emission_limit']['value'] = limit
 
         # Scope 3 analysis yes/no
-        model_config['optimization']['scope_three_analysis'] = scope3
+        model_config['optimization']['scope_three_analysis']['value'] = scope3
 
         # solver settings
         model_config['solveroptions']['timelim']['value'] = 24*30
@@ -129,7 +129,7 @@ if execute == 1:
             model_config['optimization']['emission_limit']['value'] = limit
 
         # Scope 3 analysis yes/no
-        model_config['optimization']['scope_three_analysis'] = scope3
+        model_config['optimization']['scope_three_analysis']['value'] = scope3
 
         # solver settings
         model_config['solveroptions']['timelim']['value'] = 24*30
