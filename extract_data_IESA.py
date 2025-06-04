@@ -22,6 +22,7 @@ filters= [filter_energycosts, filter_stock]
 
 # Function to extract data by looping through the years and sheets
 def extract_data_IESA (simulation_years, list_sheets, nrows, filters, headers,file_path):
+    print("Start extracting data from IESA-Opt")
     if len(list_sheets) != len(nrows) or len(list_sheets) != len(headers) or len(list_sheets) != len(filters):
         print("Error: The number of rows, headers or filters does not match the number of sheets.")
         sys.exit()
@@ -52,10 +53,11 @@ def extract_data_IESA (simulation_years, list_sheets, nrows, filters, headers,fi
                     })
 
     #Return the final results dictionary
+    print("The results dictionary from IESA-Opt is created")
     return results_year_sheet
 
-results= extract_data_IESA(simulation_years,list_sheets,nrows,filters,headers,file_path)
-print(results)
+#results= extract_data_IESA(simulation_years,list_sheets,nrows,filters,headers,file_path)
+#print(results)
 
 #Get specific values from created dictionary
 def get_value_IESA(results_IESA,year, sheet, filter):
@@ -66,5 +68,5 @@ def get_value_IESA(results_IESA,year, sheet, filter):
             return entry['value']
     raise ValueError(f"No value is found for {year}, {sheet}, {filter}")
 
-value_2030_X= get_value_IESA(results, '2030','Configuration_Stock', filter_stock[1])
-print(value_2030_X)
+#value_2030_X= get_value_IESA(results, '2030','Configuration_Stock', filter_stock[1])
+#print(value_2030_X)

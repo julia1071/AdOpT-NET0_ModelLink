@@ -36,7 +36,7 @@ if execute == 1:
 
         topology_template = {
             "nodes": ["Chemelot"],
-            "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
+            "carriers": ["electricity", "ethane", "methane_bio", "naphtha", "naphtha_bio",
                          "CO2", "CO2_DAC", "CO2captured", "hydrogen", "nitrogen", "oxygen",
                          "ammonia", "ethylene", "propylene", "PE_olefin", "olefins",
                          "crackergas", "feedgas", "steam", "heatlowT", "HBfeed", "syngas", "syngas_r",

@@ -9,6 +9,8 @@ template_path = "U:/IESA-Opt-ModelLinking/data/20250430_detailed - kopie.xlsx" #
 output_path = "U:/IESA-Opt-ModelLinking/data/20250430_detailed.xlsx" #Save the file with a name that is corresponding to the name defined in runDataReading AIMMS
 
 def update_input_file_IESA(template_path,output_path, sheet_name, tech_id_col, tech_id_row_start, merged_row, header_row, merged_name, update_data):
+    print("Update the input file of IESA")
+
     # Step 1: Copy the clean template to the target output path
     shutil.copy(template_path, output_path)
 
@@ -43,7 +45,7 @@ def update_input_file_IESA(template_path,output_path, sheet_name, tech_id_col, t
         except (ValueError, TypeError):
             continue
 
-    print("✅ Found years:", list(year_to_column.keys()))
+    print("✅ Found years in IESA-Opt:", list(year_to_column.keys()))
 
     # Step 5: Build mapping of Tech_ID → row
     tech_id_to_row = {}
@@ -77,22 +79,22 @@ def update_input_file_IESA(template_path,output_path, sheet_name, tech_id_col, t
     return "✅ All values written successfully."
 
 #Example to check what the code does.
-updates = {
-    "Res01_01": {2030: 0, 2050: 0},
-    "Res01_02": {2030: 0, 2050: 0},
-    "Res02_01": {2030: 0, 2050: 0}
-}
-
-result = update_input_file_IESA(
-    template_path=template_path,
-    output_path=output_path,
-    sheet_name="Technologies",
-    tech_id_col="A",
-    tech_id_row_start=7,
-    merged_row=2,
-    header_row=5,
-    merged_name="Minimum use in a year",
-    update_data=updates
-)
-
-print(result)
+#updates = {
+#     "Res01_01": {2030: 0, 2050: 0},
+#     "Res01_02": {2030: 0, 2050: 0},
+#     "Res02_01": {2030: 0, 2050: 0}
+# }
+#
+# result = update_input_file_IESA(
+#     template_path=template_path,
+#     output_path=output_path,
+#     sheet_name="Technologies",
+#     tech_id_col="A",
+#     tech_id_row_start=7,
+#     merged_row=2,
+#     header_row=5,
+#     merged_name="Minimum use in a year",
+#     update_data=updates
+# )
+#
+# print(result)

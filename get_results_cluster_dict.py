@@ -16,6 +16,7 @@ tech_to_id = {"Boiler_El_existing": "HTI01_16","Boiler_Industrial_NG": "HTI01_01
 
 def extract_data_cluster(result_folder, intervals, location, tech_to_id):
     # --- Main Process ---
+    print("The capacities of the technologies given in tech_to_id are stored in a dictionary updates")
     summary_path = result_folder / "Summary.xlsx"
     try:
         summary_df = pd.read_excel(summary_path)
@@ -53,8 +54,8 @@ def extract_data_cluster(result_folder, intervals, location, tech_to_id):
 
 
     # Print resulting dictionary (optional)
-    for key, value in tech_size_dict.items():
-        print(f"{key}: {value}")
+    #for key, value in tech_size_dict.items():
+        #print(f"{key}: {value}")
 
 
     updates = {}
@@ -65,7 +66,7 @@ def extract_data_cluster(result_folder, intervals, location, tech_to_id):
             continue  # or log missing techs
         if tech_id not in updates:
             updates[tech_id] = {}
-        updates[tech_id][int(year)] = float(value) #Here, a function can be inserted to translate the value to the proper units.
-    print(updates)
+        updates[tech_id][int(year)] = float((8760/1000000)*value) #Here, a function can be inserted to translate the value to the proper units.
+    return(updates)
 
-print(extract_data_cluster(result_folder, intervals, location, tech_to_id))
+#print(extract_data_cluster(result_folder, intervals, location, tech_to_id))
