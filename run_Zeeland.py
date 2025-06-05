@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 import pandas as pd
 import adopt_net0.data_preprocessing as dp
-from adopt_net0.model_construction.extra_constraints import set_annual_export_demand
+from adopt_net0.model_construction.extra_constraints import set_annual_export_demand, set_negative_CO2_limit
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 from adopt_net0.utilities import fix_installed_capacities, installed_capacities_existing
@@ -88,6 +88,10 @@ if execute == 1:
         # add annual constraint
         if annual_demand:
             set_annual_export_demand(pyhub[interval], interval, carrier_demand_dict)
+
+        # add DAC CO2 export limit constraint
+        set_negative_CO2_limit(pyhub[interval], interval,
+                               ["SteamReformer", "WGS_m", "SteamReformer_existing", "WGS_m_existing"])
 
         pyhub[interval].solve()
 

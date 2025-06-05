@@ -182,43 +182,6 @@ def construct_nodal_energybalance(model, config: dict):
             set_t, model.set_carriers, model.set_nodes, rule=init_energybalance
         )
 
-        def init_export_CCS_limit(const):
-            export_CO2 = sum(sum(
-                b_period.node_blocks[node].var_export_flow[t, 'CO2']
-                for node in model.set_nodes
-                if 'CO2' in b_period.node_blocks[node].set_carriers
-            ) for t in set_t)
-
-            captd_CO2 = sum(
-                sum(sum(
-                    b_period.node_blocks[node]
-                    .tech_blocks_active[tec]
-                    .var_output_tot[t, 'CO2captured']
-                    for tec in b_period.node_blocks[node].set_technologies
-                    if 'CO2captured' in b_period.node_blocks[node].tech_blocks_active[tec].set_output_carriers_all
-                )
-                    for node in model.set_nodes
-                    ) for t in set_t)
-
-            tec_set = ["WGS_m", "SteamReformer_existing"]
-            syngas_CO2 = sum(
-                sum(sum(
-                    b_period.node_blocks[node]
-                    .tech_blocks_active[tec]
-                    .var_output_tot[t, 'CO2']
-                    for tec in tec_set
-                    if tec in b_period.node_blocks[node].set_technologies and
-                    'CO2' in b_period.node_blocks[node]
-                    .tech_blocks_active[tec]
-                    .set_output_carriers_all
-                )
-                    for node in model.set_nodes
-                    ) for t in set_t)
-
-            return export_CO2 <= captd_CO2 + syngas_CO2
-
-        b_ebalance.const_CCS_export_limit = pyo.Constraint(rule=init_export_CCS_limit)
-
         return b_ebalance
 
     model.block_energybalance = pyo.Block(model.set_periods, rule=init_energybalance)
@@ -340,46 +303,6 @@ def construct_global_energybalance(model, config):
         b_ebalance.const_energybalance = pyo.Constraint(
             set_t, model.set_used_carriers, rule=init_energybalance_global
         )
-
-        def init_export_CCS_limit():
-            export_CO2 = sum(sum(
-                b_period.node_blocks[node].var_export_flow[t, 'CO2']
-                for node in model.set_nodes
-                if 'CO2' in b_period.node_blocks[node].set_carriers
-            ) for t in set_t)
-
-            captd_CO2 = sum(
-                sum(sum(
-                    b_period.node_blocks[node]
-                    .tech_blocks_active[tec]
-                    .var_output_tot[t, 'CO2captured']
-                    for tec in b_period.node_blocks[node].set_technologies
-                    if 'CO2captured' in b_period.node_blocks[node].set_carriers
-                    and b_period.node_blocks[node]
-                    .tech_blocks_active[tec]
-                    .set_output_carriers_all
-                )
-                    for node in model.set_nodes
-                    ) for t in set_t)
-
-            tec_set = ["WGS_m", "SteamReformer"]
-            syngas_CO2 = sum(
-                sum(sum(
-                    b_period.node_blocks[node]
-                    .tech_blocks_active[tec]
-                    .var_output_tot[t, 'CO2']
-                    for tec in tec_set
-                    if 'CO2' in b_period.node_blocks[node].set_carriers
-                    and b_period.node_blocks[node]
-                    .tech_blocks_active[tec]
-                    .set_output_carriers_all
-                )
-                    for node in model.set_nodes
-                    ) for t in set_t)
-
-            return export_CO2 <= captd_CO2 + syngas_CO2
-
-        b_ebalance.const_CCS_export_limit = pyo.Constraint(rule=init_export_CCS_limit)
 
         return b_ebalance
 
