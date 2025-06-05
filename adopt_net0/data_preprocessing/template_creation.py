@@ -281,7 +281,6 @@ def initialize_configuration_templates() -> dict:
             "scope_three_analysis": {
                 "description": "Used to include scope 3 emissions in the analysis. Excludes direct process emissions.",
                 "value": 0,
-                "fossil_carriers": ["naphtha"]
             },
             "monte_carlo": {
                 "N": {
