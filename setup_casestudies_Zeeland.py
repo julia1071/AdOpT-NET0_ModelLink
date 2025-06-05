@@ -12,7 +12,7 @@ read_all_brownfield = 1
 
 
 #Create data Zeeland cluster short term
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the path to your input data
@@ -197,7 +197,7 @@ if execute == 1:
 
 
 #Create data Zeeland cluster mid term
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the path to your input data
@@ -506,9 +506,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=0)
 
         # Demand data
-        dp.fill_carrier_data(casepath, value_or_data=208, columns=['Demand'], carriers=['ammonia'])
         dp.fill_carrier_data(casepath, value_or_data=93, columns=['Demand'], carriers=['CO2'])
-        dp.fill_carrier_data(casepath, value_or_data=302, columns=['Demand'], carriers=['PE_olefin'])
         dp.fill_carrier_data(casepath, value_or_data=193, columns=['Demand'], carriers=['steam'])
         dp.fill_carrier_data(casepath, value_or_data=42, columns=['Demand'], carriers=['electricity'])
         dp.fill_carrier_data(casepath, value_or_data=0, columns=['Demand'], carriers=['feedgas'])
