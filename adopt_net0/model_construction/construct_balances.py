@@ -164,16 +164,16 @@ def construct_nodal_energybalance(model, config: dict):
                 else:
                     violation = 0
                 return (
-                    tec_output
-                    - tec_input
-                    + netw_inflow
-                    - netw_outflow
-                    - netw_consumption
-                    + import_flow
-                    - export_flow
-                    + violation
-                    == node_block.para_demand[t, car]
-                    - node_block.var_generic_production[t, car]
+                        tec_output
+                        - tec_input
+                        + netw_inflow
+                        - netw_outflow
+                        - netw_consumption
+                        + import_flow
+                        - export_flow
+                        + violation
+                        == node_block.para_demand[t, car]
+                        - node_block.var_generic_production[t, car]
                 )
             else:
                 return pyo.Constraint.Skip
@@ -262,10 +262,10 @@ def construct_global_energybalance(model, config):
                     for tec in b_period.node_blocks[node].set_technologies
                     if (car in b_period.node_blocks[node].set_carriers)
                     and (
-                        car
-                        in b_period.node_blocks[node]
-                        .tech_blocks_active[tec]
-                        .set_output_carriers_all
+                            car
+                            in b_period.node_blocks[node]
+                            .tech_blocks_active[tec]
+                            .set_output_carriers_all
                     )
                 )
                 for node in model.set_nodes
@@ -279,10 +279,10 @@ def construct_global_energybalance(model, config):
                     for tec in b_period.node_blocks[node].set_technologies
                     if (car in b_period.node_blocks[node].set_carriers)
                     and (
-                        car
-                        in b_period.node_blocks[node]
-                        .tech_blocks_active[tec]
-                        .set_input_carriers_all
+                            car
+                            in b_period.node_blocks[node]
+                            .tech_blocks_active[tec]
+                            .set_input_carriers_all
                     )
                 )
                 for node in model.set_nodes
@@ -322,8 +322,8 @@ def construct_global_energybalance(model, config):
                 violation = 0
 
             return (
-                tec_output - tec_input + import_flow - export_flow + violation
-                == demand - gen_prod
+                    tec_output - tec_input + import_flow - export_flow + violation
+                    == demand - gen_prod
             )
 
         model.set_used_carriers = pyo.Set(
@@ -462,8 +462,8 @@ def construct_emission_balance(model, data):
             else:
                 from_networks = 0
             return (
-                from_technologies + from_carriers + from_networks
-                == b_period.var_emissions_pos
+                    from_technologies + from_carriers + from_networks
+                    == b_period.var_emissions_pos
             )
 
         b_emissionbalance.const_emissions_tot = pyo.Constraint(rule=init_emissions_pos)
@@ -501,7 +501,7 @@ def construct_emission_balance(model, data):
 
         b_emissionbalance.const_emissions_net = pyo.Constraint(
             expr=b_period.var_emissions_pos - b_period.var_emissions_neg
-            == b_period.var_emissions_net
+                 == b_period.var_emissions_net
         )
 
         return b_emissionbalance
@@ -686,7 +686,7 @@ def construct_system_cost(model, data):
                     for netw in b_period.set_networks
                 )
                 return (
-                    b_period.var_cost_opex_netws == netw_opex_fixed + netw_opex_variable
+                        b_period.var_cost_opex_netws == netw_opex_fixed + netw_opex_variable
                 )
             else:
                 return b_period.var_cost_opex_netws == 0
@@ -696,8 +696,8 @@ def construct_system_cost(model, data):
         # Total technology costs
         def init_cost_tecs(const):
             return (
-                b_period.var_cost_tecs
-                == b_period.var_cost_capex_tecs + b_period.var_cost_opex_tecs
+                    b_period.var_cost_tecs
+                    == b_period.var_cost_capex_tecs + b_period.var_cost_opex_tecs
             )
 
         b_period_cost.const_cost_tecs = pyo.Constraint(rule=init_cost_tecs)
@@ -705,8 +705,8 @@ def construct_system_cost(model, data):
         # Total network costs
         def init_cost_netw(const):
             return (
-                b_period.var_cost_netws
-                == b_period.var_cost_capex_netws + b_period.var_cost_opex_netws
+                    b_period.var_cost_netws
+                    == b_period.var_cost_capex_netws + b_period.var_cost_opex_netws
             )
 
         b_period_cost.const_cost_netws = pyo.Constraint(rule=init_cost_netw)
@@ -719,19 +719,19 @@ def construct_system_cost(model, data):
         def init_violation_cost(const):
             if config["energybalance"]["violation"]["value"] >= 0:
                 return (
-                    b_period.var_cost_violation
-                    == sum(
+                        b_period.var_cost_violation
+                        == sum(
+                    sum(
                         sum(
-                            sum(
-                                b_period.var_violation[t, car, node]
-                                * hour_factors[t - 1]
-                                for t in set_t
-                            )
-                            for car in model.set_carriers
+                            b_period.var_violation[t, car, node]
+                            * hour_factors[t - 1]
+                            for t in set_t
                         )
-                        for node in model.set_nodes
+                        for car in model.set_carriers
                     )
-                    * config["energybalance"]["violation"]["value"]
+                    for node in model.set_nodes
+                )
+                        * config["energybalance"]["violation"]["value"]
                 )
             else:
                 return b_period.var_cost_violation == 0
@@ -781,8 +781,8 @@ def construct_system_cost(model, data):
             )
 
             return (
-                revenue_carbon_from_technologies + revenue_carbon_from_carriers
-                == b_period.var_carbon_revenue
+                    revenue_carbon_from_technologies + revenue_carbon_from_carriers
+                    == b_period.var_carbon_revenue
             )
 
         b_period_cost.const_revenue_carbon = pyo.Constraint(rule=init_carbon_revenue)
@@ -834,24 +834,24 @@ def construct_system_cost(model, data):
             else:
                 cost_carbon_from_networks = 0
             return (
-                cost_carbon_from_technologies
-                + cost_carbon_from_carriers
-                + cost_carbon_from_networks
-                == b_period.var_carbon_cost
+                    cost_carbon_from_technologies
+                    + cost_carbon_from_carriers
+                    + cost_carbon_from_networks
+                    == b_period.var_carbon_cost
             )
 
         b_period_cost.const_cost_carbon = pyo.Constraint(rule=init_carbon_cost)
 
         def init_total_cost(const):
             return (
-                b_period.var_cost_tecs
-                + b_period.var_cost_netws
-                + b_period.var_cost_imports
-                + b_period.var_cost_exports
-                + b_period.var_cost_violation
-                + b_period.var_carbon_cost
-                - b_period.var_carbon_revenue
-                == b_period.var_cost_total
+                    b_period.var_cost_tecs
+                    + b_period.var_cost_netws
+                    + b_period.var_cost_imports
+                    + b_period.var_cost_exports
+                    + b_period.var_cost_violation
+                    + b_period.var_carbon_cost
+                    - b_period.var_carbon_revenue
+                    == b_period.var_cost_total
             )
 
         b_period_cost.const_cost = pyo.Constraint(rule=init_total_cost)
@@ -872,16 +872,16 @@ def construct_global_balance(model):
 
     def init_npv(const):
         return (
-            sum(model.periods[period].var_cost_total for period in model.set_periods)
-            == model.var_npv
+                sum(model.periods[period].var_cost_total for period in model.set_periods)
+                == model.var_npv
         )
 
     model.const_npv = pyo.Constraint(rule=init_npv)
 
     def init_emissions(const):
         return (
-            sum(model.periods[period].var_emissions_net for period in model.set_periods)
-            == model.var_emissions_net
+                sum(model.periods[period].var_emissions_net for period in model.set_periods)
+                == model.var_emissions_net
         )
 
     model.const_emissions = pyo.Constraint(rule=init_emissions)

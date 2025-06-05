@@ -8,11 +8,11 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 import pandas as pd
 
 #global functions
-read_all_brownfield = 1
+read_all_brownfield = 0
 
 
 #Create data Zeeland cluster short term
-execute = 0
+execute = 1
 
 if execute == 1:
     # Specify the path to your input data
@@ -197,7 +197,7 @@ if execute == 1:
 
 
 #Create data Zeeland cluster mid term
-execute = 0
+execute = 1
 
 if execute == 1:
     # Specify the path to your input data

@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import pandas as pd
 import adopt_net0.data_preprocessing as dp
+from adopt_net0.model_construction.extra_constraints import set_annual_export_demand
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 from adopt_net0.utilities import fix_installed_capacities, installed_capacities_existing
@@ -47,7 +48,6 @@ if execute == 1:
 
         # other constraint options
         model_config['optimization']['scope_three_analysis']['value'] = scope3
-        model_config['optimization']['annual_demand']['value'] = scope3
 
         # solver settings
         model_config['solveroptions']['timelim']['value'] = 24*30
@@ -68,25 +68,28 @@ if execute == 1:
 
         # Construct and solve the model
         pyhub[interval] = ModelHub()
-        pyhub[interval].read_data(casepath_interval, start_period=0, end_period=24*2)
+        pyhub[interval].read_data(casepath_interval, start_period=0, end_period=2*24)
 
         # Set case name
         if nr_DD_days > 0:
             pyhub[interval].data.model_config['reporting']['case_name'][
                 'value'] = (interval + '_minC_' +
                             'DD' + str(pyhub[interval].data.model_config['optimization']['typicaldays']['N']['value']))
-
-            pyhub[interval].data.time_series['clustered'][
-                interval, node, 'CarbonCost', 'global', 'price'] = 150.31
         else:
             pyhub[interval].data.model_config['reporting']['case_name'][
                 'value'] = interval + '_minC_fullres'
 
-        pyhub[interval].data.time_series['full'][interval, node, 'CarbonCost', 'global', 'price'] = 150.31
-
         # Start brownfield optimization
         pyhub[interval].construct_model()
         pyhub[interval].construct_balances()
+
+        # add annual constraint
+        if annual_demand:
+            set_annual_export_demand(pyhub[interval], interval, {'ethylene': 1000})
+
         pyhub[interval].solve()
+
+        # pyhub[interval].model['full'].const_export_demand_dynamic['ethylene'].pprint()
+
 
 
