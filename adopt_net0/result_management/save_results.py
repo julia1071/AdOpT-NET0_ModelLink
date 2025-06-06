@@ -81,7 +81,7 @@ def get_summary(model, solution, folder_path: Path, model_info: dict, data) -> d
 
     # Calculate direct emissions
     config = model_info['config']
-    if config['optimization']['scope_three_analysis']:
+    if config['optimization']['scope_three_analysis']['value']:
         from_technologies = {}
         from_electricity = {}
         from_fossil = {}
