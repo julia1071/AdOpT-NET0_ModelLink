@@ -135,6 +135,27 @@ for result_type in result_types:
                                     else:
                                         result_data.loc[output_name, (result_type, location, interval)] = 0
 
+                                if any(tec.startswith(base) for base in ['CrackerFurnace', 'MPW2methanol', 'SteamReformer']):
+                                    tec_operation = extract_datasets_from_h5group(
+                                        hdf_file["operation/technology_operation"])
+                                    tec_operation = {k: v for k, v in tec_operation.items() if len(v) >= 8670}
+                                    df_tec_operation = pd.DataFrame(tec_operation)
+                                    if (interval, location, tec, 'CO2captured_output') in df_tec_operation:
+                                        numerator = df_tec_operation[
+                                            interval, location, tec, 'CO2captured_output'].sum()
+                                        denominator = (
+                                                df_tec_operation[
+                                                    interval, location, tec, 'CO2captured_output'].sum()
+                                                + df_tec_operation[interval, location, tec, 'emissions_pos'].sum()
+                                        )
+
+                                        frac_CC = numerator / denominator if (denominator > 1 and numerator > 1) else 0
+
+                                        tec_CC = "size_" + tec + "_CC"
+                                        if tec_CC not in result_data.index:
+                                            result_data.loc[tec_CC] = pd.Series(dtype=float)
+                                        result_data.loc[tec_CC, (result_type, location, interval)] = frac_CC
+
                             ebalance = extract_datasets_from_h5group(hdf_file["operation/energy_balance"])
                             df_ebalance = pd.DataFrame(ebalance)
                             if sensitivity:
