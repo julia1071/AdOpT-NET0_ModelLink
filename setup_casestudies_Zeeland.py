@@ -16,8 +16,8 @@ execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/ML_Zeeland_bf_2030")
-    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/Model_Linking/250605_ML_Data_Zeeland_bf")
+    casepath = Path("U:/Data AdOpt-NET0/Model_Linking/Case_Study/ML_Zeeland_bf_2030")
+    datapath = Path("U:/Data AdOpt-NET0/Model_Linking/Data/250605_ML_Data_Zeeland_bf")
 
     firsttime = 0
     if firsttime:
@@ -201,8 +201,8 @@ execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/ML_Zeeland_bf_2040")
-    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/Model_Linking/250605_ML_Data_Zeeland_bf")
+    casepath = Path("U:/Data AdOpt-NET0/Model_Linking/Case_Study/ML_Zeeland_bf_2040")
+    datapath = Path("U:/Data AdOpt-NET0/Model_Linking/Data/250605_ML_Data_Zeeland_bf")
 
     firsttime = 0
     if firsttime:
@@ -393,8 +393,8 @@ execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = Path("Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/ML_Zeeland_bf_2050")
-    datapath = Path("Z:/AdOpt_NET0/AdOpt_data/Model_Linking/250605_ML_Data_Zeeland_bf")
+    casepath = Path("U:/Data AdOpt-NET0/Model_Linking/Case_Study/ML_Zeeland_bf_2050")
+    datapath = Path("U:/Data AdOpt-NET0/Model_Linking/Data/250605_ML_Data_Zeeland_bf")
 
     firsttime = 0
     if firsttime:

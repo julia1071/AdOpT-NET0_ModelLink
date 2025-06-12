@@ -5,8 +5,8 @@ import shutil
 # Excel must be installed on the server.
 # This method is used because the "complicated" Excel input file for IESA-Opt gets corrupted while using openpyxl.
 
-template_path = "U:/IESA-Opt-ModelLinking/data/20250430_detailed - kopie.xlsx" #Create a template (base) input file.
-output_path = "U:/IESA-Opt-ModelLinking/data/20250430_detailed.xlsx" #Save the file with a name that is corresponding to the name defined in runDataReading AIMMS
+template_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250603_detailed_linked - kopie.xlsx" #Create a template (base) input file.
+output_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250603_detailed_linked.xlsx" #Save the file with a name that is corresponding to the name defined in runDataReading AIMMS
 
 def update_input_file_IESA(template_path,output_path, sheet_name, tech_id_col, tech_id_row_start, merged_row, header_row, merged_name, update_data):
     print("Update the input file of IESA")
@@ -58,8 +58,22 @@ def update_input_file_IESA(template_path,output_path, sheet_name, tech_id_col, t
         tech_id_to_row[str(tech_id).strip()] = row
         row += 1
 
-    # Step 6: Write values
+    # Expand update_data to fill intermediate years (e.g., 2035 and 2045)
+    expanded_update_data = {}
+
     for tech_id, year_vals in update_data.items():
+        expanded_year_vals = {}
+        sorted_years = sorted(year_vals.keys())
+        for year in sorted_years:
+            expanded_year_vals[year] = year_vals[year]  # Keep original
+            if year == 2030 and 2035 not in year_vals:
+                expanded_year_vals[2035] = year_vals[year]
+            if year == 2040 and 2045 not in year_vals:
+                expanded_year_vals[2045] = year_vals[year]
+        expanded_update_data[tech_id] = expanded_year_vals
+
+    # Step 6: Write values
+    for tech_id, year_vals in expanded_update_data.items():
         if tech_id not in tech_id_to_row:
             print(f"⚠️ Skipping missing Tech_ID: {tech_id}")
             continue

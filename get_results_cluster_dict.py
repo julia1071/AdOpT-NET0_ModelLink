@@ -2,6 +2,7 @@ from pathlib import Path
 import pandas as pd
 import h5py
 from adopt_net0 import extract_datasets_from_h5group
+from conversion_factors import conversion_factor_cluster_to_IESA
 
 
 # --- Configuration ---
@@ -66,7 +67,7 @@ def extract_data_cluster(result_folder, intervals, location, tech_to_id):
             continue  # or log missing techs
         if tech_id not in updates:
             updates[tech_id] = {}
-        updates[tech_id][int(year)] = float((8760/1000000)*value) #Here, a function can be inserted to translate the value to the proper units.
+        updates[tech_id][int(year)] = float(conversion_factor_cluster_to_IESA(tech_id) *value) #Here, a function can be inserted to translate the value to the proper units.
     return(updates)
 
 #print(extract_data_cluster(result_folder, intervals, location, tech_to_id))

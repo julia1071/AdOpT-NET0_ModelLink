@@ -5,11 +5,11 @@ import h5py
 from adopt_net0 import extract_datasets_from_h5group
 
 # --- Configuration ---
-result_type = 'EmissionLimit_Brownfield'
-result_folder = Path("U:/Data AdOpt-NET0/Test/Result path/EL_Chemelot")
+result_type = 'Brownfield'
+result_folder = Path("U:/Data AdOpt-NET0/Model_Linking/Results/Zeeland")
 intervals = ["2030", "2040", "2050"]
-location = "Chemelot"
-output_path = "U:/Data AdOpt-NET0/Test/Result path/EL_Chemelot/technology_sizes.xlsx"
+location = "Zeeland"
+output_path = "U:/Data AdOpt-NET0/Model_Linking/Results/Zeeland/technology_sizes.xlsx"
 
 # --- Main Process ---
 summary_path = result_folder / "Summary.xlsx"
@@ -40,6 +40,7 @@ for _, row in summary_df.iterrows():
             continue
 
         with h5py.File(h5_path, "r") as hdf_file:
+            # --- Technology sizes ---
             nodedata = extract_datasets_from_h5group(hdf_file["design/nodes"])
             df_nodes = pd.DataFrame(nodedata)
 
@@ -48,6 +49,23 @@ for _, row in summary_df.iterrows():
                 value = df_nodes[col].iloc[0] if col in df_nodes.columns else 0
                 row_label = f"size_{tech}"
                 tech_sizes_df.loc[row_label, (result_type, location, interval)] = value
+
+                # --- CC fraction for selected technologies ---
+                if any(tech.startswith(base) for base in ["CrackerFurnace", "MPW2methanol", "SteamReformer"]):
+                    opdata = extract_datasets_from_h5group(hdf_file["operation/technology_operation"])
+                    opdata = {k: v for k, v in opdata.items() if len(v) >= 8670}
+                    df_op = pd.DataFrame(opdata)
+
+                    col_cc = (interval, location, tech, "CO2captured_output")
+                    col_em = (interval, location, tech, "emissions_pos")
+
+                    if col_cc in df_op.columns and col_em in df_op.columns:
+                        numerator = df_op[col_cc].sum()
+                        denominator = numerator + df_op[col_em].sum()
+                        frac_CC = numerator / denominator if (denominator > 1 and numerator > 1) else 0
+
+                        row_label_cc = f"size_{tech}_CC"
+                        tech_sizes_df.loc[row_label_cc, (result_type, location, interval)] = frac_CC
 
 # Save to Excel
 tech_sizes_df.to_excel(output_path)
