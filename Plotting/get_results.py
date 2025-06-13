@@ -8,14 +8,14 @@ from adopt_net0 import extract_datasets_from_h5group
 
 #options
 sensitivity = 0
-zeeland = 0
+zeeland = 1
 
 if sensitivity:
     data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long_sensitivity.xlsx'
     result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield'] # Add multiple result types
 elif zeeland:
-    data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long_Zeeland.xlsx'
-    result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield']  # Add multiple result types
+    data_to_excel_path = '"U:/Data AdOpt-NET0/Model_Linking/Results/Zeeland/technology_sizes.xlsx"'
+    result_types = ['Brownfield']  # Add multiple result types
 else:
     data_to_excel_path = 'U:/Data AdOpt-NET0/Test/Result path/EL_Chemelot/technology_sizes.xlsx'
     result_types = ['EmissionLimit Brownfield']
@@ -25,7 +25,7 @@ else:
 all_results = []
 
 for result_type in result_types:
-    resultfolder = f"U:/Data AdOpt-NET0/Test/Result path/EL_Chemelot/{result_type}"
+    resultfolder = f"U:/Data AdOpt-NET0/Model_Linking/Results/"
 
     # Define the multi-level index for rows
     if sensitivity:

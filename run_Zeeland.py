@@ -9,7 +9,7 @@ from adopt_net0.utilities import fix_installed_capacities, installed_capacities_
 
 #Run Zeeland cluster case brownfield
 execute = 1
-def run_Zeeland(execute, results_year_sheet):
+def run_Zeeland(execute):
     if execute == 1:
         # Specify the base path to your input data
         casepath = "U:/Data AdOpt-NET0/Model_Linking/Case_Study/ML_Zeeland_bf_"

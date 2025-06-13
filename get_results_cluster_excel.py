@@ -61,7 +61,9 @@ for _, row in summary_df.iterrows():
 
                     if col_cc in df_op.columns and col_em in df_op.columns:
                         numerator = df_op[col_cc].sum()
+                        print(numerator)
                         denominator = numerator + df_op[col_em].sum()
+                        print(denominator)
                         frac_CC = numerator / denominator if (denominator > 1 and numerator > 1) else 0
 
                         row_label_cc = f"size_{tech}_CC"
