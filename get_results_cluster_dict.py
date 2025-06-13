@@ -4,16 +4,10 @@ import h5py
 from adopt_net0 import extract_datasets_from_h5group
 from conversion_factors import conversion_factor_cluster_to_IESA
 
-
 # --- Configuration ---
 result_folder = Path("U:/Data AdOpt-NET0/Model_Linking/Results/Zeeland")
 intervals = ["2030", "2040", "2050"]
 location = "Zeeland"
-
-#Create the dictionary where is stated which technology belongs to which Tech_ID. Check these values when really using.
-tech_to_id = {"Boiler_El_existing": "HTI01_16","Boiler_Industrial_NG": "HTI01_01","CrackerFurnace_Electric": "ICH01_05",
-              "CrackerFurnace_existing": "ICH01_01" ,"EDH_existing": "ICH01_11","HaberBosch_existing": "Amm01_01"}
-
 
 def extract_data_cluster(result_folder, intervals, location):
 
@@ -26,7 +20,6 @@ def extract_data_cluster(result_folder, intervals, location):
 
     # Dictionary to store sizes in the form {(location, interval, tech): value}
     tech_size_dict = {}
-    cc_fraction_dict = {}
 
     for _, row in summary_df.iterrows():
         case = row["case"]
@@ -54,45 +47,7 @@ def extract_data_cluster(result_folder, intervals, location):
                             value = df_nodes[col].iloc[0] if col in df_nodes.columns else 0
                             tech_size_dict[(location, interval, tech)] = float(value)
 
-    print(tech_size_dict)
+    return tech_size_dict
 
-    merged_dict = {}
-
-    # Step 1: Collect all base tech names (remove _existing)
-    tech_names = set()
-    for (_, _, tech) in tech_size_dict.keys():
-        base_tech = tech.replace("_existing", "")
-        tech_names.add(base_tech)
-
-    # Step 2: Sum values for each base tech and interval
-    for interval in intervals:
-        for base_tech in tech_names:
-            key_std = (location, interval, base_tech)
-            key_ext = (location, interval, base_tech + "_existing")
-
-            value_std = tech_size_dict.get(key_std, 0.0)
-            value_ext = tech_size_dict.get(key_ext, 0.0)
-
-            # Final key should be (location, interval, base_tech)
-            merged_key = (location, interval, base_tech)
-            merged_dict[merged_key] = value_std + value_ext
-
-    print(merged_dict)
-    return merged_dict
-    # Print resulting dictionary (optional)
-    #for key, value in tech_size_dict.items():
-        #print(f"{key}: {value}")
-
-
-    # updates = {}
-    #
-    # for (loc, year, tech), value in tech_size_dict.items():
-    #     tech_id = tech_to_id.get(tech)
-    #     if tech_id is None:
-    #         continue  # or log missing techs
-    #     if tech_id not in updates:
-    #         updates[tech_id] = {}
-    #     updates[tech_id][int(year)] = float(conversion_factor_cluster_to_IESA(tech_id) *value) #Here, a function can be inserted to translate the value to the proper units.
-    # return(updates)
 
 print(extract_data_cluster(result_folder, intervals, location))

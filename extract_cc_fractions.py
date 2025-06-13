@@ -51,7 +51,6 @@ def extract_cc_fractions(result_folder, intervals, location):
                                 denominator = numerator + df_op[col_em].sum()
                                 frac_CC = numerator / denominator if (denominator > 1 and numerator > 1) else 0
                                 cc_fraction_dict[(location, interval, tech)] = float(frac_CC)
-
     return cc_fraction_dict
 
 print(extract_cc_fractions(result_folder, intervals, location))

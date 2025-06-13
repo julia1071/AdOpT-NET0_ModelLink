@@ -19,7 +19,7 @@ def run_Zeeland(execute):
         node = 'Zeeland'
         scope3 = 1
         annual_demand = 1
-        carrier_demand_dict = {'ethylene': 1184352, 'propylene': 532958, 'ammonia': 118400}
+        carrier_demand_dict = {'ethylene': 1184352, 'propylene': 532958, 'ammonia': 1184000}
         intervals = ['2030', '2040', '2050']
         interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
         nr_DD_days = 10 # Set to 10 if used for full-scale modelling
