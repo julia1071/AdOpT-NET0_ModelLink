@@ -1,4 +1,5 @@
 import json
+import sys
 from pathlib import Path
 import pandas as pd
 import adopt_net0.data_preprocessing as dp
@@ -6,23 +7,24 @@ from adopt_net0.model_construction.extra_constraints import set_annual_export_de
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 from adopt_net0.utilities import fix_installed_capacities, installed_capacities_existing
+from extract_data_IESA import get_value_IESA
+from conversion_factors import conversion_factor_IESA_to_cluster
 
-#Run Zeeland cluster case brownfield
-execute = 1
-def run_Zeeland(execute):
-    if execute == 1:
+def run_Zeeland(linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA):
+    print("Start the optimization in the cluster model")
+    if linking_energy_prices:
         # Specify the base path to your input data
         casepath = "U:/Data AdOpt-NET0/Model_Linking/Case_Study/ML_Zeeland_bf_"
         resultpath = "U:/Data AdOpt-NET0/Model_Linking/Results/Zeeland"
 
         # select simulation types
         node = 'Zeeland'
-        scope3 = 1
+        scope3 = 0 # Do you want the scope 3 emissions to be accounted in the optimization?
         annual_demand = 1
         carrier_demand_dict = {'ethylene': 1184352, 'propylene': 532958, 'ammonia': 1184000}
         intervals = ['2030', '2040', '2050']
         interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
-        nr_DD_days = 10 # Set to 10 if used for full-scale modelling
+        nr_DD_days = 0 # Set to 10 if used for full-scale modelling
         pyhub = {}
 
         for i, interval in enumerate(intervals):
@@ -68,7 +70,7 @@ def run_Zeeland(execute):
 
             # Construct and solve the model
             pyhub[interval] = ModelHub()
-            pyhub[interval].read_data(casepath_interval) # start_period=0,end_period=10) # Solve model for the first 10 hours, NN-days must be set to 10 again with full-scale modelling
+            pyhub[interval].read_data(casepath_interval, start_period=0,end_period=10) # Solve model for the first 10 hours, NN-days must be set to 10 again with full-scale modelling
 
             # Set case name
             if nr_DD_days > 0:
@@ -79,6 +81,37 @@ def run_Zeeland(execute):
                 pyhub[interval].data.model_config['reporting']['case_name'][
                     'value'] = interval + '_minC_fullres'
 
+            #Input of IESA-Opt values in cluster model
+
+            x = (conversion_factor_IESA_to_cluster('EnergyCosts','Naphtha', ppi_file_path, baseyear_cluster,
+                                                    baseyear_IESA) * get_value_IESA (results_year_sheet, interval,
+                                                                        'EnergyCosts', 'Naphtha'))
+            print(f"The value that is inputed for naphtha is {x}")
+            pyhub[interval].data.time_series['full'][
+                interval, node, 'naphtha', 'global', 'Import price'] = x
+
+            y = (conversion_factor_IESA_to_cluster('EnergyCosts','Bio Naphtha', ppi_file_path, baseyear_cluster,
+                                                    baseyear_IESA) * get_value_IESA (results_year_sheet, interval,
+                                                                        'EnergyCosts', 'Bio Naphtha'))
+            print(f"The value that is inputed for bio naphtha is {y}")
+            pyhub[interval].data.time_series['full'][
+                interval, node, 'naphtha_bio', 'global', 'Import price'] = y
+
+
+            z = (conversion_factor_IESA_to_cluster('EnergyCosts','Natural Gas HD', ppi_file_path, baseyear_cluster,
+                                                    baseyear_IESA) * get_value_IESA (results_year_sheet, interval,
+                                                                        'EnergyCosts', 'Natural Gas HD'))
+            print(f"The value that is inputed for methane is {z}")
+            pyhub[interval].data.time_series['full'][
+                interval, node, 'methane', 'global', 'Import price'] = z
+
+            # #pyhub[interval].data.time_series['full'][
+            #     interval, node, 'biomass', 'global', 'Import price'] = (conversion_factor_IESA_to_cluster('EnergyCosts',
+            #                                                                                              'Biomass',
+            #                                                                                              ppi_file_path,
+            #                                                                                              baseyear_cluster,
+            #                                                                                              baseyear_IESA) *
+            #                                                             get_value_IESA ( results_year_sheet, interval, 'EnergyCosts', 'Biomass'))
             # Start brownfield optimization
             pyhub[interval].construct_model()
             pyhub[interval].construct_balances()
@@ -93,4 +126,6 @@ def run_Zeeland(execute):
 
             pyhub[interval].solve()
 
-
+    elif linking_mpw:
+        print("Not yet defined, model linking stops")
+        return sys.exit()

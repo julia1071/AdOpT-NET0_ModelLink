@@ -1,16 +1,13 @@
-import os
+
 import h5py
-import numpy as np
 import pandas as pd
 
 from pathlib import Path
 from adopt_net0 import extract_datasets_from_h5group
 
-result_folder = Path("U:/Data AdOpt-NET0/Model_Linking/Results/Zeeland")
-intervals = ["2030", "2040", "2050"]
-location = "Zeeland"
+
 def extract_cc_fractions(result_folder, intervals, location):
-    print("Extracting CC fractions...")
+    print("Extracting CC fractions of technologies in the cluster model")
 
     summary_path = result_folder/ "Summary.xlsx"
     try:
@@ -53,4 +50,3 @@ def extract_cc_fractions(result_folder, intervals, location):
                                 cc_fraction_dict[(location, interval, tech)] = float(frac_CC)
     return cc_fraction_dict
 
-print(extract_cc_fractions(result_folder, intervals, location))

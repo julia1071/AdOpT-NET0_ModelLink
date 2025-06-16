@@ -2,12 +2,6 @@
 import xlwings as xw
 import shutil
 
-# Excel must be installed on the server.
-# This method is used because the "complicated" Excel input file for IESA-Opt gets corrupted while using openpyxl.
-
-template_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250603_detailed_linked - kopie.xlsx" #Create a template (base) input file.
-output_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250603_detailed_linked.xlsx" #Save the file with a name that is corresponding to the name defined in runDataReading AIMMS
-
 def update_input_file_IESA(template_path,output_path, sheet_name, tech_id_col, tech_id_row_start, merged_row, header_row, merged_name, update_data):
     print("Update the input file of IESA")
 
@@ -91,24 +85,3 @@ def update_input_file_IESA(template_path,output_path, sheet_name, tech_id_col, t
     wb.close()
     app.quit()
     return "✅ All values written successfully."
-
-#Example to check what the code does.
-#updates = {
-#     "Res01_01": {2030: 0, 2050: 0},
-#     "Res01_02": {2030: 0, 2050: 0},
-#     "Res02_01": {2030: 0, 2050: 0}
-# }
-#
-# result = update_input_file_IESA(
-#     template_path=template_path,
-#     output_path=output_path,
-#     sheet_name="Technologies",
-#     tech_id_col="A",
-#     tech_id_row_start=7,
-#     merged_row=2,
-#     header_row=5,
-#     merged_name="Minimum use in a year",
-#     update_data=updates
-# )
-#
-# print(result)

@@ -4,13 +4,9 @@ import h5py
 from adopt_net0 import extract_datasets_from_h5group
 from conversion_factors import conversion_factor_cluster_to_IESA
 
-# --- Configuration ---
-result_folder = Path("U:/Data AdOpt-NET0/Model_Linking/Results/Zeeland")
-intervals = ["2030", "2040", "2050"]
-location = "Zeeland"
 
 def extract_data_cluster(result_folder, intervals, location):
-
+    print("Extract raw data from cluster model")
     # --- Main Process ---
     summary_path = result_folder / "Summary.xlsx"
     try:
@@ -48,6 +44,3 @@ def extract_data_cluster(result_folder, intervals, location):
                             tech_size_dict[(location, interval, tech)] = float(value)
 
     return tech_size_dict
-
-
-print(extract_data_cluster(result_folder, intervals, location))

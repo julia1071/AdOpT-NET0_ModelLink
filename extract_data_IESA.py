@@ -1,72 +1,58 @@
 import pandas as pd
 import sys
 
-# Replace 'your_file.xlsx' with the path to your Excel file - this can be linked to the main iteration by including {i+1 in the file name as in "Run AIMMS on Python"}
-file_path = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/ResultsModelLinking_General.xlsx."
-
-#Define simulation years cluster model and the excel sheets from which you want to extract data in IESA-Opt
-simulation_years=['2030','2040','2050']
-list_sheets= ['EnergyCosts','Configuration_Stock']
-nrows=[40, 320]#!Same order as list_sheets! =Number of rows in excel sheet -1
-
-#Define the corresponding properties of the sheets and the specific data that you want to extract.
-header_energycosts = 'Activity'
-filter_energycosts = ['Naphtha', 'Bio Naphtha', 'Bio Ethanol', 'Electricity EU', 'Sugars', 'Manure']
-
-header_stock = 'Tech_ID'
-filter_stock = ['RFP02_01', 'WAI01_03']
-
-#!Combine the headers and filters of the different sheets! Same order as list_sheets!
-headers = [header_energycosts,header_stock]
-filters= [filter_energycosts, filter_stock]
-
 # Function to extract data by looping through the years and sheets
-def extract_data_IESA (simulation_years, list_sheets, nrows, filters, headers,file_path):
+def extract_data_IESA (intervals, list_sheets, nrows, filters, headers,file_path):
     print("Start extracting data from IESA-Opt")
     if len(list_sheets) != len(nrows) or len(list_sheets) != len(headers) or len(list_sheets) != len(filters):
-        print("Error: The number of rows, headers or filters does not match the number of sheets.")
+        print("Error: The indices of number of rows, headers or filters does not match the number of sheets.")
         sys.exit()
+
     results_year_sheet= {} # Create an empty dictionary with a list for each year
-    for year in simulation_years:
+
+    for interval in intervals:
         for sheet in list_sheets:
-            results_year_sheet[f"results_{year}_{sheet}"] = []
-    for i in range(len(simulation_years)):
+            results_year_sheet[f"results_{interval}_{sheet}"] = []
+
+    for i in range(len(intervals)):
         for j in range(len(list_sheets)):
-            # Read the DataFrame for the 'Energy Costs' sheet
+
+            # Read the DataFrame for the different Excel sheets from which results are extracted.
                 df = pd.read_excel(file_path, sheet_name=list_sheets[j], nrows= nrows[j], header=0)
                 for k in range(len(filters[j])):
+
                     # Filter the rows by activity (e.g., 'Naphtha', 'Bio Naphtha', etc.)
                     row = df[df[headers[j]] == filters[j][k]]
 
                     if not row.empty:
                         # If the row is not empty, get the corresponding value for the year
-                        value = float(row[simulation_years[i]].values[0])
+                        value = float(row[intervals[i]].values[0])
                     else:
                         # If the row is empty, print a message (or you could assign None)
                         value = None
-                        print(f"Row was empty for activity '{filters[j][k]}' in year '{simulation_years[i]}'")
+                        print(f"Row was empty for '{headers[j]}' '{filters[j][k]}' in year '{intervals[i]}'")
 
                     # Append the result to the dictionary for the corresponding year-sheet combination
-                    results_year_sheet[f"results_{simulation_years[i]}_{list_sheets[j]}"].append({
+                    results_year_sheet[f"results_{intervals[i]}_{list_sheets[j]}"].append({
                         "filter": filters[j][k],
                         "value": value
                     })
 
     #Return the final results dictionary
-    print("The results dictionary from IESA-Opt is created")
+    print("The raw results dictionary from IESA-Opt is created")
     return results_year_sheet
 
-#results= extract_data_IESA(simulation_years,list_sheets,nrows,filters,headers,file_path)
+#results= extract_data_IESA(intervals,list_sheets,nrows,filters,headers,file_path)
 #print(results)
 
 #Get specific values from created dictionary
-def get_value_IESA(results_IESA,year, sheet, filter):
-    key = f"results_{year}_{sheet}"
-    entries = results_IESA.get(key, [])
+def get_value_IESA(results_year_sheet,interval, sheet, filter):
+    key = f"results_{interval}_{sheet}"
+    entries = results_year_sheet.get(key, [])
     for entry in entries:
         if entry['filter'] == filter:
             return entry['value']
-    raise ValueError(f"No value is found for {year}, {sheet}, {filter}")
+    raise ValueError(f"No value is found for {interval}, {sheet}, {filter}")
 
 #value_2030_X= get_value_IESA(results, '2030','Configuration_Stock', filter_stock[1])
 #print(value_2030_X)

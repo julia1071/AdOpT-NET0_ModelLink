@@ -1,16 +1,10 @@
-import os
-import h5py
-import numpy as np
-import pandas as pd
 
+import h5py
+import pandas as pd
 from pathlib import Path
 from adopt_net0 import extract_datasets_from_h5group
 
-result_folder = Path("U:/Data AdOpt-NET0/Model_Linking/Results/Zeeland")
-intervals = ["2030", "2040", "2050"]
-location = "Zeeland"
-
-def extract_import_ratios(result_folder, intervals, location):
+def extract_import_bio_ratios_naphtha(result_folder, intervals, location):
     """
     Extracts the bio naphtha import ratio per interval (not averaged across cases).
 
@@ -30,7 +24,7 @@ def extract_import_ratios(result_folder, intervals, location):
     except FileNotFoundError:
         raise FileNotFoundError(f"Missing summary file: {summary_path}")
 
-    ratios = {}
+    bio_ratios = {}
 
     for _, row in summary_df.iterrows():
         case = row.get("case")
@@ -65,7 +59,6 @@ def extract_import_ratios(result_folder, intervals, location):
 
             if col_fossil in df_ebalance.columns:
                 foss_val = df_ebalance[col_fossil].sum()
-                print(foss_val)
             else:
                 print(f"No fossil naphtha import value found for: {col_fossil}")
                 foss_val = 0
@@ -78,9 +71,7 @@ def extract_import_ratios(result_folder, intervals, location):
                 ratio = 0
 
             # Store the first valid ratio per interval
-            ratios[(location, interval)] = float(ratio)
+            bio_ratios[(location, interval)] = float(ratio)
 
-    print(ratios)
-    return ratios
-
-print(extract_import_ratios(result_folder, intervals, location))
+    print(f"The import bio_ratios of bio naphtha/naptha for each interval are extracted: {bio_ratios}")
+    return bio_ratios

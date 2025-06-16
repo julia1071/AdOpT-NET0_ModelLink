@@ -8,7 +8,7 @@ def conversion_factor_cluster_to_IESA(tech_id):
     Fails explicitly if the tech_id is unknown.
     """
 
-    if tech_id in ['ICH01_01', 'ICH01_05']:
+    if tech_id in ['ICH01_01', 'ICH01_02', 'ICH01_03', 'ICH01_05', 'ICH01_06']:
         # Cluster: t naphtha/h → IESA: Mton Ey/y
         return (0.303 * 8760) / 10**6
 
@@ -23,6 +23,10 @@ def conversion_factor_cluster_to_IESA(tech_id):
     elif tech_id == 'ICH01_14':
         # t propane/h → Mton Py/y
         return (0.859 * 8760) / 10**6
+
+    elif tech_id == 'WAI01_10':
+        # t plastic -> Syngas PJ/y
+        return 8760 / (1.1*10**6)
 
     elif tech_id == 'RFS04_01':
         # t plastic/h → Methanol PJ/y
@@ -109,7 +113,7 @@ def conversion_factor_IESA_to_cluster(sheet, filter, ppi_file_path, baseyear_clu
             sheet_name = 'Crude petroleum and natural gas'
             ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
             return ppi_cf * 44.9  # Meuro/PJ to euro/t
-        elif filter in ['Methane', 'Bio Methane']:
+        elif filter in ['Natural Gas HD']:
             sheet_name = 'Crude petroleum and natural gas'
             ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
             return ppi_cf * 50.04

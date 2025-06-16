@@ -1,20 +1,7 @@
-import subprocess
-import os
-import pandas as pd
+
 import sys
-import json
 from pathlib import Path
-import pandas as pd
-import adopt_net0.data_preprocessing as dp
-from adopt_net0.modelhub import ModelHub
-from adopt_net0.result_management.read_results import add_values_to_summary
-from adopt_net0.utilities import fix_installed_capacities, installed_capacities_existing, \
-    installed_capacities_existing_from_file
-import h5py
-from adopt_net0 import extract_datasets_from_h5group
-# pip install xlwings
-import xlwings as xw
-import shutil
+
 
 from run_aimms_on_python import run_IESA_change_name_files
 # Configuration for the function run_IESA_change_name_files
@@ -26,82 +13,136 @@ if run_from_server:
 else:
     aimms_path = "C:\\Program Files\\Aimms-25.3.4.2-x64-VS2022.exe" #Path on your local computer
 
+ # Case study choice
+linking_energy_prices = 1
+linking_mpw = 0
 
 # Define the file path to the model and the procedures that you want to run,.
 command = [
         aimms_path,
-        "U:\\IESA-Opt-ModelLinking\\ModelLinking.aimms", "--end-user",
+        "U:\\IESA-Opt-Dev_20250605_linking_correct\\ModelLinking.aimms", "--end-user",
         "--run-only", "Run_IESA"
     ]
 
 # Pick the file path where AIMMS is saving the results of the optimization.
 # The name of the initial results document can be adjusted in AIMMS "Settings_Solve_Transition".
-original_name_output = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/ResultsModelLinking_General.xlsx"
+original_name_output = "U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/ResultsModelLinking_General.xlsx"
 
 #The input file name can be changed in AIMMS right clicking on the procedure "runDataReading" selecting attributes
 #!Make sure that the output folder is empty and does not contain results from a previous run!
-original_name_input = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/20250430_detailed.xlsx"
+original_name_input = "U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/20250612_detailed_linked.xlsx"
 
 #Define the new name of the input and output file
-new_name_output = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/ResultsModelLinking_General_Iteration_"
-new_name_input = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/Input_Iteration_"
+new_name_output = "U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/ResultsModelLinking_General_Iteration_"
+new_name_input = "U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/Input_Iteration_"
 
 from extract_data_IESA import extract_data_IESA, get_value_IESA
 
 # Configuration for the function extract_data_IESA
 
-# Replace 'your_file.xlsx' with the path to your Excel file - this can be linked to the main iteration by including {i+1 in the file name as in "Run AIMMS on Python"}
-file_path = "U:/IESA-Opt-ModelLinking/Output/ResultsModelLinking/ResultsModelLinking_General.xlsx."
+if linking_energy_prices:
+    # Define simulation years cluster model and the excel sheets from which you want to extract data in IESA-Opt
+    intervals =['2030','2040','2050']
+    list_sheets= ['EnergyCosts']
 
-#Define simulation years cluster model and the excel sheets from which you want to extract data in IESA-Opt
-simulation_years=['2030','2040','2050']
-list_sheets= ['EnergyCosts','Configuration_Stock']
-nrows=[40, 320]#!Same order as list_sheets! =Number of rows in excel sheet -1
+    nrows=[45] # !Same order as list_sheets! =Number of rows in excel sheet -1
 
-#Define the corresponding properties of the sheets and the specific data that you want to extract.
-header_energycosts = 'Activity'
-filter_energycosts = ['Naphtha', 'Bio Naphtha', 'Bio Ethanol', 'Electricity EU', 'Sugars', 'Manure']
+    #Define the corresponding properties of the sheets and the specific data that you want to extract.
+    header_energycosts = 'Activity'
+    filter_energycosts = ['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass']
 
-header_stock = 'Tech_ID'
-filter_stock = ['RFP02_01', 'WAI01_03']
 
-#!Combine the headers and filters of the different sheets! Same order as list_sheets!
-headers = [header_energycosts,header_stock]
-filters = [filter_energycosts, filter_stock]
+    # !Combine the headers and filters of the different sheets! Same order as list_sheets!
+    headers = [header_energycosts]
+    filters = [filter_energycosts]
 
-from run_brownfield import run_brownfield
+elif linking_mpw:
+    # Define simulation years cluster model and the excel sheets from which you want to extract data in IESA-Opt
+    intervals =['2030','2040','2050']
+    list_sheets= ['SupplyDemand']
 
-# Configuration run brownfield
-execute = 1
+    nrows=[45] # !Same order as list_sheets! =Number of rows in excel sheet -1
+
+    #Define the corresponding properties of the sheets and the specific data that you want to extract.
+    header_energycosts = 'Activity'
+    filter_energycosts = ['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass']
+
+    #header_stock = 'Tech_ID'
+    #filter_stock = ['RFP02_01', 'WAI01_03']
+
+    # !Combine the headers and filters of the different sheets! Same order as list_sheets!
+    headers = [header_energycosts]
+    filters = [filter_energycosts]
+
+else:
+    print("Case study not defined, model linking stops")
+    sys.exit()
+
+
+from run_Zeeland import run_Zeeland
+
+# Configuration run Zeeland brownfield case
+ppi_file_path = "U:\\Producer_Price_Index_CBS.xlsx"
+
+# Economic base years in the two models.
+baseyear_cluster = 2022
+baseyear_IESA = 2019
 
 from get_results_cluster_dict import extract_data_cluster
 
 # --- Configuration ---
-result_folder = Path("U:/Data AdOpt-NET0/Test/Result path/EL_Chemelot")
-intervals = ["2030", "2040", "2050"]
-location = "Chemelot"
+result_folder = Path("U:/Data AdOpt-NET0/Model_Linking/Results/Zeeland")
+location = "Zeeland"
 
-#Create the dictionary where is stated which technology belongs to which Tech_ID. Check these values when really using.
-tech_to_id = {"CrackerFurnace_Electric": "ICH01_05",
-              "CrackerFurnace_existing": "ICH01_01" ,"EDH_existing": "ICH01_11","HaberBosch_existing": "Amm01_01"}
+from extract_cc_fractions import extract_cc_fractions
+
+from split_technologies_cc import apply_cc_splitting
+capture_rate = 0.9 # The capture rate of the carbon capture technology
+
+from merge_existing_new_techs import merge_existing_and_new_techs
+
+from extract_import_share_naphtha import extract_import_bio_ratios_naphtha
+
+from split_technologies_bio import apply_bio_splitting
+
+# Create a dictionary stating which technologies are splitted in bio and non bio
+bio_tech_names = ["CrackerFurnace_CC", "CrackerFurnace_Electric"]
+
+from map_techs_to_ID import map_techs_to_ID
+
+# Create the dictionary where is stated which technology belongs to which Tech_ID. Check these values when really using.
+tech_to_id = {"CrackerFurnace": "ICH01_01", "CrackerFurnace_CC": "ICH01_02", "CrackerFurnace_CC_bio": "ICH01_03", "CrackerFurnace_Electric": "ICH01_05",
+              "CrackerFurnace_Electric_bio": "ICH01_06", "EDH": "ICH01_11", "MTO": "ICH01_12", "PDH": "ICH01_14", "MPW2methanol": ["WAI01_10","RFS04_01"],
+              "RWGS": "HTI01_16", "DirectMeOHsynthesis": "RFS04_02", "SteamReformer": "Amm01_01", "SteamReformer_CC": "Amm01_02",
+                "AEC": "Amm01_05", "ElectricSMR_m": "Amm01_08", "CO2electrolysis": "ICH01_40"
+              }
 
 from update_input_file_IESA import update_input_file_IESA
 
 # Excel must be installed on the server.
 # This method is used because the "complicated" Excel input file for IESA-Opt gets corrupted while using openpyxl.
 
-template_path = "U:/IESA-Opt-ModelLinking/data/20250430_detailed - kopie.xlsx" #Create a template (base) input file.
-output_path = "U:/IESA-Opt-ModelLinking/data/20250430_detailed.xlsx" #Save the file with a name that is corresponding to the name defined in runDataReading AIMMS
+template_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250612_detailed_linked - initial template.xlsx" # Template input file.
+output_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250612_detailed_linked.xlsx" # Save the file with a name that is corresponding to the name defined in runDataReading AIMMS
 
 iterations = 2
 def model_linking(iterations):
     i = 0
     while i< iterations:
         i += 1
-        file_path = run_IESA_change_name_files(i, command, original_name_output, original_name_input, new_name_output, new_name_input)
-        results_year_sheet = extract_data_IESA(simulation_years, list_sheets, nrows,filters, headers, file_path)
-        run_brownfield(execute, results_year_sheet)
-        updates = extract_data_cluster(result_folder,intervals, location, tech_to_id)
+        results_path_IESA = run_IESA_change_name_files(i, command, original_name_output, original_name_input, new_name_output, new_name_input)
+        results_year_sheet = extract_data_IESA(intervals, list_sheets, nrows, filters, headers, results_path_IESA)
+        run_Zeeland(linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA)
+        tech_size_dict = extract_data_cluster(result_folder, intervals, location)
+
+        cc_fraction_dict = extract_cc_fractions(result_folder, intervals, location)
+        updated_dict_cc = apply_cc_splitting(tech_size_dict, cc_fraction_dict, capture_rate)
+        merged_tech_size_dict = merge_existing_and_new_techs(updated_dict_cc, intervals, location)
+        bio_ratios = extract_import_bio_ratios_naphtha(result_folder, intervals, location)
+        updated_dict_bio = apply_bio_splitting(merged_tech_size_dict, bio_ratios, bio_tech_names, location)
+        updates = map_techs_to_ID(updated_dict_bio, tech_to_id)
+        print(r"The following updates are inserted into IESA-Opt:")
+        print(updates)
         update_input_file_IESA(
             template_path=template_path,
             output_path=output_path,
@@ -113,6 +154,6 @@ def model_linking(iterations):
             merged_name="Minimum use in a year",
             update_data=updates
         )
-    print("Linking is executed")
+    print(f"Linking iteration {i} is executed")
 
-results = model_linking(iterations)
+model_linking(iterations)
