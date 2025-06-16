@@ -19,7 +19,7 @@ def run_Zeeland(linking_energy_prices, linking_mpw, results_year_sheet, ppi_file
 
         # select simulation types
         node = 'Zeeland'
-        scope3 = 0 # Do you want the scope 3 emissions to be accounted in the optimization?
+        scope3 = 1 # Do you want the scope 3 emissions to be accounted in the optimization?
         annual_demand = 1
         carrier_demand_dict = {'ethylene': 1184352, 'propylene': 532958, 'ammonia': 1184000}
         intervals = ['2030', '2040', '2050']

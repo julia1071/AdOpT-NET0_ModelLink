@@ -39,7 +39,6 @@ def update_input_file_IESA(template_path,output_path, sheet_name, tech_id_col, t
         except (ValueError, TypeError):
             continue
 
-    print("✅ Found years in IESA-Opt:", list(year_to_column.keys()))
 
     # Step 5: Build mapping of Tech_ID → row
     tech_id_to_row = {}

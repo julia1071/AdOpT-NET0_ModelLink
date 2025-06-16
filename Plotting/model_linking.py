@@ -113,7 +113,7 @@ from map_techs_to_ID import map_techs_to_ID
 # Create the dictionary where is stated which technology belongs to which Tech_ID. Check these values when really using.
 tech_to_id = {"CrackerFurnace": "ICH01_01", "CrackerFurnace_CC": "ICH01_02", "CrackerFurnace_CC_bio": "ICH01_03", "CrackerFurnace_Electric": "ICH01_05",
               "CrackerFurnace_Electric_bio": "ICH01_06", "EDH": "ICH01_11", "MTO": "ICH01_12", "PDH": "ICH01_14", "MPW2methanol": ["WAI01_10","RFS04_01"],
-              "RWGS": "HTI01_16", "DirectMeOHsynthesis": "RFS04_02", "SteamReformer": "Amm01_01", "SteamReformer_CC": "Amm01_02",
+              "DirectMeOHsynthesis": "RFS04_02", "SteamReformer": "Amm01_01", "SteamReformer_CC": "Amm01_02",
                 "AEC": "Amm01_05", "ElectricSMR_m": "Amm01_08", "CO2electrolysis": "ICH01_40"
               }
 
@@ -125,7 +125,7 @@ from update_input_file_IESA import update_input_file_IESA
 template_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250612_detailed_linked - initial template.xlsx" # Template input file.
 output_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250612_detailed_linked.xlsx" # Save the file with a name that is corresponding to the name defined in runDataReading AIMMS
 
-iterations = 2
+iterations = 4
 def model_linking(iterations):
     i = 0
     while i< iterations:
@@ -134,12 +134,19 @@ def model_linking(iterations):
         results_year_sheet = extract_data_IESA(intervals, list_sheets, nrows, filters, headers, results_path_IESA)
         run_Zeeland(linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA)
         tech_size_dict = extract_data_cluster(result_folder, intervals, location)
-
+        print(r"The tech_size_dict created:")
+        print(tech_size_dict)
         cc_fraction_dict = extract_cc_fractions(result_folder, intervals, location)
         updated_dict_cc = apply_cc_splitting(tech_size_dict, cc_fraction_dict, capture_rate)
+        print(r"The updated_dict_cc created:")
+        print(updated_dict_cc)
         merged_tech_size_dict = merge_existing_and_new_techs(updated_dict_cc, intervals, location)
+        print(r"The merged_tech_size_dict created:")
+        print(merged_tech_size_dict)
         bio_ratios = extract_import_bio_ratios_naphtha(result_folder, intervals, location)
         updated_dict_bio = apply_bio_splitting(merged_tech_size_dict, bio_ratios, bio_tech_names, location)
+        print(r"The updated_dict_bio created:")
+        print(updated_dict_bio)
         updates = map_techs_to_ID(updated_dict_bio, tech_to_id)
         print(r"The following updates are inserted into IESA-Opt:")
         print(updates)
