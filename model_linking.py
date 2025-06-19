@@ -81,6 +81,10 @@ else:
 
 from run_Zeeland import run_Zeeland
 
+# Define the location and the casepath and the result folder path for the cluster model
+casepath = "U:/Data AdOpt-NET0/Model_Linking/Case_Study/ML_Zeeland_bf_"
+result_folder = Path("U:/Data AdOpt-NET0/Model_Linking/Results/Zeeland")
+location = "Zeeland"
 # Configuration run Zeeland brownfield case
 ppi_file_path = "U:\\Producer_Price_Index_CBS.xlsx"
 
@@ -88,11 +92,11 @@ ppi_file_path = "U:\\Producer_Price_Index_CBS.xlsx"
 baseyear_cluster = 2022
 baseyear_IESA = 2019
 
-from get_results_cluster_dict import extract_data_cluster
+from get_results_cluster_dict_output import extract_technology_outputs
 
 # --- Configuration ---
-result_folder = Path("U:/Data AdOpt-NET0/Model_Linking/Results/Zeeland")
-location = "Zeeland"
+
+
 
 from extract_cc_fractions import extract_cc_fractions
 
@@ -112,7 +116,7 @@ from map_techs_to_ID import map_techs_to_ID
 
 # Create the dictionary where is stated which technology belongs to which Tech_ID. Check these values when really using.
 tech_to_id = {"CrackerFurnace": "ICH01_01", "CrackerFurnace_CC": "ICH01_02", "CrackerFurnace_CC_bio": "ICH01_03", "CrackerFurnace_Electric": "ICH01_05",
-              "CrackerFurnace_Electric_bio": "ICH01_06", "EDH": "ICH01_11", "MTO": "ICH01_12", "PDH": "ICH01_14", "MPW2methanol": ["WAI01_10","RFS04_01"],
+              "CrackerFurnace_Electric_bio": "ICH01_06", "EDH": "ICH01_11", "MTO": "ICH01_12", "PDH": "ICH01_14", "MPW2methanol": "RFS04_01",
               "DirectMeOHsynthesis": "RFS04_02", "SteamReformer": "Amm01_01", "SteamReformer_CC": "Amm01_02",
                 "AEC": "Amm01_05", "ElectricSMR_m": "Amm01_08", "CO2electrolysis": "ICH01_40"
               }
@@ -125,31 +129,37 @@ from update_input_file_IESA import update_input_file_IESA
 template_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250612_detailed_linked - initial template.xlsx" # Template input file.
 output_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250612_detailed_linked.xlsx" # Save the file with a name that is corresponding to the name defined in runDataReading AIMMS
 
-iterations = 4
-def model_linking(iterations):
-    i = 0
-    while i< iterations:
-        i += 1
+from compare_outputs import compare_outputs
+
+# Convergence Criteria; the relative change in output for each technology in the cluster  model must be lower than 0.3
+e = 0.3
+
+def model_linking():
+    i = 1
+    outputs_cluster = {}
+    while True:
         results_path_IESA = run_IESA_change_name_files(i, command, original_name_output, original_name_input, new_name_output, new_name_input)
         results_year_sheet = extract_data_IESA(intervals, list_sheets, nrows, filters, headers, results_path_IESA)
-        run_Zeeland(linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA)
-        tech_size_dict = extract_data_cluster(result_folder, intervals, location)
+        iteration_path = result_folder / f"Iteration_{i}"
+        run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA)
+        tech_output_dict = extract_technology_outputs(iteration_path, intervals, location)
         print(r"The tech_size_dict created:")
-        print(tech_size_dict)
-        cc_fraction_dict = extract_cc_fractions(result_folder, intervals, location)
-        updated_dict_cc = apply_cc_splitting(tech_size_dict, cc_fraction_dict, capture_rate)
+        print(tech_output_dict)
+        cc_fraction_dict = extract_cc_fractions(iteration_path, intervals, location)
+        updated_dict_cc = apply_cc_splitting(tech_output_dict, cc_fraction_dict, capture_rate)
         print(r"The updated_dict_cc created:")
         print(updated_dict_cc)
         merged_tech_size_dict = merge_existing_and_new_techs(updated_dict_cc, intervals, location)
         print(r"The merged_tech_size_dict created:")
         print(merged_tech_size_dict)
-        bio_ratios = extract_import_bio_ratios_naphtha(result_folder, intervals, location)
+        bio_ratios = extract_import_bio_ratios_naphtha(iteration_path, intervals, location)
         updated_dict_bio = apply_bio_splitting(merged_tech_size_dict, bio_ratios, bio_tech_names, location)
         print(r"The updated_dict_bio created:")
         print(updated_dict_bio)
         updates = map_techs_to_ID(updated_dict_bio, tech_to_id)
         print(r"The following updates are inserted into IESA-Opt:")
         print(updates)
+
         update_input_file_IESA(
             template_path=template_path,
             output_path=output_path,
@@ -161,6 +171,14 @@ def model_linking(iterations):
             merged_name="Minimum use in a year",
             update_data=updates
         )
-    print(f"Linking iteration {i} is executed")
+        print(f"Linking iteration {i} is executed")
+        outputs_cluster[i] = updates
 
-model_linking(iterations)
+        if compare_outputs(outputs_cluster, i, e):
+            print(f"✅ Model linking is done after {i} iterations.")
+            break  # ← loop ends here
+        else:
+            i += 1
+            print(f"The next iteration, iteration {i} is started")
+
+model_linking()

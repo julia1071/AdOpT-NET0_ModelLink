@@ -1,5 +1,6 @@
 import json
 import sys
+import os
 from pathlib import Path
 import pandas as pd
 import adopt_net0.data_preprocessing as dp
@@ -10,21 +11,19 @@ from adopt_net0.utilities import fix_installed_capacities, installed_capacities_
 from extract_data_IESA import get_value_IESA
 from conversion_factors import conversion_factor_IESA_to_cluster
 
-def run_Zeeland(linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA):
+def run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA):
     print("Start the optimization in the cluster model")
     if linking_energy_prices:
-        # Specify the base path to your input data
-        casepath = "U:/Data AdOpt-NET0/Model_Linking/Case_Study/ML_Zeeland_bf_"
-        resultpath = "U:/Data AdOpt-NET0/Model_Linking/Results/Zeeland"
+
+        os.makedirs(iteration_path, exist_ok=True)
 
         # select simulation types
-        node = 'Zeeland'
         scope3 = 1 # Do you want the scope 3 emissions to be accounted in the optimization?
         annual_demand = 1
         carrier_demand_dict = {'ethylene': 1184352, 'propylene': 532958, 'ammonia': 1184000}
         intervals = ['2030', '2040', '2050']
         interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
-        nr_DD_days = 0 # Set to 10 if used for full-scale modelling
+        nr_DD_days = 0 # Set to 10 if used for full-scale modelling also change the 876 factor in the extract_technology_output
         pyhub = {}
 
         for i, interval in enumerate(intervals):
@@ -57,8 +56,8 @@ def run_Zeeland(linking_energy_prices, linking_mpw, results_year_sheet, ppi_file
             model_config['solveroptions']['nodefilestart']['value'] = 200
 
             # change save options
-            model_config['reporting']['save_summary_path']['value'] = resultpath
-            model_config['reporting']['save_path']['value'] = resultpath
+            model_config['reporting']['save_summary_path']['value'] = str(iteration_path)
+            model_config['reporting']['save_path']['value'] = str(iteration_path)
 
             # Write the updated JSON data back to the file
             with open(json_filepath, 'w') as json_file:
@@ -66,7 +65,7 @@ def run_Zeeland(linking_energy_prices, linking_mpw, results_year_sheet, ppi_file
 
             if i != 0:
                 prev_interval = intervals[i - 1]
-                installed_capacities_existing(pyhub, interval, prev_interval, node, casepath_interval)
+                installed_capacities_existing(pyhub, interval, prev_interval, location, casepath_interval)
 
             # Construct and solve the model
             pyhub[interval] = ModelHub()
@@ -88,14 +87,14 @@ def run_Zeeland(linking_energy_prices, linking_mpw, results_year_sheet, ppi_file
                                                                         'EnergyCosts', 'Naphtha'))
             print(f"The value that is inputed for naphtha is {x}")
             pyhub[interval].data.time_series['full'][
-                interval, node, 'naphtha', 'global', 'Import price'] = x
+                interval, location, 'naphtha', 'global', 'Import price'] = x
 
             y = (conversion_factor_IESA_to_cluster('EnergyCosts','Bio Naphtha', ppi_file_path, baseyear_cluster,
                                                     baseyear_IESA) * get_value_IESA (results_year_sheet, interval,
                                                                         'EnergyCosts', 'Bio Naphtha'))
             print(f"The value that is inputed for bio naphtha is {y}")
             pyhub[interval].data.time_series['full'][
-                interval, node, 'naphtha_bio', 'global', 'Import price'] = y
+                interval, location, 'naphtha_bio', 'global', 'Import price'] = y
 
 
             z = (conversion_factor_IESA_to_cluster('EnergyCosts','Natural Gas HD', ppi_file_path, baseyear_cluster,
@@ -103,10 +102,10 @@ def run_Zeeland(linking_energy_prices, linking_mpw, results_year_sheet, ppi_file
                                                                         'EnergyCosts', 'Natural Gas HD'))
             print(f"The value that is inputed for methane is {z}")
             pyhub[interval].data.time_series['full'][
-                interval, node, 'methane', 'global', 'Import price'] = z
+                interval, location, 'methane', 'global', 'Import price'] = z
 
             # #pyhub[interval].data.time_series['full'][
-            #     interval, node, 'biomass', 'global', 'Import price'] = (conversion_factor_IESA_to_cluster('EnergyCosts',
+            #     interval, location, 'biomass', 'global', 'Import price'] = (conversion_factor_IESA_to_cluster('EnergyCosts',
             #                                                                                              'Biomass',
             #                                                                                              ppi_file_path,
             #                                                                                              baseyear_cluster,
