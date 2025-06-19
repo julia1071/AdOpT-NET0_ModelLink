@@ -134,7 +134,7 @@ input_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250612_detailed_li
 
 from compare_outputs import compare_outputs
 
-# Convergence Criteria; the relative change in output for each technology in the cluster  model must be lower than 0.3
+# Convergence Criteria; the relative change in output for each technology in the cluster  model must be lower than e
 e = 0.1
 max_iterations = 3
 def model_linking(max_iterations):
