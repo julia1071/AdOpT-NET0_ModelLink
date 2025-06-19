@@ -6,7 +6,7 @@ def compare_outputs(outputs_cluster, i, e):
     """
     if i <= 1:
         print("First iteration, skipping comparison.")
-        return True  # Treat as pass to continue the loop
+        return False  # Treat as pass to continue the loop
 
     prev = outputs_cluster[i - 1]
     curr = outputs_cluster[i]

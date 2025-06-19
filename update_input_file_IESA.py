@@ -1,19 +1,39 @@
 # pip install xlwings
 import xlwings as xw
-import shutil
+import xlwings as xw
+from clear_input_file_IESA import clear_input_file_IESA
 
-def update_input_file_IESA(template_path,output_path, sheet_name, tech_id_col, tech_id_row_start, merged_row, header_row, merged_name, update_data):
-    print("Update the input file of IESA")
+def update_input_file_IESA(
+    input_path,
+    sheet_name,
+    tech_id_col,
+    tech_id_row_start,
+    merged_row,
+    header_row,
+    merged_name,
+    update_data,
+    tech_to_id
+):
+    print("📝 Updating the input file of IESA...")
 
-    # Step 1: Copy the clean template to the target output path
-    shutil.copy(template_path, output_path)
+    # First: Clean old values
+    clear_input_file_IESA(
+        input_path=input_path,
+        sheet_name=sheet_name,
+        tech_id_col=tech_id_col,
+        tech_id_row_start=tech_id_row_start,
+        merged_row=merged_row,
+        header_row=header_row,
+        merged_name=merged_name,
+        tech_to_id=tech_to_id
+    )
 
-    # Step 2: Open the copied workbook
+    # Then: Re-open to write values
     app = xw.App(visible=False)
-    wb = xw.Book(output_path)
+    wb = xw.Book(input_path)
     ws = wb.sheets[sheet_name]
 
-    # Step 3: Find the merged column range with the specified header
+    # Find merged header
     merged_range = None
     last_col = ws.used_range.last_cell.column
 
@@ -28,19 +48,17 @@ def update_input_file_IESA(template_path,output_path, sheet_name, tech_id_col, t
         app.quit()
         return f"❌ Merged header '{merged_name}' not found."
 
-    # Step 4: Build mapping of year → column index
+    # Map years to columns
     year_to_column = {}
     for col in range(merged_range.column, merged_range.last_cell.column + 1):
-        cell = ws.range((header_row, col))
-        val = cell.value
+        val = ws.range((header_row, col)).value
         try:
             year = int(float(str(val).strip()))
             year_to_column[year] = col
         except (ValueError, TypeError):
             continue
 
-
-    # Step 5: Build mapping of Tech_ID → row
+    # Map Tech_IDs to rows
     tech_id_to_row = {}
     row = tech_id_row_start
     while True:
@@ -51,21 +69,20 @@ def update_input_file_IESA(template_path,output_path, sheet_name, tech_id_col, t
         tech_id_to_row[str(tech_id).strip()] = row
         row += 1
 
-    # Expand update_data to fill intermediate years (e.g., 2035 and 2045)
+    # Expand data
     expanded_update_data = {}
-
     for tech_id, year_vals in update_data.items():
         expanded_year_vals = {}
         sorted_years = sorted(year_vals.keys())
         for year in sorted_years:
-            expanded_year_vals[year] = year_vals[year]  # Keep original
+            expanded_year_vals[year] = year_vals[year]
             if year == 2030 and 2035 not in year_vals:
                 expanded_year_vals[2035] = year_vals[year]
             if year == 2040 and 2045 not in year_vals:
                 expanded_year_vals[2045] = year_vals[year]
         expanded_update_data[tech_id] = expanded_year_vals
 
-    # Step 6: Write values
+    # Write new values
     for tech_id, year_vals in expanded_update_data.items():
         if tech_id not in tech_id_to_row:
             print(f"⚠️ Skipping missing Tech_ID: {tech_id}")
@@ -79,7 +96,6 @@ def update_input_file_IESA(template_path,output_path, sheet_name, tech_id_col, t
             print(f"✍️ Writing {val} to row {row}, col {col} (Tech_ID={tech_id}, Year={year})")
             ws.range((row, col)).value = val
 
-    # Step 7: Save and close workbook
     wb.save()
     wb.close()
     app.quit()

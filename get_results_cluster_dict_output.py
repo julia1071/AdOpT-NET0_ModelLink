@@ -70,8 +70,7 @@ def extract_technology_outputs(result_folder, intervals, location):
                     col = (matched_interval, location, tech, output_col_name)
                     if col in df_op.columns:
                         total_output = df_op[col].sum()
-                        tech_output_dict[(location, matched_interval, tech)] = float(876*total_output)
-    print("In extract_technology_outputs.py the total_output is multiplied with 8760h/10h for fast optimization.")
+                        tech_output_dict[(location, matched_interval, tech)] = float(total_output)
     return tech_output_dict
 
 

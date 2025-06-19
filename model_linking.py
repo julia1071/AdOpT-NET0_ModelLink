@@ -1,7 +1,8 @@
-
+import os
 import sys
 from pathlib import Path
-
+import json
+from datetime import datetime
 
 from run_aimms_on_python import run_IESA_change_name_files
 # Configuration for the function run_IESA_change_name_files
@@ -26,15 +27,18 @@ command = [
 
 # Pick the file path where AIMMS is saving the results of the optimization.
 # The name of the initial results document can be adjusted in AIMMS "Settings_Solve_Transition".
-original_name_output = "U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/ResultsModelLinking_General.xlsx"
+
+
+file_path_IESA = Path("U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking")
 
 #The input file name can be changed in AIMMS right clicking on the procedure "runDataReading" selecting attributes
 #!Make sure that the output folder is empty and does not contain results from a previous run!
-original_name_input = "U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/20250612_detailed_linked.xlsx"
+original_name_input = file_path_IESA / "20250612_detailed_linked.xlsx"
+original_name_output = file_path_IESA / "ResultsModelLinking_General.xlsx"
 
 #Define the new name of the input and output file
-new_name_output = "U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/ResultsModelLinking_General_Iteration_"
-new_name_input = "U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/Input_Iteration_"
+new_name_output = file_path_IESA / "ResultsModelLinking_General_Iteration_"
+new_name_input = file_path_IESA / "Input_Iteration_"
 
 from extract_data_IESA import extract_data_IESA, get_value_IESA
 
@@ -122,25 +126,29 @@ tech_to_id = {"CrackerFurnace": "ICH01_01", "CrackerFurnace_CC": "ICH01_02", "Cr
               }
 
 from update_input_file_IESA import update_input_file_IESA
-
+from clear_input_file_IESA import clear_input_file_IESA
 # Excel must be installed on the server.
 # This method is used because the "complicated" Excel input file for IESA-Opt gets corrupted while using openpyxl.
 
-template_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250612_detailed_linked - initial template.xlsx" # Template input file.
-output_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250612_detailed_linked.xlsx" # Save the file with a name that is corresponding to the name defined in runDataReading AIMMS
+input_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250612_detailed_linked.xlsx" # Save the file with a name that is corresponding to the name defined in runDataReading AIMMS
 
 from compare_outputs import compare_outputs
 
 # Convergence Criteria; the relative change in output for each technology in the cluster  model must be lower than 0.3
-e = 0.3
-
-def model_linking():
+e = 0.1
+max_iterations = 3
+def model_linking(max_iterations):
     i = 1
     outputs_cluster = {}
+    timestamp = datetime.now().strftime("%Y%m%d_%H_%M")
+    map_name_cluster = result_folder / f"Results_model_linking_{timestamp}"
+    map_name_IESA = file_path_IESA / f"Results_model_linking_{timestamp}"
+    os.makedirs(map_name_cluster, exist_ok=True)
+    os.makedirs(map_name_IESA, exist_ok=True)
     while True:
-        results_path_IESA = run_IESA_change_name_files(i, command, original_name_output, original_name_input, new_name_output, new_name_input)
+        results_path_IESA = run_IESA_change_name_files(i, command, original_name_output, original_name_input, new_name_output, new_name_input,map_name_IESA)
         results_year_sheet = extract_data_IESA(intervals, list_sheets, nrows, filters, headers, results_path_IESA)
-        iteration_path = result_folder / f"Iteration_{i}"
+        iteration_path = map_name_cluster / f"Iteration_{i}"
         run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA)
         tech_output_dict = extract_technology_outputs(iteration_path, intervals, location)
         print(r"The tech_size_dict created:")
@@ -160,25 +168,44 @@ def model_linking():
         print(r"The following updates are inserted into IESA-Opt:")
         print(updates)
 
-        update_input_file_IESA(
-            template_path=template_path,
-            output_path=output_path,
+        outputs_cluster[i] = updates
+
+        if compare_outputs(outputs_cluster, i, e) or i == max_iterations:
+            print(f"✅ Model linking is done after {i} iterations.")
+
+            # Save outputs_cluster to JSON
+            output_file = map_name_cluster/ "outputs_cluster.json"
+            with open(output_file, "w") as f:
+                json.dump(outputs_cluster, f, indent=4)
+
+            print(f"📝 Saved outputs_cluster to {output_file}")
+
+            clear_input_file_IESA(
+            input_path,
             sheet_name="Technologies",
             tech_id_col="A",
             tech_id_row_start=7,
             merged_row=2,
             header_row=5,
             merged_name="Minimum use in a year",
-            update_data=updates
+            tech_to_id= tech_to_id
         )
-        print(f"Linking iteration {i} is executed")
-        outputs_cluster[i] = updates
-
-        if compare_outputs(outputs_cluster, i, e):
-            print(f"✅ Model linking is done after {i} iterations.")
             break  # ← loop ends here
         else:
+            update_input_file_IESA(
+                input_path,
+                sheet_name="Technologies",
+                tech_id_col="A",
+                tech_id_row_start=7,
+                merged_row=2,
+                header_row=5,
+                merged_name="Minimum use in a year",
+                update_data=updates,
+                tech_to_id=tech_to_id
+            )
+            print(f"Linking iteration {i} is executed")
             i += 1
             print(f"The next iteration, iteration {i} is started")
 
-model_linking()
+
+model_linking(max_iterations)
