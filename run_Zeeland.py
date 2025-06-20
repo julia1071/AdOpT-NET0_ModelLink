@@ -13,6 +13,7 @@ from conversion_factors import conversion_factor_IESA_to_cluster
 
 def run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA):
     print("Start the optimization in the cluster model")
+
     if linking_energy_prices:
 
         os.makedirs(iteration_path, exist_ok=True)
@@ -23,13 +24,19 @@ def run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, li
         carrier_demand_dict = {'ethylene': 1184352, 'propylene': 532958, 'ammonia': 1184000}
         intervals = ['2030', '2040', '2050']
         interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
-        nr_DD_days = 10 # Set to 10 if used for full-scale modelling also change the 876 factor in the extract_technology_output
+        nr_DD_days = 0 # Set to 10 if used for full-scale modelling also change the 876 factor in the extract_technology_output
         pyhub = {}
+
+        input_cluster = {}
+        if location not in input_cluster:
+            input_cluster[location] = {}
+
 
         for i, interval in enumerate(intervals):
             casepath_interval = casepath + interval
             json_filepath = Path(casepath_interval) / "ConfigModel.json"
-
+            if interval not in input_cluster[location]:
+                input_cluster[location][interval] = {}
             with open(json_filepath) as json_file:
                 model_config = json.load(json_file)
 
@@ -69,7 +76,7 @@ def run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, li
 
             # Construct and solve the model
             pyhub[interval] = ModelHub()
-            pyhub[interval].read_data(casepath_interval) #start_period=0,end_period=10) # Solve model for the first 10 hours, NN-days must be set to 10 again with full-scale modelling
+            pyhub[interval].read_data(casepath_interval, start_period=0,end_period=10) # Solve model for the first 10 hours, NN-days must be set to 10 again with full-scale modelling
 
             # Set case name
             if nr_DD_days > 0:
@@ -86,6 +93,7 @@ def run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, li
                                                     baseyear_IESA) * get_value_IESA (results_year_sheet, interval,
                                                                         'EnergyCosts', 'Naphtha'))
             print(f"The value that is inputed for naphtha is {x}")
+            input_cluster[location][interval]['Naphtha'] = x
             pyhub[interval].data.time_series['full'][
                 interval, location, 'naphtha', 'global', 'Import price'] = x
 
@@ -93,6 +101,7 @@ def run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, li
                                                     baseyear_IESA) * get_value_IESA (results_year_sheet, interval,
                                                                         'EnergyCosts', 'Bio Naphtha'))
             print(f"The value that is inputed for bio naphtha is {y}")
+            input_cluster[location][interval]['Bio Naphtha'] = y
             pyhub[interval].data.time_series['full'][
                 interval, location, 'naphtha_bio', 'global', 'Import price'] = y
 
@@ -101,8 +110,10 @@ def run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, li
                                                     baseyear_IESA) * get_value_IESA (results_year_sheet, interval,
                                                                         'EnergyCosts', 'Natural Gas HD'))
             print(f"The value that is inputed for methane is {z}")
+            input_cluster[location][interval]['Natural Gas HD'] = z
             pyhub[interval].data.time_series['full'][
                 interval, location, 'methane', 'global', 'Import price'] = z
+
 
             # #pyhub[interval].data.time_series['full'][
             #     interval, location, 'biomass', 'global', 'Import price'] = (conversion_factor_IESA_to_cluster('EnergyCosts',
@@ -125,6 +136,9 @@ def run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, li
 
             pyhub[interval].solve()
 
+        return input_cluster
+
     elif linking_mpw:
         print("Not yet defined, model linking stops")
         return sys.exit()
+

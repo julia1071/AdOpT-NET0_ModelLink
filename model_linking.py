@@ -139,6 +139,7 @@ e = 0.1
 max_iterations = 3
 def model_linking(max_iterations):
     i = 1
+    inputs_cluster = {}
     outputs_cluster = {}
     timestamp = datetime.now().strftime("%Y%m%d_%H_%M")
     map_name_cluster = result_folder / f"Results_model_linking_{timestamp}"
@@ -149,7 +150,7 @@ def model_linking(max_iterations):
         results_path_IESA = run_IESA_change_name_files(i, command, original_name_output, original_name_input, new_name_output, new_name_input,map_name_IESA)
         results_year_sheet = extract_data_IESA(intervals, list_sheets, nrows, filters, headers, results_path_IESA)
         iteration_path = map_name_cluster / f"Iteration_{i}"
-        run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA)
+        input_cluster = run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA)
         tech_output_dict = extract_technology_outputs(iteration_path, intervals, location)
         print(r"The tech_size_dict created:")
         print(tech_output_dict)
@@ -168,17 +169,22 @@ def model_linking(max_iterations):
         print(r"The following updates are inserted into IESA-Opt:")
         print(updates)
 
-        outputs_cluster[i] = updates
+        outputs_cluster[f"iteration_{i}"] = updates
+        inputs_cluster[f"iteration_{i}"] = input_cluster
 
         if compare_outputs(outputs_cluster, i, e) or i == max_iterations:
             print(f"✅ Model linking is done after {i} iterations.")
 
             # Save outputs_cluster to JSON
             output_file = map_name_cluster/ "outputs_cluster.json"
+            input_file = map_name_cluster / "inputs_cluster.json"
+
+            with open(input_file, "w") as f:
+                json.dump(outputs_cluster, f, indent=4)
             with open(output_file, "w") as f:
                 json.dump(outputs_cluster, f, indent=4)
 
-            print(f"📝 Saved outputs_cluster to {output_file}")
+            print(f"📝 Saved inputs and outputs of the cluster model")
 
             clear_input_file_IESA(
             input_path,
