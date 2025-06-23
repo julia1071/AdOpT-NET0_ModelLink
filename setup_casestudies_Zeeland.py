@@ -8,7 +8,7 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 import pandas as pd
 
 #global functions
-read_all_brownfield = 0
+read_all_brownfield = 1
 
 
 #Create data Zeeland cluster short term
@@ -17,7 +17,7 @@ execute = 1
 if execute == 1:
     # Specify the path to your input data
     casepath = Path("U:/Data AdOpt-NET0/Model_Linking/Case_Study/ML_Zeeland_bf_2030")
-    datapath = Path("U:/Data AdOpt-NET0/Model_Linking/Data/250605_ML_Data_Zeeland_bf")
+    datapath = Path("U:/Data AdOpt-NET0/Model_Linking/Data/250619_ML_Data_Zeeland_bf")
 
     firsttime = 0
     if firsttime:
@@ -66,7 +66,7 @@ if execute == 1:
         # Read climate data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all_brownfield:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -202,7 +202,7 @@ execute = 1
 if execute == 1:
     # Specify the path to your input data
     casepath = Path("U:/Data AdOpt-NET0/Model_Linking/Case_Study/ML_Zeeland_bf_2040")
-    datapath = Path("U:/Data AdOpt-NET0/Model_Linking/Data/250605_ML_Data_Zeeland_bf")
+    datapath = Path("U:/Data AdOpt-NET0/Model_Linking/Data/250619_ML_Data_Zeeland_bf")
 
     firsttime = 0
     if firsttime:
@@ -394,7 +394,7 @@ execute = 1
 if execute == 1:
     # Specify the path to your input data
     casepath = Path("U:/Data AdOpt-NET0/Model_Linking/Case_Study/ML_Zeeland_bf_2050")
-    datapath = Path("U:/Data AdOpt-NET0/Model_Linking/Data/250605_ML_Data_Zeeland_bf")
+    datapath = Path("U:/Data AdOpt-NET0/Model_Linking/Data/250619_ML_Data_Zeeland_bf")
 
     firsttime = 0
     if firsttime:

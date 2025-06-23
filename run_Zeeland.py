@@ -11,7 +11,7 @@ from adopt_net0.utilities import fix_installed_capacities, installed_capacities_
 from extract_data_IESA import get_value_IESA
 from conversion_factors import conversion_factor_IESA_to_cluster
 
-def run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA):
+def run_Zeeland(casepath, iteration_path, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA):
     print("Start the optimization in the cluster model")
 
     if linking_energy_prices:
@@ -24,7 +24,7 @@ def run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, li
         carrier_demand_dict = {'ethylene': 1184352, 'propylene': 532958, 'ammonia': 1184000}
         intervals = ['2030', '2040', '2050']
         interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
-        nr_DD_days = 0 # Set to 10 if used for full-scale modelling also change the 876 factor in the extract_technology_output
+        nr_DD_days = 10 # Set to 10 if used for full-scale modelling also change the 876 factor in the extract_technology_output
         pyhub = {}
 
         input_cluster = {}
@@ -76,7 +76,7 @@ def run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, li
 
             # Construct and solve the model
             pyhub[interval] = ModelHub()
-            pyhub[interval].read_data(casepath_interval, start_period=0,end_period=10) # Solve model for the first 10 hours, NN-days must be set to 10 again with full-scale modelling
+            pyhub[interval].read_data(casepath_interval) #, start_period=0,end_period=10) # Solve model for the first 10 hours, NN-days must be set to 10 again with full-scale modelling
 
             # Set case name
             if nr_DD_days > 0:

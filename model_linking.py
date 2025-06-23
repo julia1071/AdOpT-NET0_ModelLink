@@ -29,16 +29,16 @@ command = [
 # The name of the initial results document can be adjusted in AIMMS "Settings_Solve_Transition".
 
 
-file_path_IESA = Path("U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking")
+file_path_IESA_output = Path("U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking")
 
 #The input file name can be changed in AIMMS right clicking on the procedure "runDataReading" selecting attributes
 #!Make sure that the output folder is empty and does not contain results from a previous run!
-original_name_input = file_path_IESA / "20250612_detailed_linked.xlsx"
-original_name_output = file_path_IESA / "ResultsModelLinking_General.xlsx"
+original_name_input = file_path_IESA_output / "20250619_detailed_linked.xlsx"
+original_name_output = file_path_IESA_output / "ResultsModelLinking_General.xlsx"
 
 #Define the new name of the input and output file
-new_name_output = file_path_IESA / "ResultsModelLinking_General_Iteration_"
-new_name_input = file_path_IESA / "Input_Iteration_"
+new_name_output = file_path_IESA_output / "ResultsModelLinking_General_Iteration_"
+new_name_input = file_path_IESA_output / "Input_Iteration_"
 
 from extract_data_IESA import extract_data_IESA, get_value_IESA
 
@@ -130,7 +130,7 @@ from clear_input_file_IESA import clear_input_file_IESA
 # Excel must be installed on the server.
 # This method is used because the "complicated" Excel input file for IESA-Opt gets corrupted while using openpyxl.
 
-input_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250612_detailed_linked.xlsx" # Save the file with a name that is corresponding to the name defined in runDataReading AIMMS
+input_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250619_detailed_linked.xlsx" # Save the file with a name that is corresponding to the name defined in runDataReading AIMMS
 
 from compare_outputs import compare_outputs
 
@@ -143,14 +143,14 @@ def model_linking(max_iterations):
     outputs_cluster = {}
     timestamp = datetime.now().strftime("%Y%m%d_%H_%M")
     map_name_cluster = result_folder / f"Results_model_linking_{timestamp}"
-    map_name_IESA = file_path_IESA / f"Results_model_linking_{timestamp}"
+    map_name_IESA = file_path_IESA_output / f"Results_model_linking_{timestamp}"
     os.makedirs(map_name_cluster, exist_ok=True)
     os.makedirs(map_name_IESA, exist_ok=True)
     while True:
         results_path_IESA = run_IESA_change_name_files(i, command, original_name_output, original_name_input, new_name_output, new_name_input,map_name_IESA)
         results_year_sheet = extract_data_IESA(intervals, list_sheets, nrows, filters, headers, results_path_IESA)
         iteration_path = map_name_cluster / f"Iteration_{i}"
-        input_cluster = run_Zeeland(casepath, iteration_path, i, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA)
+        input_cluster = run_Zeeland(casepath, iteration_path, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA)
         tech_output_dict = extract_technology_outputs(iteration_path, intervals, location)
         print(r"The tech_size_dict created:")
         print(tech_output_dict)
@@ -180,7 +180,8 @@ def model_linking(max_iterations):
             input_file = map_name_cluster / "inputs_cluster.json"
 
             with open(input_file, "w") as f:
-                json.dump(outputs_cluster, f, indent=4)
+                json.dump(inputs_cluster, f, indent=4)
+
             with open(output_file, "w") as f:
                 json.dump(outputs_cluster, f, indent=4)
 
