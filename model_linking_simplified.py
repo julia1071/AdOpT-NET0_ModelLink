@@ -37,8 +37,8 @@ original_name_input = file_path_IESA / "20250619_detailed_linked.xlsx"
 original_name_output = file_path_IESA / "ResultsModelLinking_General.xlsx"
 
 #Define the new name of the input and output file
-new_name_output = file_path_IESA / "ResultsModelLinking_General_Iteration_"
-new_name_input = file_path_IESA / "Input_Iteration_"
+new_name_output = file_path_IESA / "ResultsModelLinking_Simplified_General_Iteration_"
+new_name_input = file_path_IESA / "Input_Simplified_Iteration_"
 
 from extract_data_IESA import extract_data_IESA, get_value_IESA
 
@@ -86,8 +86,8 @@ else:
 from run_Zeeland import run_Zeeland
 
 # Define the location and the casepath and the result folder path for the cluster model
-casepath = "U:/Data AdOpt-NET0/Model_Linking/Case_Study/ML_Zeeland_bf_"
-result_folder = Path("U:/Data AdOpt-NET0/Model_Linking/Results/Zeeland")
+casepath = "U:/Data AdOpt-NET0/Model_Linking_simplified/Case_Study/ML_Zeeland_bf_"
+result_folder = Path("U:/Data AdOpt-NET0/Model_Linking_simplified/Results/Zeeland")
 location = "Zeeland"
 # Configuration run Zeeland brownfield case
 ppi_file_path = "U:\\Producer_Price_Index_CBS.xlsx"
@@ -120,8 +120,8 @@ from map_techs_to_ID import map_techs_to_ID
 
 # Create the dictionary where is stated which technology belongs to which Tech_ID. Check these values when really using.
 tech_to_id = {"CrackerFurnace": "ICH01_01", "CrackerFurnace_CC": "ICH01_02", "CrackerFurnace_CC_bio": "ICH01_03", "CrackerFurnace_Electric": "ICH01_05",
-              "CrackerFurnace_Electric_bio": "ICH01_06", "EDH": "ICH01_11", "MTO": "ICH01_12", "PDH": "ICH01_14", "MPW2methanol": "RFS04_01",
-              "DirectMeOHsynthesis": "RFS04_02", "SteamReformer": "Amm01_01", "SteamReformer_CC": "Amm01_02",
+              "CrackerFurnace_Electric_bio": "ICH01_06", "MTO": "ICH01_12", "PDH": "ICH01_14", "MPW2methanol": "RFS04_01",
+              "SteamReformer": "Amm01_01", "SteamReformer_CC": "Amm01_02",
                 "AEC": "Amm01_05", "ElectricSMR_m": "Amm01_08", "CO2electrolysis": "ICH01_40"
               }
 
@@ -143,7 +143,7 @@ def model_linking(max_iterations):
     outputs_cluster = {}
     timestamp = datetime.now().strftime("%Y%m%d_%H_%M")
     map_name_cluster = result_folder / f"Results_model_linking_{timestamp}"
-    map_name_IESA = file_path_IESA / f"Results_model_linking_{timestamp}"
+    map_name_IESA = file_path_IESA / f"Results_model_linking_simplified_{timestamp}"
     os.makedirs(map_name_cluster, exist_ok=True)
     os.makedirs(map_name_IESA, exist_ok=True)
     while True:

@@ -21,7 +21,7 @@ def run_Zeeland(casepath, iteration_path, location, linking_energy_prices, linki
         # select simulation types
         scope3 = 1 # Do you want the scope 3 emissions to be accounted in the optimization?
         annual_demand = 1
-        carrier_demand_dict = {'ethylene': 1184352, 'propylene': 532958, 'ammonia': 1184000}
+        carrier_demand_dict = {'PE_olefin': 1717310, 'ammonia': 1184000}
         intervals = ['2030', '2040', '2050']
         interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
         nr_DD_days = 10 # Set to 10 if used for full-scale modelling also change the 876 factor in the extract_technology_output
