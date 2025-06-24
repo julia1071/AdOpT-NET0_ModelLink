@@ -217,7 +217,7 @@ if execute == 1:
             "nodes": ["Zeeland"],
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
                          "CO2", "CO2_DAC", "CO2captured", "hydrogen", "nitrogen",
-                         "ammonia", "ethylene", "propylene", "PE_olifin", "olefins",
+                         "ammonia", "ethylene", "propylene", "PE_olefin", "olefins",
                          "crackergas", "feedgas", "steam", "HBfeed", "syngas", "syngas_r",
                          "methanol", "ethanol", "propane", "MPW"],
             "investment_periods": ["2040"],
