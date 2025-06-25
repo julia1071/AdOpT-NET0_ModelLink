@@ -40,7 +40,7 @@ original_name_output = file_path_IESA / "ResultsModelLinking_General.xlsx"
 new_name_output = file_path_IESA / "ResultsModelLinking_Simplified_General_Iteration_"
 new_name_input = file_path_IESA / "Input_Simplified_Iteration_"
 
-from extract_data_IESA import extract_data_IESA, get_value_IESA
+from extract_data_IESA_multiple_headers import extract_data_IESA_multiple, get_value_IESA_multiple
 
 # Configuration for the function extract_data_IESA
 
@@ -52,8 +52,8 @@ if linking_energy_prices:
     nrows=[45] # !Same order as list_sheets! =Number of rows in excel sheet -1
 
     #Define the corresponding properties of the sheets and the specific data that you want to extract.
-    header_energycosts = 'Activity'
-    filter_energycosts = ['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass']
+    header_energycosts = ['Activity']
+    filter_energycosts = [['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass']]
 
 
     # !Combine the headers and filters of the different sheets! Same order as list_sheets!
@@ -98,7 +98,17 @@ baseyear_IESA = 2019
 
 from get_results_cluster_dict_output import extract_technology_outputs
 
-# --- Configuration ---
+base_tech_output_map = {
+    "CrackerFurnace": "olefins_output",
+    "CrackerFurnace_Electric": "olefins_output",
+    "MTO": "ethylene_output",
+    "PDH": "propylene_output",
+    "MPW2methanol": "methanol_output",
+    "SteamReformer": "HBfeed_output",
+    "AEC": "hydrogen_output",
+    "ElectricSMR_m": "syngas_r_output",
+    "CO2electrolysis": "ethylene_output",
+}
 
 
 
@@ -134,6 +144,7 @@ input_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250619_detailed_li
 
 from compare_outputs import compare_outputs
 
+
 # Convergence Criteria; the relative change in output for each technology in the cluster  model must be lower than e
 e = 0.1
 max_iterations = 3
@@ -147,11 +158,11 @@ def model_linking(max_iterations):
     os.makedirs(map_name_cluster, exist_ok=True)
     os.makedirs(map_name_IESA, exist_ok=True)
     while True:
-        results_path_IESA = run_IESA_change_name_files(i, command, original_name_output, original_name_input, new_name_output, new_name_input,map_name_IESA)
-        results_year_sheet = extract_data_IESA(intervals, list_sheets, nrows, filters, headers, results_path_IESA)
+        results_path_IESA = run_IESA_change_name_files(i, command, original_name_output, original_name_input, new_name_output, new_name_input, map_name_IESA)
+        results_year_sheet = extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, results_path_IESA)
         iteration_path = map_name_cluster / f"Iteration_{i}"
-        input_cluster = run_Zeeland(casepath, iteration_path, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA)
-        tech_output_dict = extract_technology_outputs(iteration_path, intervals, location)
+        input_cluster = run_Zeeland(results_path_IESA, casepath, iteration_path, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA)
+        tech_output_dict = extract_technology_outputs(base_tech_output_map, iteration_path, intervals, location)
         print(r"The tech_size_dict created:")
         print(tech_output_dict)
         cc_fraction_dict = extract_cc_fractions(iteration_path, intervals, location)

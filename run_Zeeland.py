@@ -8,10 +8,11 @@ from adopt_net0.model_construction.extra_constraints import set_annual_export_de
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 from adopt_net0.utilities import fix_installed_capacities, installed_capacities_existing
-from extract_data_IESA import get_value_IESA
+from extract_data_IESA_multiple_headers import get_value_IESA_multiple
 from conversion_factors import conversion_factor_IESA_to_cluster
+from calculate_avg_bio_methane_cost import calculate_avg_bio_methane_cost
 
-def run_Zeeland(casepath, iteration_path, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA):
+def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA):
     print("Start the optimization in the cluster model")
 
     if linking_energy_prices:
@@ -87,41 +88,61 @@ def run_Zeeland(casepath, iteration_path, location, linking_energy_prices, linki
                 pyhub[interval].data.model_config['reporting']['case_name'][
                     'value'] = interval + '_minC_fullres'
 
-            #Input of IESA-Opt values in cluster model
+            # === Input of IESA-Opt values into the cluster model ===
 
-            x = (conversion_factor_IESA_to_cluster('EnergyCosts','Naphtha', ppi_file_path, baseyear_cluster,
-                                                    baseyear_IESA) * get_value_IESA (results_year_sheet, interval,
-                                                                        'EnergyCosts', 'Naphtha'))
-            print(f"The value that is inputed for naphtha is {x}")
-            input_cluster[location][interval]['Naphtha'] = x
+            # --- Naphtha ---
+            naphtha_price = (
+                    conversion_factor_IESA_to_cluster('EnergyCosts', 'Naphtha', ppi_file_path, baseyear_cluster,
+                                                      baseyear_IESA)
+                    * get_value_IESA_multiple(results_year_sheet, interval, 'EnergyCosts', Activity='Naphtha')
+            )
+            print(f"The value that is inputted for naphtha is {naphtha_price}")
+            input_cluster[location][interval]['Naphtha'] = naphtha_price
             pyhub[interval].data.time_series['full'][
-                interval, location, 'naphtha', 'global', 'Import price'] = x
+                interval, location, 'naphtha', 'global', 'Import price'
+            ] = naphtha_price
 
-            y = (conversion_factor_IESA_to_cluster('EnergyCosts','Bio Naphtha', ppi_file_path, baseyear_cluster,
-                                                    baseyear_IESA) * get_value_IESA (results_year_sheet, interval,
-                                                                        'EnergyCosts', 'Bio Naphtha'))
-            print(f"The value that is inputed for bio naphtha is {y}")
-            input_cluster[location][interval]['Bio Naphtha'] = y
+            # --- Bio Naphtha ---
+            bio_naphtha_price = (
+                    conversion_factor_IESA_to_cluster('EnergyCosts', 'Bio Naphtha', ppi_file_path, baseyear_cluster,
+                                                      baseyear_IESA)
+                    * get_value_IESA_multiple(results_year_sheet, interval, 'EnergyCosts', Activity='Bio Naphtha')
+            )
+            print(f"The value that is inputted for bio naphtha is {bio_naphtha_price}")
+            input_cluster[location][interval]['Bio Naphtha'] = bio_naphtha_price
             pyhub[interval].data.time_series['full'][
-                interval, location, 'naphtha_bio', 'global', 'Import price'] = y
+                interval, location, 'naphtha_bio', 'global', 'Import price'
+            ] = bio_naphtha_price
 
-
-            z = (conversion_factor_IESA_to_cluster('EnergyCosts','Natural Gas HD', ppi_file_path, baseyear_cluster,
-                                                    baseyear_IESA) * get_value_IESA (results_year_sheet, interval,
-                                                                        'EnergyCosts', 'Natural Gas HD'))
-            print(f"The value that is inputed for methane is {z}")
-            input_cluster[location][interval]['Natural Gas HD'] = z
+            # --- Methane (Natural Gas HD) ---
+            methane_price = (
+                    conversion_factor_IESA_to_cluster('EnergyCosts', 'Natural Gas HD', ppi_file_path, baseyear_cluster,
+                                                      baseyear_IESA)
+                    * get_value_IESA_multiple(results_year_sheet, interval, 'EnergyCosts', Activity='Natural Gas HD')
+            )
+            print(f"The value that is inputted for methane is {methane_price}")
+            input_cluster[location][interval]['Natural Gas HD'] = methane_price
             pyhub[interval].data.time_series['full'][
-                interval, location, 'methane', 'global', 'Import price'] = z
+                interval, location, 'methane', 'global', 'Import price'
+            ] = methane_price
 
+            # --- Bio Methane (only if a valid average cost is available) ---
+            avg_bio_methane_cost = calculate_avg_bio_methane_cost(filepath, interval)
 
-            # #pyhub[interval].data.time_series['full'][
-            #     interval, location, 'biomass', 'global', 'Import price'] = (conversion_factor_IESA_to_cluster('EnergyCosts',
-            #                                                                                              'Biomass',
-            #                                                                                              ppi_file_path,
-            #                                                                                              baseyear_cluster,
-            #                                                                                              baseyear_IESA) *
-            #                                                             get_value_IESA ( results_year_sheet, interval, 'EnergyCosts', 'Biomass'))
+            if avg_bio_methane_cost is not None:
+                conversion_factor = conversion_factor_IESA_to_cluster(
+                    'EnergyCosts', 'methane_bio', ppi_file_path, baseyear_cluster, baseyear_IESA
+                )
+
+                bio_methane_price = conversion_factor * avg_bio_methane_cost
+
+                print(f"The value that is inputted for bio methane is {bio_methane_price}")
+                pyhub[interval].data.time_series['full'][
+                    interval, location, 'methane_bio', 'global', 'Import price'
+                ] = bio_methane_price
+            else:
+                print(f"No average bio methane cost available for interval {interval}, skipping input.")
+
             # Start brownfield optimization
             pyhub[interval].construct_model()
             pyhub[interval].construct_balances()

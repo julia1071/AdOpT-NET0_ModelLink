@@ -3,40 +3,35 @@ from pathlib import Path
 
 file_path = Path("U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/Results_model_linking_20250621_09_08/ResultsModelLinking_General_Iteration_1.xlsx")
 
-# Define the relevant values
-technologies = ["Gas04_01", "Gas04_02", "Gas04_03", "Gas04_04"]
-components = ["CAPEX", "FOM", "VOC", "Fuels"]
 
-# === LCOEs Sheet ===
-lcoe_header = ("Tech_ID", "Type1", "Type2")
-lcoe_filters = [(tech, "Real", comp) for tech in technologies for comp in components]
-
-# === SupplyDemand Sheet ===
-supplydemand_header = ("Type", "Tech_ID")
-supplydemand_filters = [("supply", tech) for tech in technologies]
-
-# === Assemble inputs for extract_data_IESA_multiple ===
-list_sheets = ["LCOEs", "SupplyDemand"]
-headers = [lcoe_header, supplydemand_header]
-filters = [lcoe_filters, supplydemand_filters]
-nrows = [1689, 830] # Adjust based on your Excel file
-
-# === Now ready to pass into your extract function ===
-results = extract_data_IESA_multiple(
-    intervals=["2025", "2030", "2040"],
-    list_sheets=list_sheets,
-    nrows=nrows,
-    filters=filters,
-    headers=headers,
-    file_path=file_path
-)
-
-
-
-def calculate_avg_bio_methane_cost(results, year):
+def calculate_avg_bio_methane_cost(file_path, year):
+    # Define the relevant technologies and cost components
     technologies = ["Gas04_01", "Gas04_02", "Gas04_03", "Gas04_04"]
     components = ["CAPEX", "FOM", "VOC", "Fuels"]
 
+    # === LCOEs Sheet ===
+    lcoe_header = ("Tech_ID", "Type1", "Type2")
+    lcoe_filters = [(tech, "Real", comp) for tech in technologies for comp in components]
+
+    # === SupplyDemand Sheet ===
+    supplydemand_header = ("Type", "Tech_ID")
+    supplydemand_filters = [("supply", tech) for tech in technologies]
+
+    # === Assemble inputs for extract_data_IESA_multiple ===
+    list_sheets = ["LCOEs", "SupplyDemand"]
+    headers = [lcoe_header, supplydemand_header]
+    filters = [lcoe_filters, supplydemand_filters]
+    nrows = [1689, 830]  # Adjust based on your Excel file
+
+    # === Now ready to pass into your extract function ===
+    results = extract_data_IESA_multiple(
+        intervals=["2025", "2030", "2040"],
+        list_sheets=list_sheets,
+        nrows=nrows,
+        filters=filters,
+        headers=headers,
+        file_path=file_path
+    )
     costs = []
     for tech in technologies:
         total_cost = 0

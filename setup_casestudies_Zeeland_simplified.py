@@ -66,7 +66,7 @@ if execute == 1:
         # Read climate data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all_brownfield:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -118,7 +118,7 @@ if execute == 1:
                     with open(tech_data_file, "w") as json_tecdata_file:
                         json.dump(tech_data, json_tecdata_file, indent=4)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all_brownfield:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -144,7 +144,7 @@ if execute == 1:
 
         # Demand export limit
         dp.fill_carrier_data(casepath, value_or_data=250, columns=['Export limit'],
-                             carriers=["ammonia", "ethylene", "propylene"])
+                             carriers=["ammonia", "PE_olefin"])
 
         # CO2 export
         dp.fill_carrier_data(casepath, value_or_data=285, columns=['Export limit'], carriers=['CO2'])
@@ -305,7 +305,7 @@ if execute == 1:
                     with open(tech_data_file, "w") as json_tecdata_file:
                         json.dump(tech_data, json_tecdata_file, indent=4)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all_brownfield:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -331,7 +331,7 @@ if execute == 1:
 
         # Demand export limit
         dp.fill_carrier_data(casepath, value_or_data=250, columns=['Export limit'],
-                             carriers=["ammonia", "ethylene", "propylene"])
+                             carriers=["ammonia", "PE_olefin"])
 
         # CO2 export
         dp.fill_carrier_data(casepath, value_or_data=354, columns=['Export limit'], carriers=['CO2'])
@@ -498,7 +498,7 @@ if execute == 1:
                     with open(tech_data_file, "w") as json_tecdata_file:
                         json.dump(tech_data, json_tecdata_file, indent=4)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all_brownfield:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -524,7 +524,7 @@ if execute == 1:
 
         # Demand export limit
         dp.fill_carrier_data(casepath, value_or_data=250, columns=['Export limit'],
-                             carriers=["ammonia", "ethylene", "propylene"])
+                             carriers=["ammonia", "PE_olefin"])
 
         # CO2 export
         dp.fill_carrier_data(casepath, value_or_data=742, columns=['Export limit'], carriers=['CO2'])

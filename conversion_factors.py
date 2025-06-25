@@ -97,6 +97,10 @@ def conversion_factor_IESA_to_cluster(sheet, filter, ppi_file_path, baseyear_clu
             sheet_name = 'World Development Indicators'
             ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
             return ppi_cf * 3.6 # Meuro/PJ to euro/MWh
+        elif filter in ['methane_bio']:
+            sheet_name = 'World Development Indicators'
+            ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
+            return ppi_cf * 3.6 # Meuro/PJ to euro/MWh
         elif filter == 'Biomass':
             sheet_name = 'World Development Indicators'
             ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)

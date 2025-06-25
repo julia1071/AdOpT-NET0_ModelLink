@@ -40,7 +40,7 @@ original_name_output = file_path_IESA / "ResultsModelLinking_General.xlsx"
 new_name_output = file_path_IESA / "ResultsModelLinking_General_Iteration_"
 new_name_input = file_path_IESA / "Input_Iteration_"
 
-from extract_data_IESA import extract_data_IESA, get_value_IESA
+from extract_data_IESA_multiple_headers import extract_data_IESA_multiple
 
 # Configuration for the function extract_data_IESA
 
@@ -98,7 +98,19 @@ baseyear_IESA = 2019
 
 from get_results_cluster_dict_output import extract_technology_outputs
 
-# --- Configuration ---
+base_tech_output_map = {
+    "CrackerFurnace": "olefins_output",
+    "CrackerFurnace_Electric": "olefins_output",
+    "EDH": "ethylene_output",
+    "MTO": "ethylene_output",
+    "PDH": "propylene_output",
+    "MPW2methanol": "methanol_output",
+    "DirectMeOHSynthesis": "methanol_output",
+    "SteamReformer": "HBfeed_output",
+    "AEC": "hydrogen_output",
+    "ElectricSMR_m": "syngas_r_output",
+    "CO2electrolysis": "ethylene_output",
+}
 
 
 
@@ -148,10 +160,10 @@ def model_linking(max_iterations):
     os.makedirs(map_name_IESA, exist_ok=True)
     while True:
         results_path_IESA = run_IESA_change_name_files(i, command, original_name_output, original_name_input, new_name_output, new_name_input,map_name_IESA)
-        results_year_sheet = extract_data_IESA(intervals, list_sheets, nrows, filters, headers, results_path_IESA)
+        results_year_sheet = extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, results_path_IESA)
         iteration_path = map_name_cluster / f"Iteration_{i}"
-        input_cluster = run_Zeeland(casepath, iteration_path, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA)
-        tech_output_dict = extract_technology_outputs(iteration_path, intervals, location)
+        input_cluster = run_Zeeland(results_path_IESA, casepath, iteration_path, location, linking_energy_prices, linking_mpw, results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA)
+        tech_output_dict = extract_technology_outputs(base_tech_output_map, iteration_path, intervals, location)
         print(r"The tech_size_dict created:")
         print(tech_output_dict)
         cc_fraction_dict = extract_cc_fractions(iteration_path, intervals, location)
