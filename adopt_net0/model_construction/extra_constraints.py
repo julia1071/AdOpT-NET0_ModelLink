@@ -6,7 +6,42 @@ def set_annual_export_demand(modelhub, period, carrier_demand_dict):
     """
         Adds constraints to the model to enforce annual export demands for specific energy carriers.
 
-        For each carrier in `carrier_demand_dict`, this function constrains the total (exported) product
+        For each carrier in `carrier_demand_dict`, this function constrains the total exported product
+        (summed over all nodes, technologies, and modeled time steps) to equal the specified annual demand,
+        adjusted by the fraction of the year being modeled.
+
+        Parameters:
+        ----------
+        modelhub : object
+            The model hub containing model structure, data, and solution configuration.
+        period : str or int
+            The model period for which the export demand is being applied.
+        carrier_demand_dict : dict
+            A dictionary mapping carrier names (str) to their annual export demand (float, in energy units).
+        """
+    model = modelhub.model[modelhub.info_solving_algorithms["aggregation_model"]]
+    b_period = model.periods[period]
+    set_t = get_set_t(modelhub.data.model_config, b_period)
+    fraction_of_year_modelled = modelhub.data.topology["fraction_of_year_modelled"]
+
+    # Create an indexed Constraint for the specified carriers
+    model.carrier_demand_set = pyo.Set(initialize=list(carrier_demand_dict.keys()))
+
+    def demand_export_rule(b, carrier):
+        export_sum = sum(sum(b_period.node_blocks[node].var_export_flow[t, carrier] for node in model.set_nodes if
+                             carrier in b_period.node_blocks[node].set_carriers) for t in set_t)
+        return export_sum == carrier_demand_dict[carrier] * fraction_of_year_modelled
+
+    model.const_export_demand_dynamic = pyo.Constraint(
+        model.carrier_demand_set, rule=demand_export_rule
+    )
+
+
+def set_annual_tech_production(modelhub, period, carrier_demand_dict):
+    """
+        Adds constraints to the model to enforce annual export demands for specific energy carriers.
+
+        For each carrier in `carrier_demand_dict`, this function constrains the total product
         (summed over all nodes, technologies, and modeled time steps) to equal the specified annual demand,
         adjusted by the fraction of the year being modeled.
 
