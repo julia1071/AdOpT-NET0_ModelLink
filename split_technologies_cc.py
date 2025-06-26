@@ -1,12 +1,17 @@
 
+
 def apply_cc_splitting(tech_size_dict, cc_fraction_dict, capture_rate):
     """
-    For each technology in cc_fraction_dict:
-    - Splits the value in tech_size_dict into a CC and non-CC part.
-    - Adds a new entry with name `technology_CC` or `technology_CC_existing`
-    - Updates the original entry to its non-CC share.
+    Splits technologies into carbon capture (CC) and non-CC variants based on capture fractions
+    and a specified maximum capture rate.
 
-    Returns a new updated dictionary.
+    Args:
+        tech_size_dict (dict): Dictionary with keys (location, interval, tech) and values as original sizes
+        cc_fraction_dict (dict): Dictionary with keys (location, interval, tech) and values as CC fractions
+        capture_rate (float): Maximum possible capture rate for normalization
+
+    Returns:
+        dict: Updated dictionary with new CC technology entries and adjusted non-CC values
     """
     print("The technologies dictionary will be splitted to carbon capture and non carbon capture")
 

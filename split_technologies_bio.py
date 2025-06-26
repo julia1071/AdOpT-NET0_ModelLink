@@ -7,8 +7,8 @@ def apply_bio_splitting(merged_tech_size_dict, bio_ratios, bio_tech_names, locat
     Args:
         merged_tech_size_dict (dict): {(location, interval, tech): size}
         bio_ratios (dict): {(location, interval): ratio}
-        bio_tech_names (set or list): technologies to split (e.g., {'CrackerFurnace_CC', ...})
-        location (str): target location (e.g., "Zeeland")
+        bio_tech_names (set or list): technologies to split
+        location (str): target location
 
     Returns:
         dict: updated dictionary with _bio and remaining techs

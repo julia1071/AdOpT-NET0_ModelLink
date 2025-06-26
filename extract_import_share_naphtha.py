@@ -10,8 +10,8 @@ def extract_import_bio_ratios_naphtha(result_folder, intervals, location):
 
     Args:
         result_folder (Path or str): Folder containing Summary.xlsx and h5 result folders
-        intervals (list of str): Intervals, e.g., ["2030", "2040", "2050"]
-        location (str): Location node (e.g., "Zeeland")
+        intervals (list of str): Intervals
+        location (str): Location node
 
     Returns:
         dict: {(location, interval): ratio}, only for intervals with available data

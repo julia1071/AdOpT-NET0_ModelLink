@@ -1,10 +1,21 @@
 from extract_data_IESA_multiple_headers import extract_data_IESA_multiple, get_value_IESA_multiple
 from pathlib import Path
 
-file_path = Path("U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/Results_model_linking_20250621_09_08/ResultsModelLinking_General_Iteration_1.xlsx")
+# ile_path = Path("U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/Results_model_linking_20250621_09_08/ResultsModelLinking_General_Iteration_1.xlsx")
 
 
 def calculate_avg_bio_methane_cost(file_path, year):
+    """
+    Calculates the weighted average cost of bio-methane production based on LCOE components
+    and technology output volumes for a given year.
+
+    Args:
+        file_path (str or Path): Path to the Excel file containing IESA output data
+        year (str): The target year to extract values for
+
+    Returns:
+        float or None: The weighted average cost (if data is available), otherwise None
+    """
     # Define the relevant technologies and cost components
     technologies = ["Gas04_01", "Gas04_02", "Gas04_03", "Gas04_04"]
     components = ["CAPEX", "FOM", "VOC", "Fuels"]
@@ -59,4 +70,5 @@ def calculate_avg_bio_methane_cost(file_path, year):
     avg_cost = weighted_sum / total_output if total_output > 0 else None
     return avg_cost
 
-print(calculate_avg_bio_methane_cost(results, 2025))
+
+# print(calculate_avg_bio_methane_cost(results, 2025))

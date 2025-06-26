@@ -8,7 +8,21 @@ from adopt_net0 import extract_datasets_from_h5group
 # intervals =['2030','2040','2050']
 # location = "Zeeland"
 
-def extract_cc_fractions(result_folder, intervals, location):
+
+def extract_cc_fractions(result_folder, intervals, location, cc_technologies):
+    """
+    Extracts carbon capture (CC) fractions for specified technologies from HDF5 result files
+    in the cluster model output.
+
+    Args:
+        result_folder (Path): Path to the folder containing the optimization results and Summary.xlsx
+        intervals (list): List of year intervals to extract CC fractions for
+        location (str): The location identifier used in the result columns
+        cc_technologies (list): List of base technology name prefixes to include in the CC fraction analysis
+
+    Returns:
+        dict: Dictionary with keys (location, interval, technology) and values as CC fractions (floats between 0 and 1)
+    """
     print("Extracting CC fractions of technologies in the cluster model")
 
     summary_path = result_folder/ "Summary.xlsx"
@@ -41,7 +55,7 @@ def extract_cc_fractions(result_folder, intervals, location):
 
                 if df_nodes.columns.nlevels > 2:
                     for tech in df_nodes.columns.levels[2]:
-                        if any(tech.startswith(base) for base in ["CrackerFurnace", "MPW2methanol", "SteamReformer"]):
+                        if any(tech.startswith(base) for base in cc_technologies):
                             col_cc = (interval, location, tech, "CO2captured_output")
                             col_em = (interval, location, tech, "emissions_pos")
 
