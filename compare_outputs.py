@@ -8,8 +8,8 @@ def compare_outputs(outputs_cluster, i, e):
         print("First iteration, skipping comparison.")
         return False  # Treat as pass to continue the loop
 
-    prev = outputs_cluster[i - 1]
-    curr = outputs_cluster[i]
+    prev = outputs_cluster[f"iteration_{i - 1}"]
+    curr = outputs_cluster[f"iteration_{i}"]
 
     for tech in curr:
         if tech not in prev:

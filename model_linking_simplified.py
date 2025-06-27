@@ -27,7 +27,7 @@ if run_from_server:
 else:
     aimms_path = "C:\\Program Files\\Aimms-25.3.4.2-x64-VS2022.exe"  # Path on your local computer
 
-fast_run = True  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
+fast_run = False  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
 
 # Case study choice
 linking_energy_prices = True
@@ -44,7 +44,7 @@ command = [
 # The name of the initial results document can be adjusted in AIMMS "Settings_Solve_Transition".
 file_path_IESA = Path("U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking")
 
-# The input file name can be changed in AIMMS right clicking on the procedure "runDataReading" selecting attributes
+# The input file name can be changed in AIMMS right-clicking on the procedure "runDataReading" selecting attributes
 original_name_input = file_path_IESA / "20250619_detailed_linked.xlsx"
 original_name_output = file_path_IESA / "ResultsModelLinking_General.xlsx"
 

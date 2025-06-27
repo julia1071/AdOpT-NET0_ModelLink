@@ -70,11 +70,16 @@ def extract_technology_outputs(base_tech_output_map, result_folder, intervals, l
             print(f"Missing h5 file: {h5_path}")
             continue
 
+        if fast_run:
+            factor_fast_run = 876
+        else:
+            factor_fast_run = 1
+
         # Open the HDF5 file and extract technology operation data
         with h5py.File(h5_path, "r") as hdf_file:
             tec_operation = extract_datasets_from_h5group(hdf_file["operation/technology_operation"])
             # Filter out incomplete time series
-            tec_operation = {k: v for k, v in tec_operation.items() if len(v) >= 8670}
+            tec_operation = {k: v for k, v in tec_operation.items() if len(v) >= 8670/factor_fast_run}
             df_op = pd.DataFrame(tec_operation)
 
             # Process only if the dataframe has multi-level columns
@@ -97,7 +102,7 @@ def extract_technology_outputs(base_tech_output_map, result_folder, intervals, l
 
                         # Optionally scale output if fast_run is enabled
                         if fast_run:
-                            tech_output_dict[(location, matched_interval, tech)] = float(876 * total_output)
+                            tech_output_dict[(location, matched_interval, tech)] = float(factor_fast_run * total_output)
                         else:
                             tech_output_dict[(location, matched_interval, tech)] = float(total_output)
 
