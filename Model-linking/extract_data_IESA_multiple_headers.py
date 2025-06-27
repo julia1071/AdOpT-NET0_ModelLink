@@ -86,30 +86,30 @@ def extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, 
     return results_year_sheet
 
 
-intervals = ['2030', '2040', '2050']
-file_path = Path("U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/Results_model_linking_20250621_09_08/ResultsModelLinking_General_Iteration_1.xlsx")
-
-intervals = ['2030', '2040', '2050']
-list_sheets = ["SupplyDemand"]
-headers = [("Activity", "Type", "Tech_ID")]
-# Add all the possible technologies that can potentially supply MPW
-filters = [[("Mixed Plastic Waste", "supply", "WAI01_01"), ("Mixed Plastic Waste", "supply", "WAI01_02"),
-            ("Mixed Plastic Waste", "supply", "EPO01_03")]]
-nrows = [830]
-
-results = extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, file_path)
-print(results)
-
-
-def get_value_IESA_multiple(results_year_sheet, interval, sheet, **filters):
-    key = f"results_{interval}_{sheet}"
-    entries = results_year_sheet.get(key, [])
-
-    for entry in entries:
-        if all(entry.get(k) == v for k, v in filters.items()):
-            return entry['value']
-
-    raise ValueError(f"No value found for {interval}, {sheet}, filters: {filters}")
+# intervals = ['2030', '2040', '2050']
+# file_path = Path("U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/Results_model_linking_20250621_09_08/ResultsModelLinking_General_Iteration_1.xlsx")
+#
+# intervals = ['2030', '2040', '2050']
+# list_sheets = ["SupplyDemand"]
+# headers = [("Activity", "Type", "Tech_ID")]
+# # Add all the possible technologies that can potentially supply MPW
+# filters = [[("Mixed Plastic Waste", "supply", "WAI01_01"), ("Mixed Plastic Waste", "supply", "WAI01_02"),
+#             ("Mixed Plastic Waste", "supply", "EPO01_03")]]
+# nrows = [830]
+#
+# results = extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, file_path)
+# print(results)
+#
+#
+# def get_value_IESA_multiple(results_year_sheet, interval, sheet, **filters):
+#     key = f"results_{interval}_{sheet}"
+#     entries = results_year_sheet.get(key, [])
+#
+#     for entry in entries:
+#         if all(entry.get(k) == v for k, v in filters.items()):
+#             return entry['value']
+#
+#     raise ValueError(f"No value found for {interval}, {sheet}, filters: {filters}")
 
 # x = get_value_IESA_multiple(
 #     results, 2030, "LCOEs",

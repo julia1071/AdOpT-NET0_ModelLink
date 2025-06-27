@@ -4,23 +4,23 @@ import pandas as pd
 from pathlib import Path
 from adopt_net0 import extract_datasets_from_h5group
 
-result_folder = Path(r"U:\Data AdOpt-NET0\Model_Linking_simplified\Results\Zeeland\Results_model_linking_20250626_18_54\Iteration_1")
-intervals =['2030']
-location = "Zeeland"
-base_tech_output_map = {
-    "CrackerFurnace": ("CrackerFurnace", "olefins_output"),
-    "CrackerFurnace_Electric": ("CrackerFurnace_Electric", "olefins_output"),
-    "MTO": ("MTO", "ethylene_output"),
-    "PDH": ("PDH", "propylene_output"),
-    "MPW2methanol_input": ("MPW2methanol", "MPW_input"),
-    "MPW2methanol_output": ("MPW2methanol", "methanol_output"),
-    "SteamReformer": ("SteamReformer", "HBfeed_output"),
-    "AEC": ("AEC", "hydrogen_output"),
-    "ElectricSMR_m": ("ElectricSMR_m", "syngas_r_output"),
-    "CO2electrolysis": ("CO2electrolysis", "ethylene_output")
-}
-
-fast_run = False
+# result_folder = Path(r"U:\Data AdOpt-NET0\Model_Linking_simplified\Results\Zeeland\Results_model_linking_20250626_18_54\Iteration_1")
+# intervals =['2030']
+# location = "Zeeland"
+# base_tech_output_map = {
+#     "CrackerFurnace": ("CrackerFurnace", "olefins_output"),
+#     "CrackerFurnace_Electric": ("CrackerFurnace_Electric", "olefins_output"),
+#     "MTO": ("MTO", "ethylene_output"),
+#     "PDH": ("PDH", "propylene_output"),
+#     "MPW2methanol_input": ("MPW2methanol", "MPW_input"),
+#     "MPW2methanol_output": ("MPW2methanol", "methanol_output"),
+#     "SteamReformer": ("SteamReformer", "HBfeed_output"),
+#     "AEC": ("AEC", "hydrogen_output"),
+#     "ElectricSMR_m": ("ElectricSMR_m", "syngas_r_output"),
+#     "CO2electrolysis": ("CO2electrolysis", "ethylene_output")
+# }
+#
+# fast_run = False
 
 
 def extract_technology_outputs(base_tech_output_map, result_folder, intervals, location, fast_run):
@@ -90,4 +90,4 @@ def extract_technology_outputs(base_tech_output_map, result_folder, intervals, l
 
 
 
-print(extract_technology_outputs(base_tech_output_map, result_folder,intervals, location, fast_run))
+# print(extract_technology_outputs(base_tech_output_map, result_folder,intervals, location, fast_run))
