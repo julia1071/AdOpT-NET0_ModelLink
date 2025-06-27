@@ -1,5 +1,4 @@
 import json
-import sys
 import os
 from pathlib import Path
 from adopt_net0.model_construction.extra_constraints import set_annual_export_demand, set_negative_CO2_limit
