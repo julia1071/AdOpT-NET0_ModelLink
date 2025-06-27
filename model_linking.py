@@ -11,6 +11,7 @@ from get_results_cluster_dict_output import extract_technology_outputs
 from extract_cc_fractions import extract_cc_fractions
 from split_technologies_cc import apply_cc_splitting
 from merge_existing_new_techs import merge_existing_and_new_techs
+from combine_tech_outputs import combine_tech_outputs
 from extract_import_share_naphtha import extract_import_bio_ratios_naphtha
 from split_technologies_bio import apply_bio_splitting
 from map_techs_to_ID import map_techs_to_ID
@@ -27,11 +28,11 @@ if run_from_server:
 else:
     aimms_path = "C:\\Program Files\\Aimms-25.3.4.2-x64-VS2022.exe"  # Path on your local computer
 
-fast_run = 1  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
+fast_run = True  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
 
 # Case study choice
-linking_energy_prices = 1
-linking_example = 0
+linking_energy_prices = True
+linking_example = False
 
 # Define the file path to the model and the procedures that you want to run,.
 command = [
@@ -49,8 +50,8 @@ original_name_input = file_path_IESA / "20250619_detailed_linked.xlsx"
 original_name_output = file_path_IESA / "ResultsModelLinking_General.xlsx"
 
 # Define the new name of the input and output file
-new_name_output = file_path_IESA / "ResultsModelLinking_General_Iteration_"
-new_name_input = file_path_IESA / "Input_Iteration_"
+output_basename = "ResultsModelLinking_General_Iteration_"
+input_basename = "Input_Iteration_"
 
 # Configuration for the function extract_data_IESA
 
@@ -63,7 +64,7 @@ if linking_energy_prices:
 
     # !Combine the headers and filters of the different sheets! Same order as list_sheets!
     headers = ['Activity']
-    filters = ['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass']
+    filters = [['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass']]
 
 elif linking_example:  # Example of other use case.
     intervals = ['2030', '2040', '2050']
@@ -90,31 +91,54 @@ ppi_file_path = "U:\\Producer_Price_Index_CBS.xlsx"
 baseyear_cluster = 2022
 baseyear_IESA = 2019
 
+# The alias name (can be anything), the name of the tech in the cluster model,
+# and the name of the type of value that you want to extract from cluster results.
 base_tech_output_map = {
-    "CrackerFurnace": "olefins_output",
-    "CrackerFurnace_Electric": "olefins_output",
-    "EDH": "ethylene_output",
-    "MTO": "ethylene_output",
-    "PDH": "propylene_output",
-    "MPW2methanol": "methanol_output",
-    "DirectMeOHSynthesis": "methanol_output",
-    "SteamReformer": "HBfeed_output",
-    "AEC": "hydrogen_output",
-    "ElectricSMR_m": "syngas_r_output",
-    "CO2electrolysis": "ethylene_output",
+    "CrackerFurnace": ("CrackerFurnace", "olefins_output"),
+    "CrackerFurnace_Electric": ("CrackerFurnace_Electric", "olefins_output"),
+    "EDH": ("EDH", "ethylene_output"),
+    "MTO": ("MTO", "propylene_output"),
+    "PDH": ("PDH", "propylene_output"),
+    "MPW2methanol_input": ("MPW2methanol", "MPW_input"),
+    "MPW2methanol_output": ("MPW2methanol", "methanol_output"),
+    "MeOHsynthesis": ("MeOHsynthesis", "methanol_output"),
+    "BiomassGasification": ("BiomassGasification", "methanol_output"),
+    "DirectMeOHsynthesis": ("DirectMeOHsynthesis", "methanol_output"),
+    "SteamReformer": ("SteamReformer", "HBfeed_output"),
+    "AEC": ("AEC", "hydrogen_output"),
+    "ElectricSMR_m": ("ElectricSMR_m", "syngas_r_output"),
+    "CO2electrolysis": ("CO2electrolysis", "ethylene_output")
+}
+
+# Optionally, different outputs as defined above can be combined into one technology
+# Such that this combined value is putted into IESA-Opt
+group_map = {
+    "methanol_from_syngas": [
+        "MPW2methanol_output",
+        "MeOHsynthesis",
+        "BiomassGasification"
+    ]
+}
+
+capture_rate = 0.9  # The capture rate of the carbon capture technology
+# Create a dictionary stating which technologies are splitted in CC and non CC
+cc_technologies = {
+    "CrackerFurnace": "CrackerFurnace",
+    "SteamReformer": "SteamReformer",
+    "MPW2methanol_input": "MPW2methanol"
 }
 
 # Create a dictionary stating which technologies are splitted in bio and non bio
 bio_tech_names = ["CrackerFurnace_CC", "CrackerFurnace_Electric"]
-capture_rate = 0.9  # The capture rate of the carbon capture technology
 
 # Create the dictionary where is stated which technology belongs to which Tech_ID.
 # More Tech_IDs can be coupled to one name "PDH" : [Tech_ID1, Tech_ID2]
 tech_to_id = {"CrackerFurnace": "ICH01_01", "CrackerFurnace_CC": "ICH01_02", "CrackerFurnace_CC_bio": "ICH01_03",
               "CrackerFurnace_Electric": "ICH01_05", "CrackerFurnace_Electric_bio": "ICH01_06", "EDH": "ICH01_11",
-              "MTO": "ICH01_12", "PDH": "ICH01_14", "MPW2methanol": "RFS04_01", "DirectMeOHsynthesis": "RFS04_02",
-              "SteamReformer": "Amm01_01", "SteamReformer_CC": "Amm01_02", "AEC": "Amm01_05",
-              "ElectricSMR_m": "Amm01_08", "CO2electrolysis": "ICH01_40"
+              "MTO": "ICH01_12", "PDH": "ICH01_14", "MPW2methanol_output": "WAI01_10", "MPW2methanol_CC": "WAI01_11",
+              "methanol_from_syngas": "RFS04_01", "DirectMeOHsynthesis": "RFS04_02", "SteamReformer": "Amm01_01",
+              "SteamReformer_CC": "Amm01_02", "AEC": "Amm01_05", "ElectricSMR_m": "Amm01_08",
+              "CO2electrolysis": "ICH01_40"
               }
 
 # Excel must be installed on the server.
@@ -136,26 +160,27 @@ def model_linking(max_iterations):
     os.makedirs(map_name_IESA, exist_ok=True)
     while True:
         results_path_IESA = run_IESA_change_name_files(i, command, original_name_output, original_name_input,
-                                                       new_name_output, new_name_input, map_name_IESA)
+                                                       output_basename, input_basename, map_name_IESA)
         results_year_sheet = extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers,
                                                         results_path_IESA)
         iteration_path = map_name_cluster / f"Iteration_{i}"
         input_cluster = run_Zeeland(results_path_IESA, casepath, iteration_path, location, linking_energy_prices,
                                     linking_example, fast_run, results_year_sheet, ppi_file_path, baseyear_cluster,
-                                    baseyear_IESA)
+                                    baseyear_IESA, intervals)
         tech_output_dict = extract_technology_outputs(base_tech_output_map, iteration_path, intervals, location,
                                                       fast_run)
         print(r"The tech_size_dict created:")
         print(tech_output_dict)
-        cc_fraction_dict = extract_cc_fractions(iteration_path, intervals, location)
+        cc_fraction_dict = extract_cc_fractions(iteration_path, intervals, location, cc_technologies)
         updated_dict_cc = apply_cc_splitting(tech_output_dict, cc_fraction_dict, capture_rate)
         print(r"The updated_dict_cc created:")
         print(updated_dict_cc)
-        merged_tech_size_dict = merge_existing_and_new_techs(updated_dict_cc, intervals, location)
-        print(r"The merged_tech_size_dict created:")
-        print(merged_tech_size_dict)
+        merged_tech_output_dict = merge_existing_and_new_techs(updated_dict_cc, intervals, location)
+        print(r"The merged_tech_output_dict created:")
+        print(merged_tech_output_dict)
+        combined_dict = combine_tech_outputs(merged_tech_output_dict, group_map)
         bio_ratios = extract_import_bio_ratios_naphtha(iteration_path, intervals, location)
-        updated_dict_bio = apply_bio_splitting(merged_tech_size_dict, bio_ratios, bio_tech_names, location)
+        updated_dict_bio = apply_bio_splitting(combined_dict, bio_ratios, bio_tech_names, location)
         print(r"The updated_dict_bio created:")
         print(updated_dict_bio)
         updates = map_techs_to_ID(updated_dict_bio, tech_to_id)

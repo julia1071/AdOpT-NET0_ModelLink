@@ -90,10 +90,12 @@ ppi_file_path = "U:\\Producer_Price_Index_CBS.xlsx"
 baseyear_cluster = 2022
 baseyear_IESA = 2019
 
+# The alias name (can be anything), the name of the tech in the cluster model,
+# and the name of the type of value that you want to extract from cluster results.
 base_tech_output_map = {
     "CrackerFurnace": ("CrackerFurnace", "olefins_output"),
     "CrackerFurnace_Electric": ("CrackerFurnace_Electric", "olefins_output"),
-    "MTO": ("MTO", "ethylene_output"),
+    "MTO": ("MTO", "propylene_output"),
     "PDH": ("PDH", "propylene_output"),
     "MPW2methanol_input": ("MPW2methanol", "MPW_input"),
     "MPW2methanol_output": ("MPW2methanol", "methanol_output"),
@@ -106,6 +108,7 @@ base_tech_output_map = {
 
 # The capture rate of the carbon capture technology
 capture_rate = 0.9
+# Create a dictionary stating which technologies are splitted in CC and non CC
 cc_technologies = {
     "CrackerFurnace": "CrackerFurnace",
     "SteamReformer": "SteamReformer",
@@ -160,11 +163,11 @@ def model_linking(max_iterations):
         updated_dict_cc = apply_cc_splitting(tech_output_dict, cc_fraction_dict, capture_rate)
         print(r"The updated_dict_cc created:")
         print(updated_dict_cc)
-        merged_tech_size_dict = merge_existing_and_new_techs(updated_dict_cc, intervals, location)
-        print(r"The merged_tech_size_dict created:")
-        print(merged_tech_size_dict)
+        merged_tech_output_dict = merge_existing_and_new_techs(updated_dict_cc, intervals, location)
+        print(r"The merged_tech_output_dict created:")
+        print(merged_tech_output_dict)
         bio_ratios = extract_import_bio_ratios_naphtha(iteration_path, intervals, location)
-        updated_dict_bio = apply_bio_splitting(merged_tech_size_dict, bio_ratios, bio_tech_names, location)
+        updated_dict_bio = apply_bio_splitting(merged_tech_output_dict, bio_ratios, bio_tech_names, location)
         print(r"The updated_dict_bio created:")
         print(updated_dict_bio)
         updates = map_techs_to_ID(updated_dict_bio, tech_to_id)
