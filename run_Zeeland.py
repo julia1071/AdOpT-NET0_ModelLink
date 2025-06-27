@@ -11,7 +11,7 @@ from calculate_avg_bio_methane_cost import calculate_avg_bio_methane_cost
 
 
 def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_prices, linking_MPW, fast_run,
-                results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA, intervals):
+                results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA, intervals, carrier_demand_dict):
     """
     Runs the optimization loop for the cluster model for a given location and multiple intervals,
     configuring the model, linking energy prices from IESA, and setting up emission constraints.
@@ -42,8 +42,6 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
     scope3 = 1  # Do you want the scope 3 emissions to be accounted in the optimization?
     annual_demand = 1
 
-    # Partly stiff and flexible P/E ratio, base on maximum demand propylene in IESA-Opt.
-    carrier_demand_dict = {'ethylene': 524400, 'propylene': 235600, 'PE_olefin': 957310, 'ammonia': 1184000}
     interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
 
     if fast_run:

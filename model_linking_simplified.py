@@ -29,7 +29,7 @@ else:
 
 fast_run = False  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
 
-# Case study choice
+# Case study choice (both are possible)
 linking_energy_prices = True
 linking_MPW = False
 
@@ -51,6 +51,9 @@ original_name_output = file_path_IESA / "ResultsModelLinking_General.xlsx"
 # Define the new name of the input and output file
 output_basename = "ResultsModelLinking_General_Iteration_"
 input_basename = "Input_Iteration_"
+
+# Partly stiff and flexible P/E ratio, base on maximum demand propylene in IESA-Opt.
+carrier_demand_dict = {'ethylene': 524400, 'propylene': 235600, 'PE_olefin': 957310, 'ammonia': 1184000}
 
 # Configuration for the function extract_data_IESA
 
@@ -167,7 +170,7 @@ def model_linking(max_iterations):
         iteration_path = map_name_cluster / f"Iteration_{i}"
         input_cluster = run_Zeeland(results_path_IESA, casepath, iteration_path, location, linking_energy_prices,
                                     linking_MPW, fast_run, results_year_sheet, ppi_file_path, baseyear_cluster,
-                                    baseyear_IESA, intervals)
+                                    baseyear_IESA, intervals, carrier_demand_dict)
         tech_output_dict = extract_technology_outputs(base_tech_output_map, iteration_path, intervals, location,
                                                       fast_run)
         print(r"The tech_size_dict created:")
