@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 
+
 def conversion_factor_cluster_to_IESA(tech_id):
     """
     Returns a conversion factor to translate from cluster units to IESA-Opt units,
@@ -20,8 +21,8 @@ def conversion_factor_cluster_to_IESA(tech_id):
         # Cluster: t propylene/y → IESA: Mton Py/y
         return 1 / 10**6
 
-    elif tech_id == 'WAI01_10':
-        # Cluster: t plastic/y → IESA: PJ/y (Syngas)
+    elif tech_id in ['WAI01_10', 'WAI01_11'] :
+        # Cluster: t MPW/y → IESA: PJ/y (Syngas)
         return 1
 
     elif tech_id in ['RFS04_01', 'RFS04_02']:

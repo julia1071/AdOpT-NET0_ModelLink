@@ -91,29 +91,37 @@ baseyear_cluster = 2022
 baseyear_IESA = 2019
 
 base_tech_output_map = {
-    "CrackerFurnace": "olefins_output",
-    "CrackerFurnace_Electric": "olefins_output",
-    "MTO": "ethylene_output",
-    "PDH": "propylene_output",
-    "MPW2methanol": "methanol_output",
-    "SteamReformer": "HBfeed_output",
-    "AEC": "hydrogen_output",
-    "ElectricSMR_m": "syngas_r_output",
-    "CO2electrolysis": "ethylene_output",
+    "CrackerFurnace": ("CrackerFurnace", "olefins_output"),
+    "CrackerFurnace_Electric": ("CrackerFurnace_Electric", "olefins_output"),
+    "MTO": ("MTO", "ethylene_output"),
+    "PDH": ("PDH", "propylene_output"),
+    "MPW2methanol_input": ("MPW2methanol", "MPW_input"),
+    "MPW2methanol_output": ("MPW2methanol", "methanol_output"),
+    "SteamReformer": ("SteamReformer", "HBfeed_output"),
+    "AEC": ("AEC", "hydrogen_output"),
+    "ElectricSMR_m": ("ElectricSMR_m", "syngas_r_output"),
+    "CO2electrolysis": ("CO2electrolysis", "ethylene_output")
+}
+
+
+# The capture rate of the carbon capture technology
+capture_rate = 0.9
+cc_technologies = {
+    "CrackerFurnace": "CrackerFurnace",
+    "SteamReformer": "SteamReformer",
+    "MPW2methanol_input": "MPW2methanol"
 }
 
 # Create a dictionary stating which technologies are splitted in bio and non bio
 bio_tech_names = ["CrackerFurnace_CC", "CrackerFurnace_Electric"]
-# The capture rate of the carbon capture technology
-capture_rate = 0.9
-cc_technologies = ["CrackerFurnace", "MPW2methanol", "SteamReformer"]
 
 # Create the dictionary where is stated which technology belongs to which Tech_ID.
 # More Tech_IDs can be coupled to one name "PDH" : [Tech_ID1, Tech_ID2]
 tech_to_id = {"CrackerFurnace": "ICH01_01", "CrackerFurnace_CC": "ICH01_02", "CrackerFurnace_CC_bio": "ICH01_03",
               "CrackerFurnace_Electric": "ICH01_05",
               "CrackerFurnace_Electric_bio": "ICH01_06", "MTO": "ICH01_12", "PDH": "ICH01_14",
-              "MPW2methanol": "RFS04_01",
+              "MPW2methanol_input": "WAI01_10", "MPW2methanol_input_CC": "WAI01_11",
+              "MPW2methanol_output": "RFS04_01",
               "SteamReformer": "Amm01_01", "SteamReformer_CC": "Amm01_02",
               "AEC": "Amm01_05", "ElectricSMR_m": "Amm01_08", "CO2electrolysis": "ICH01_40"
               }
