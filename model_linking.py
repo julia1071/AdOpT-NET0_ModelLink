@@ -32,7 +32,7 @@ fast_run = True  # fast optimization of the cluster model for a shorter period (
 
 # Case study choice
 linking_energy_prices = True
-linking_example = False
+linking_MPW = False
 
 # Define the file path to the model and the procedures that you want to run,.
 command = [
@@ -55,7 +55,7 @@ input_basename = "Input_Iteration_"
 
 # Configuration for the function extract_data_IESA
 
-if linking_energy_prices:
+if linking_energy_prices and not linking_MPW:
     # Define simulation years cluster model and the excel sheets from which you want to extract data in IESA-Opt
     intervals = ['2030', '2040', '2050']
     list_sheets = ['EnergyCosts']
@@ -65,17 +65,30 @@ if linking_energy_prices:
     # !Combine the headers and filters of the different sheets! Same order as list_sheets!
     headers = ['Activity']
     filters = [['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass']]
-
-elif linking_example:  # Example of other use case.
+elif linking_MPW and not linking_energy_prices:  # Example of other use case: import limit MPW
     intervals = ['2030', '2040', '2050']
-    list_sheets = ["LCOEs", "SupplyDemand"]
-    headers = [("Tech_ID", "Type1", "Type2"), ("Type", "Tech_ID")]
-    filters = [
-        [("TNB01_01", "Real", "Fuels"), ("TNB01_03", "Real", "Fuels")],
-        [("supply", "WAI01_01"), ("supply", "WAI01_02")]
+    list_sheets = ["SupplyDemand"]
+    headers = [("Activity", "Type", "Tech_ID")]
+    # Add all the possible technologies that can potentially supply MPW
+    filters = [[("Mixed Plastic Waste", "supply", "WAI01_01"), ("Mixed Plastic Waste", "supply", "WAI01_02"),
+                ("Mixed Plastic Waste", "supply", "EPO01_03")]]
+    nrows = [830]
+elif linking_energy_prices and linking_MPW:
+    intervals = ['2030', '2040', '2050']
+    list_sheets = ['EnergyCosts', 'SupplyDemand']
+    nrows = [45, 830]
+    headers = [
+        'Activity',
+        ("Activity", "Type", "Tech_ID")
     ]
-    nrows = [1689, 830]
-
+    filters = [
+        ['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass'],
+        [
+            ("Mixed Plastic Waste", "supply", "WAI01_01"),
+            ("Mixed Plastic Waste", "supply", "WAI01_02"),
+            ("Mixed Plastic Waste", "supply", "EPO01_03")
+        ]
+    ]
 else:
     print("Case study not defined, model linking stops")
     sys.exit()
@@ -165,7 +178,7 @@ def model_linking(max_iterations):
                                                         results_path_IESA)
         iteration_path = map_name_cluster / f"Iteration_{i}"
         input_cluster = run_Zeeland(results_path_IESA, casepath, iteration_path, location, linking_energy_prices,
-                                    linking_example, fast_run, results_year_sheet, ppi_file_path, baseyear_cluster,
+                                    linking_MPW, fast_run, results_year_sheet, ppi_file_path, baseyear_cluster,
                                     baseyear_IESA, intervals)
         tech_output_dict = extract_technology_outputs(base_tech_output_map, iteration_path, intervals, location,
                                                       fast_run)

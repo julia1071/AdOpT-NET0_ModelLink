@@ -109,8 +109,8 @@ def conversion_factor_IESA_to_cluster(sheet, filter, ppi_file_path, baseyear_clu
         else:
             raise ValueError(f"❌ Undefined filter '{filter}' for sheet '{sheet}'.")
 
-    elif sheet == 'Configuration_Stock':
-        if filter == 'WAI01_02':
+    elif sheet == 'SupplyDemand':
+        if filter in ['WAI01_01', 'WAI01_02', 'EPO01_03']:
             return (1 / 8760) * 10**6  # Mton/year to t/hour
         else:
             raise ValueError(f"❌ Undefined filter '{filter}' for sheet '{sheet}'.")

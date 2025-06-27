@@ -1,6 +1,6 @@
 import pandas as pd
 import sys
-# from pathlib import Path
+from pathlib import Path
 
 
 def extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, file_path):
@@ -86,20 +86,19 @@ def extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, 
     return results_year_sheet
 
 
-# intervals = ['2030', '2040', '2050']
-# file_path = Path("U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/
-# Results_model_linking_20250621_09_08/ResultsModelLinking_General_Iteration_1.xlsx")
-#
-# list_sheets = ["LCOEs", "SupplyDemand"]
-# headers = [("Tech_ID", "Type1", "Type2"), ("Type", "Tech_ID")]
-# filters = [
-#     [ ("TNB01_01", "Real","Fuels"), ("TNB01_03", "Real","Fuels") ],
-#     [("supply", "WAI01_01"), ("supply", "WAI01_02")]
-# ]
-# nrows = [1689, 830]
-#
-# results = extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, file_path)
-# print(results)
+intervals = ['2030', '2040', '2050']
+file_path = Path("U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/Results_model_linking_20250621_09_08/ResultsModelLinking_General_Iteration_1.xlsx")
+
+intervals = ['2030', '2040', '2050']
+list_sheets = ["SupplyDemand"]
+headers = [("Activity", "Type", "Tech_ID")]
+# Add all the possible technologies that can potentially supply MPW
+filters = [[("Mixed Plastic Waste", "supply", "WAI01_01"), ("Mixed Plastic Waste", "supply", "WAI01_02"),
+            ("Mixed Plastic Waste", "supply", "EPO01_03")]]
+nrows = [830]
+
+results = extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, file_path)
+print(results)
 
 
 def get_value_IESA_multiple(results_year_sheet, interval, sheet, **filters):
