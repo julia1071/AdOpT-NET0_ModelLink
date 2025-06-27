@@ -53,7 +53,7 @@ output_basename = "ResultsModelLinking_General_Iteration_"
 input_basename = "Input_Iteration_"
 
 # Partly stiff and flexible P/E ratio, base on maximum demand propylene in IESA-Opt.
-carrier_demand_dict = {'ethylene': 524400, 'propylene': 235600, 'PE_olefin': 957310, 'ammonia': 1184000}
+carrier_demand_dict = {'ethylene': 761310, 'propylene': 343487, 'PE_olefin': 612513, 'ammonia': 1184000}
 
 # Configuration for the function extract_data_IESA
 
