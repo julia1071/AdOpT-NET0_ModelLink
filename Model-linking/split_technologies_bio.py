@@ -25,13 +25,14 @@ def apply_bio_splitting(merged_tech_size_dict, bio_ratios, bio_tech_names, locat
             size = merged_tech_size_dict[(loc, interval, tech)]
             ratio = bio_ratios.get((loc, interval), 0.0)
 
-            size_bio = size * ratio
-            size_non_bio = size * (1 - ratio)
+            if ratio > 0:
+                size_bio = size * ratio
+                size_non_bio = size * (1 - ratio)
 
-            bio_tech = f"{tech}_bio"
+                bio_tech = f"{tech}_bio"
 
-            updated_dict_bio[(loc, interval, bio_tech)] = size_bio
-            updated_dict_bio[(loc, interval, tech)] = size_non_bio  # overwrite with non-bio part
+                updated_dict_bio[(loc, interval, bio_tech)] = size_bio
+                updated_dict_bio[(loc, interval, tech)] = size_non_bio # overwrite with non-bio part
 
     return updated_dict_bio
 

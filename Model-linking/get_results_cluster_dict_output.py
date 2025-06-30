@@ -5,7 +5,7 @@ from pathlib import Path
 from adopt_net0 import extract_datasets_from_h5group
 
 # result_folder = Path(r"U:\Data AdOpt-NET0\Model_Linking_simplified\Results\Zeeland\Results_model_linking_20250626_18_54\Iteration_1")
-# intervals =['2030']
+# intervals =['2030', '2040', '2050']
 # location = "Zeeland"
 # base_tech_output_map = {
 #     "CrackerFurnace": ("CrackerFurnace", "olefins_output"),
@@ -84,7 +84,11 @@ def extract_technology_outputs(base_tech_output_map, result_folder, intervals, l
                     if col in df_op.columns:
                         total_output = df_op[col].sum()
                         value = float(total_output * factor_fast_run)
-                        tech_output_dict[(location, matched_interval, alias)] = value
+
+                        if value > 0:
+                            tech_output_dict[(location, matched_interval, alias)] = value
+                        else:
+                            print(f"ℹ️ Output of {alias} in {matched_interval} at {location}: 0.0")
 
     return tech_output_dict
 

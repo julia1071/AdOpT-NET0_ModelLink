@@ -84,13 +84,19 @@ def update_input_file_IESA(
     # Write new values
     for tech_id, year_vals in expanded_update_data.items():
         if tech_id not in tech_id_to_row:
-            print(f"⚠️ Skipping missing Tech_ID: {tech_id}")
-            continue
+            raise ValueError(
+                f"❌ Tech_ID '{tech_id}' from the update_data is not found in the sheet '{sheet_name}'.\n"
+                f"Check if the input file includes this technology under column '{tech_id_col}' starting from row {tech_id_row_start}."
+            )
+
         for year, val in year_vals.items():
             col = year_to_column.get(year)
             if col is None:
-                print(f"⚠️ Skipping year {year} for Tech_ID {tech_id} (not found)")
-                continue
+                raise ValueError(
+                    f"❌ Year '{year}' for Tech_ID '{tech_id}' is not found in the Excel sheet under merged header '{merged_name}'.\n"
+                    f"Check if the year {year} exists in the header row {header_row} within the merged block."
+                )
+
             row = tech_id_to_row[tech_id]
             print(f"✍️ Writing {val} to row {row}, col {col} (Tech_ID={tech_id}, Year={year})")
             ws.range((row, col)).value = val

@@ -16,15 +16,25 @@ def apply_cc_splitting(tech_output_dict, cc_fraction_dict, capture_rate):
     Returns:
         dict: Updated dictionary with new CC technology entries and adjusted non-CC values
     """
-    print("The technologies dictionary will be splitted to carbon capture and non carbon capture")
+    print("The technologies dictionary will be split into carbon capture and non-carbon capture")
 
     updated_dict_cc = tech_output_dict.copy()
 
     for (location, interval, tech), cc_frac in cc_fraction_dict.items():
-        if (location, interval, tech) not in tech_output_dict:
-            print(f"No original size of {tech} in {tech_output_dict}")
+        key = (location, interval, tech)
+        if key not in tech_output_dict:
+            raise ValueError(
+                f"❌ Inconsistent data detected:\n"
+                f" - Technology: '{tech}'\n"
+                f" - Interval: '{interval}'\n"
+                f" - Location: '{location}'\n"
+                f"A carbon capture fraction was found, but the technology's output value is missing.\n"
+                f"CO₂ emissions were extracted, implying the technology was active — "
+                f"but the technology’s main output (as defined in base_tech_output_map) was not found in the HDF5.\n"
+                f"➡️ Please check if the correct 'output_var_name' was used for this technology."
+            )
 
-        original_size = tech_output_dict[(location, interval, tech)]
+        original_size = tech_output_dict[key]
 
         # Calculate shares
         cc_ratio = cc_frac / capture_rate
@@ -42,8 +52,9 @@ def apply_cc_splitting(tech_output_dict, cc_fraction_dict, capture_rate):
 
         # Add to updated dictionary
         updated_dict_cc[(location, interval, new_tech)] = size_cc
-        updated_dict_cc[(location, interval, tech)] = size_non_cc  # overwrite
+        updated_dict_cc[key] = size_non_cc  # overwrite
 
     return updated_dict_cc
+
 
 # print(apply_cc_splitting(tech_output_dict, cc_fraction_dict, capture_rate))

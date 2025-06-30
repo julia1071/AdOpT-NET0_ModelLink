@@ -10,16 +10,18 @@ from conversion_factors import conversion_factor_cluster_to_IESA
 def map_techs_to_ID(updated_dict_bio, tech_to_id):
     """
     Maps technology names to technology IDs, supports one-to-many mappings,
-    applies tech-specific unit conversion, and ensures all tech_IDs are present.
+    applies tech-specific unit conversion, and ensures all included Tech_IDs are valid
+    and non-zero. Raises an error if any used tech is missing in the tech_to_id mapping.
 
     Args:
         updated_dict_bio (dict): {(location, year, tech_name): value}
         tech_to_id (dict): {tech_name: tech_id or list of tech_ids}
 
     Returns:
-        dict: {tech_id: {year: converted_value}}
+        dict: {tech_id: {year: converted_value}}, only for techs with non-zero values
     """
-    print("The technologies are mapped based on their corresponding Tech_ID and conversion factor.")
+    print("🔁 Mapping technologies to Tech_IDs with unit conversion...")
+
     updates = {}
 
     # Collect all years seen in the input
@@ -29,7 +31,10 @@ def map_techs_to_ID(updated_dict_bio, tech_to_id):
     for (loc, year, tech), value in updated_dict_bio.items():
         tech_ids = tech_to_id.get(tech)
         if tech_ids is None:
-            continue  # Optionally warn
+            raise ValueError(
+                f"❌ Tech '{tech}' (from results) is not found in tech_to_id mapping. "
+                f"Check for typos or missing entries in the mapping."
+            )
 
         if not isinstance(tech_ids, list):
             tech_ids = [tech_ids]
@@ -39,27 +44,19 @@ def map_techs_to_ID(updated_dict_bio, tech_to_id):
                 conversion = conversion_factor_cluster_to_IESA(tech_id)
             except ValueError as e:
                 print(e)
-                continue
+                continue  # Skip unmappable Tech_IDs
 
             scaled_value = float(value) * conversion
+            if scaled_value == 0.0:
+                continue  # Skip writing zeroes
 
             if tech_id not in updates:
                 updates[tech_id] = {}
+
             updates[tech_id][int(year)] = scaled_value
 
-    # Ensure all tech_IDs exist for all years, fill with 0.0 if needed
-    for tech_name, tech_ids in tech_to_id.items():
-        if not isinstance(tech_ids, list):
-            tech_ids = [tech_ids]
-
-        for tech_id in tech_ids:
-            if tech_id not in updates:
-                print(f"Note: No input found for Tech_ID '{tech_id}' (from tech '{tech_name}'), setting all years to 0.")
-                updates[tech_id] = {}
-
-            for year in all_years:
-                updates[tech_id].setdefault(year, 0.0)
-
     return updates
+
+
 
 # print(map_techs_to_ID(updated_dict_bio, tech_to_id))

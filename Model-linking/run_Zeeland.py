@@ -101,7 +101,7 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
         # Construct and solve the model
         pyhub[interval] = ModelHub()
         if fast_run:
-            # Solve model for the first 10 hours, add factor to extract_technology_outputs values of 8760/period.
+            # Solve model for the first 10 hours
             pyhub[interval].read_data(casepath_interval, start_period=0, end_period=10)
         else:
             pyhub[interval].read_data(casepath_interval)

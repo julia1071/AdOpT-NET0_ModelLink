@@ -4,19 +4,19 @@ import pandas as pd
 from pathlib import Path
 from adopt_net0 import extract_datasets_from_h5group
 
+
 def extract_import_bio_ratios_naphtha(result_folder, intervals, location):
     """
-    Extracts the bio naphtha import ratio per interval (not averaged across cases).
+    Extracts the bio naphtha import ratio per interval from a single-case-per-interval setup.
 
     Args:
-        result_folder (Path or str): Folder containing Summary.xlsx and h5 result folders
-        intervals (list of str): Intervals
-        location (str): Location node
+        result_folder (Path or str): Folder containing Summary.xlsx and HDF5 result folders
+        intervals (list of str): List of intervals (e.g., ["2030", "2040"])
+        location (str): Location node (e.g., "Zeeland")
 
     Returns:
-        dict: {(location, interval): ratio}, only for intervals with available data
+        dict: {(location, interval): ratio}, where ratio = bio_naphtha / (bio + fossil), or 0 if no data
     """
-
     summary_path = result_folder / "Summary.xlsx"
 
     try:
@@ -37,7 +37,7 @@ def extract_import_bio_ratios_naphtha(result_folder, intervals, location):
 
             h5_path = result_folder / row["time_stamp"] / "optimization_results.h5"
             if not h5_path.exists():
-                print(f"Missing h5 file: {h5_path}")
+                print(f"❌ Missing HDF5 file: {h5_path}")
                 continue
 
             try:
@@ -45,33 +45,19 @@ def extract_import_bio_ratios_naphtha(result_folder, intervals, location):
                     ebalance = extract_datasets_from_h5group(hdf_file["operation/energy_balance"])
                     df_ebalance = pd.DataFrame(ebalance)
             except Exception as e:
-                print(f"Error reading {h5_path}: {e}")
+                print(f"⚠️ Error reading {h5_path}: {e}")
                 continue
 
             col_bio = (interval, location, "bio_naphtha", "import")
             col_fossil = (interval, location, "naphtha", "import")
 
-            if col_bio in df_ebalance.columns:
-                bio_val = df_ebalance[col_bio].sum()
-            else:
-                print(f"No bio naphtha import value found for: {col_bio}")
-                bio_val = 0
-
-            if col_fossil in df_ebalance.columns:
-                foss_val = df_ebalance[col_fossil].sum()
-            else:
-                print(f"No fossil naphtha import value found for: {col_fossil}")
-                foss_val = 0
+            bio_val = df_ebalance[col_bio].sum() if col_bio in df_ebalance.columns else 0
+            foss_val = df_ebalance[col_fossil].sum() if col_fossil in df_ebalance.columns else 0
 
             total = bio_val + foss_val
+            ratio = bio_val / total if total > 0 else 0
 
-            if total > 0:
-                ratio = bio_val / total
-            else:
-                ratio = 0
-
-            # Store the first valid ratio per interval
             bio_ratios[(location, interval)] = float(ratio)
 
-    print(f"The import bio_ratios of bio naphtha/naptha for each interval are extracted: {bio_ratios}")
+    print(f"\n📊 Extracted bio_naphtha import ratios per interval:\n{bio_ratios}")
     return bio_ratios

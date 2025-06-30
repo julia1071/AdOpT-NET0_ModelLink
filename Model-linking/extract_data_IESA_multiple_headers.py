@@ -1,5 +1,4 @@
 import pandas as pd
-import sys
 from pathlib import Path
 
 
@@ -24,8 +23,13 @@ def extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, 
 
     # Check that all input lists have the same length
     if len({len(list_sheets), len(nrows), len(headers), len(filters)}) != 1:
-        print("Error: The number of sheets, headers, filters, or nrows do not match.")
-        sys.exit()
+        raise ValueError(
+            f"Mismatch in input lengths:\n"
+            f" - Sheets: {len(list_sheets)}\n"
+            f" - Headers: {len(headers)}\n"
+            f" - Filters: {len(filters)}\n"
+            f" - nrows: {len(nrows)}"
+        )
 
     results_year_sheet = {}
 
@@ -48,8 +52,10 @@ def extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, 
                 if isinstance(header, str):
                     # Check if header exists
                     if header not in df.columns:
-                        print(f"Header '{header}' not found in sheet '{list_sheets[j]}'")
-                        continue
+                        raise ValueError(
+                            f"Header '{header}' not found in sheet '{list_sheets[j]}'.\n"
+                            f"Available columns: {list(df.columns)}"
+                        )
 
                     row = df[df[header] == filter_values]
                     filter_entry = {header: filter_values}
@@ -57,8 +63,10 @@ def extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, 
                     # Check if all headers exist
                     missing_headers = [h for h in header if h not in df.columns]
                     if missing_headers:
-                        print(f"Headers {missing_headers} not found in sheet '{list_sheets[j]}'")
-                        continue
+                        raise ValueError(
+                            f"Missing expected headers {missing_headers} in sheet '{list_sheets[j]}'.\n"
+                            f"Available columns: {list(df.columns)}"
+                        )
 
                     # Multi-column filter
                     condition = pd.Series([True] * len(df))
@@ -68,15 +76,23 @@ def extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, 
                         filter_entry[h] = f
                     row = df[condition]
                 else:
-                    raise ValueError(f"Header/filter mismatch in sheet {list_sheets[j]}")
+                    raise ValueError(
+                        f"Header/filter mismatch in sheet '{list_sheets[j]}'.\n"
+                        f"Provided header: {header}\n"
+                        f"Provided filter values: {filter_values}\n"
+                        f"Expected: both should be strings or both should be tuples of the same length."
+                    )
 
                 # Extract the value or set as None if not found
                 if not row.empty:
                     value = float(row[intervals[i]].values[0])
                 else:
-                    value = None
-                    print(f"Filter match not found for {filter_entry} in sheet "
-                          f"'{list_sheets[j]}' for year '{intervals[i]}'")
+                    raise ValueError(
+                        f"No match found for filter {filter_entry} in sheet '{list_sheets[j]}' "
+                        f"for year '{intervals[i]}'.\n"
+                        f"Check if the filter values exist in the sheet and if the year column '{intervals[i]}' "
+                        f"is correct."
+                    )
 
                 # Add value to result entry
                 filter_entry["value"] = value
@@ -85,6 +101,16 @@ def extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, 
     print("The raw results dictionary from IESA-Opt is created")
     return results_year_sheet
 
+
+def get_value_IESA_multiple(results_year_sheet, interval, sheet, **filters):
+    key = f"results_{interval}_{sheet}"
+    entries = results_year_sheet.get(key, [])
+
+    for entry in entries:
+        if all(entry.get(k) == v for k, v in filters.items()):
+            return entry['value']
+
+    raise ValueError(f"No value found for {interval}, {sheet}, filters: {filters}")
 
 # intervals = ['2030', '2040', '2050']
 # file_path = Path("U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking/Results_model_linking_20250621_09_08/ResultsModelLinking_General_Iteration_1.xlsx")
@@ -101,15 +127,7 @@ def extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers, 
 # print(results)
 #
 #
-# def get_value_IESA_multiple(results_year_sheet, interval, sheet, **filters):
-#     key = f"results_{interval}_{sheet}"
-#     entries = results_year_sheet.get(key, [])
-#
-#     for entry in entries:
-#         if all(entry.get(k) == v for k, v in filters.items()):
-#             return entry['value']
-#
-#     raise ValueError(f"No value found for {interval}, {sheet}, filters: {filters}")
+
 
 # x = get_value_IESA_multiple(
 #     results, 2030, "LCOEs",
