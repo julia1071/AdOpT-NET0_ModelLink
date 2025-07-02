@@ -126,3 +126,13 @@ def update_input_file_IESA(
 #                 merged_name="Minimum use in a year",
 #                 update_data=updates,
 #                 tech_to_id=tech_to_id)
+#
+# clear_input_file_IESA(input_path,
+#                 sheet_name="Technologies",
+#                 tech_id_col="A",
+#                 tech_id_row_start=7,
+#                 merged_row=2,
+#                 header_row=5,
+#                 merged_name="Minimum use in a year",
+#                 tech_to_id=tech_to_id)
+#
