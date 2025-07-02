@@ -105,3 +105,24 @@ def update_input_file_IESA(
     wb.close()
     app.quit()
     return "✅ All values written successfully."
+
+# updates = {'ICH01_01': {2030: 0.7625683636363622}, 'Amm01_08': {2030: 5.7157959305044255, 2040: 21.231847600630275, 2050: 8.688538732020872}, 'Amm01_05': {2030: 14.707186170425443, 2050: 12.363701694189698}, 'ICH01_14': {2030: 0.6129700727272721, 2040: 0.2929501831695437, 2050: 0.34348699999999927}, 'ICH01_40': {2040: 1.010855734947111, 2050: 1.3738229999999996}, 'ICH01_12': {2040: 0.20549135776519334}}
+# tech_to_id = {"CrackerFurnace": "ICH01_01", "CrackerFurnace_CC": "ICH01_02", "CrackerFurnace_CC_bio": "ICH01_03",
+#               "CrackerFurnace_Electric": "ICH01_05",
+#               "CrackerFurnace_Electric_bio": "ICH01_06", "MTO": "ICH01_12", "PDH": "ICH01_14",
+#               "MPW2methanol_input": "WAI01_10", "MPW2methanol_input_CC": "WAI01_11",
+#               "MPW2methanol_output": "RFS04_01",
+#               "SteamReformer": "Amm01_01", "SteamReformer_CC": "Amm01_02",
+#               "AEC": "Amm01_05", "ElectricSMR_m": "Amm01_08", "CO2electrolysis": "ICH01_40"
+#               }
+#
+# input_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250619_detailed_linked.xlsx"
+# update_input_file_IESA(input_path,
+#                 sheet_name="Technologies",
+#                 tech_id_col="A",
+#                 tech_id_row_start=7,
+#                 merged_row=2,
+#                 header_row=5,
+#                 merged_name="Minimum use in a year",
+#                 update_data=updates,
+#                 tech_to_id=tech_to_id)

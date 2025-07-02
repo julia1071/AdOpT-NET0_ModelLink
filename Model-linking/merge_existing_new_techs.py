@@ -1,3 +1,6 @@
+updated_dict_cc = {('Zeeland', '2030', 'CrackerFurnace'): 2516727.272727268, ('Zeeland', '2030', 'PDH'): 612970.0727272722, ('Zeeland', '2030', 'AEC'): 4676430.279057744, ('Zeeland', '2030', 'ElectricSMR_m'): 365977.9107377938, ('Zeeland', '2040', 'MTO'): 205491.35776519336, ('Zeeland', '2040', 'PDH_existing'): 292950.1831695437, ('Zeeland', '2040', 'MPW2methanol_input'): 9444.526598562134, ('Zeeland', '2040', 'MPW2methanol_output'): 1260683.176473579, ('Zeeland', '2040', 'ElectricSMR_m'): 999788.7071749736, ('Zeeland', '2040', 'ElectricSMR_m_existing'): 359669.7690299599, ('Zeeland', '2040', 'CO2electrolysis'): 1010855.7349471111, ('Zeeland', '2050', 'PDH_existing'): 343486.9999999993, ('Zeeland', '2050', 'AEC_existing'): 3931274.7043490848, ('Zeeland', '2050', 'ElectricSMR_m_existing'): 556320.2905021796, ('Zeeland', '2050', 'CO2electrolysis'): 332427.648207849, ('Zeeland', '2050', 'CO2electrolysis_existing'): 1041395.3517921506, ('Zeeland', '2040', 'MPW2methanol_input_CC'): 848163.076444689}
+intervals =['2030','2040','2050']
+location = "Zeeland"
 
 def merge_existing_and_new_techs(updated_dict_cc, intervals, location):
     """
@@ -35,3 +38,5 @@ def merge_existing_and_new_techs(updated_dict_cc, intervals, location):
             merged_updated_dict_cc[merged_key] = value_std + value_ext
 
     return merged_updated_dict_cc
+
+print(merge_existing_and_new_techs(updated_dict_cc,intervals,location))

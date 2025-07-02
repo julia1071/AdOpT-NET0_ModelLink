@@ -4,7 +4,7 @@ import pandas as pd
 from pathlib import Path
 from adopt_net0 import extract_datasets_from_h5group
 
-# result_folder = Path(r"U:\Data AdOpt-NET0\Model_Linking_simplified\Results\Zeeland\Results_model_linking_20250626_18_54\Iteration_1")
+# result_folder = Path(r"U:\Data AdOpt-NET0\Model_Linking_simplified\Results\Zeeland\Results_model_linking_20250630_15_58\Iteration_1")
 # intervals =['2030', '2040', '2050']
 # location = "Zeeland"
 # base_tech_output_map = {
