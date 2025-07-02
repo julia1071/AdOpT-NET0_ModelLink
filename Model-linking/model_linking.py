@@ -151,7 +151,7 @@ bio_tech_names = ["CrackerFurnace_CC", "CrackerFurnace_Electric"]
 # More Tech_IDs can be coupled to one name "PDH" : [Tech_ID1, Tech_ID2]
 tech_to_id = {"CrackerFurnace": "ICH01_01", "CrackerFurnace_CC": "ICH01_02", "CrackerFurnace_CC_bio": "ICH01_03",
               "CrackerFurnace_Electric": "ICH01_05", "CrackerFurnace_Electric_bio": "ICH01_06", "EDH": "ICH01_11",
-              "MTO": "ICH01_12", "PDH": "ICH01_14", "MPW2methanol_output": "WAI01_10", "MPW2methanol_CC": "WAI01_11",
+              "MTO": "ICH01_12", "PDH": "ICH01_14", "MPW2methanol_input": "WAI01_10", "MPW2methanol_input_CC": "WAI01_11",
               "methanol_from_syngas": "RFS04_01", "DirectMeOHsynthesis": "RFS04_02", "SteamReformer": "Amm01_01",
               "SteamReformer_CC": "Amm01_02", "AEC": "Amm01_05", "ElectricSMR_m": "Amm01_08",
               "CO2electrolysis": "ICH01_40"

@@ -23,7 +23,7 @@ def conversion_factor_cluster_to_IESA(tech_id):
 
     elif tech_id in ['WAI01_10', 'WAI01_11'] :
         # Cluster: t MPW/y → IESA: PJ/y (Syngas)
-        return 1
+        return 1 / (0.3*10**6)
 
     elif tech_id in ['RFS04_01', 'RFS04_02']:
         # Cluster: t methanol/y → IESA: PJ/y (Methanol)
