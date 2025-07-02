@@ -4,15 +4,15 @@ import pandas as pd
 from pathlib import Path
 from adopt_net0 import extract_datasets_from_h5group
 
-result_folder = Path(r"U:\Data AdOpt-NET0\Model_Linking_simplified\Results\Zeeland\Results_model_linking_20250630_15_58\Iteration_1")
-intervals =['2030','2040','2050']
-location = "Zeeland"
-
-cc_technologies = {
-    "CrackerFurnace": "CrackerFurnace",
-    "SteamReformer": "SteamReformer",
-    "MPW2methanol_input": "MPW2methanol"
-}
+# result_folder = Path(r"U:\Data AdOpt-NET0\Model_Linking_simplified\Results\Zeeland\Results_model_linking_20250630_15_58\Iteration_1")
+# intervals =['2030','2040','2050']
+# location = "Zeeland"
+#
+# cc_technologies = {
+#     "CrackerFurnace": "CrackerFurnace",
+#     "SteamReformer": "SteamReformer",
+#     "MPW2methanol_input": "MPW2methanol"
+# }
 
 
 def extract_cc_fractions(result_folder, intervals, location, cc_technologies):
@@ -87,4 +87,4 @@ def extract_cc_fractions(result_folder, intervals, location, cc_technologies):
     return cc_fraction_dict
 
 
-print(extract_cc_fractions(result_folder, intervals, location, cc_technologies))
+# print(extract_cc_fractions(result_folder, intervals, location, cc_technologies))
