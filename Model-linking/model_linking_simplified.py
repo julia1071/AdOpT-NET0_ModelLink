@@ -27,7 +27,7 @@ if run_from_server:
 else:
     aimms_path = "C:\\Program Files\\Aimms-25.3.4.2-x64-VS2022.exe"  # Path on your local computer
 
-fast_run = True  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
+fast_run = False # fast optimization of the cluster model for a shorter period (default 10h) to test the model
 
 # Case study choice (both are possible)
 linking_energy_prices = True
@@ -151,7 +151,6 @@ input_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250619_detailed_li
 # Convergence Criteria; the relative change in output for each technology in the cluster model must be lower than e
 e = 0.1
 max_iterations = 3
-
 
 def model_linking(max_iterations):
     i = 1
