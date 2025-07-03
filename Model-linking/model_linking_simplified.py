@@ -4,9 +4,9 @@ from pathlib import Path
 import json
 from datetime import datetime
 
-from run_aimms_on_python import run_IESA_change_name_files
+from run_IESA_from_python import run_IESA_change_name_files
 from extract_data_IESA_multiple_headers import extract_data_IESA_multiple
-from run_Zeeland import run_Zeeland
+from run_adopt import run_adopt
 from get_results_cluster_dict_output import extract_technology_outputs
 from extract_cc_fractions import extract_cc_fractions
 from split_technologies_cc import apply_cc_splitting
@@ -162,14 +162,14 @@ def model_linking(max_iterations):
     os.makedirs(map_name_cluster, exist_ok=True)
     os.makedirs(map_name_IESA, exist_ok=True)
     while True:
-        results_path_IESA = run_IESA_change_name_files(i, command, original_name_output, original_name_input,
-                                                       output_basename, input_basename, map_name_IESA)
-        results_year_sheet = extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers,
-                                                        results_path_IESA)
+        results_path_IESA = run_IESA_change_name_files(i, command, original_name_input, original_name_output,
+                                                       input_basename, output_basename, map_name_IESA)
+        results_year_sheet = extract_data_IESA_multiple(results_path_IESA, intervals, list_sheets, nrows, filters,
+                                                        headers)
         iteration_path = map_name_cluster / f"Iteration_{i}"
-        input_cluster = run_Zeeland(results_path_IESA, casepath, iteration_path, location, linking_energy_prices,
-                                    linking_MPW, fast_run, results_year_sheet, ppi_file_path, baseyear_cluster,
-                                    baseyear_IESA, intervals, carrier_demand_dict)
+        input_cluster = run_adopt(results_path_IESA, casepath, iteration_path, location, linking_energy_prices,
+                                  linking_MPW, fast_run, results_year_sheet, ppi_file_path, baseyear_cluster,
+                                  baseyear_IESA, intervals, carrier_demand_dict)
         tech_output_dict = extract_technology_outputs(base_tech_output_map, iteration_path, intervals, location,
                                                       fast_run)
         print(r"The tech_size_dict created:")

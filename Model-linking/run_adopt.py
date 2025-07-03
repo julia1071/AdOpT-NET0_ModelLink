@@ -9,8 +9,8 @@ from conversion_factors import conversion_factor_IESA_to_cluster
 from calculate_avg_bio_methane_cost import calculate_avg_bio_methane_cost
 
 
-def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_prices, linking_MPW, fast_run,
-                results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA, intervals, carrier_demand_dict):
+def run_adopt(filepath, casepath, iteration_path, location, linking_energy_prices, linking_MPW, fast_run,
+              results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA, intervals, carrier_demand_dict):
     """
     Runs the optimization loop for the cluster model for a given location and multiple intervals,
     configuring the model, linking energy prices from IESA, and setting up emission constraints.
@@ -83,8 +83,8 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
         # solver settings
         model_config['solveroptions']['timelim']['value'] = 24*30
         model_config['solveroptions']['mipgap']['value'] = 0.01
-        model_config['solveroptions']['threads']['value'] = 8
-        model_config['solveroptions']['nodefilestart']['value'] = 200
+        # model_config['solveroptions']['threads']['value'] = 8
+        # model_config['solveroptions']['nodefilestart']['value'] = 200
 
         # change save options
         model_config['reporting']['save_summary_path']['value'] = str(iteration_path)
@@ -172,7 +172,8 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
                     interval, location, 'methane_bio', 'global', 'Import price'
                 ] = bio_methane_price
             else:
-                print(f"No average bio methane cost available for interval {interval}, skipping input.")
+                #import limit zero
+                print(f"No average bio methane supply for interval {interval}, set import limit to zero.")
 
         elif linking_MPW:
             # --- Mixed Plastic Waste (MPW) ---
