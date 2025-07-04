@@ -89,7 +89,7 @@ def get_ppi_conversion_factor(PPI_file_path, sheet_name, baseyear_cluster, basey
     return factor
 
 def conversion_factor_IESA_to_cluster(sheet, filter, ppi_file_path, baseyear_cluster, baseyear_IESA):
-    if sheet == 'EnergyCosts':
+    if 'EnergyCosts' in sheet:
         if filter in ['Naphtha', 'Bio Naphtha']:
             sheet_name = 'World Development Indicators'
             ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
@@ -106,6 +106,10 @@ def conversion_factor_IESA_to_cluster(sheet, filter, ppi_file_path, baseyear_clu
             sheet_name = 'World Development Indicators'
             ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
             return ppi_cf * 14.7 # Meuro/PJ to euro/t
+        elif filter == 'Mixed Plastic Waste':
+            sheet_name = 'World Development Indicators'
+            ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
+            return ppi_cf # Meuro/Mt to euro/t
         else:
             raise ValueError(f"❌ Undefined filter '{filter}' for sheet '{sheet}'.")
 

@@ -1,8 +1,16 @@
+import sys
 from pathlib import Path
 
-# === Testing yes/no ==
-
+# === Model settings ==
+# # Convergence Criteria; the relative change in output for each technology in the cluster model must be lower than e
+e = 0.1
+max_iterations = 3
 fast_run = True  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
+
+# Case study choice
+linking_energy_prices = True
+linking_MPW = False
+
 
 # === Paths ===
 #IESA paths
@@ -39,11 +47,6 @@ if run_from_server:
 else:
     aimms_path = "C:/Users/5637635/AppData/Local/AIMMS/IFA/Aimms/25.4.4.5-x64-VS2022/Bin/aimms.exe"  # Path on your local computer
 
-
-
-# Case study choice
-linking_energy_prices = True
-linking_MPW = False
 
 # Define the file path to the model and the procedures that you want to run,.
 command = [

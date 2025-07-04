@@ -1,6 +1,9 @@
 import json
 import os
 from pathlib import Path
+
+from config_model_linking import *
+
 from adopt_net0.model_construction.extra_constraints import set_annual_export_demand, set_negative_CO2_limit
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.utilities import installed_capacities_existing
@@ -9,26 +12,15 @@ from conversion_factors import conversion_factor_IESA_to_cluster
 from calculate_avg_bio_methane_cost import calculate_avg_bio_methane_cost
 
 
-def run_adopt(filepath, casepath, iteration_path, location, linking_energy_prices, linking_MPW, fast_run,
-              results_year_sheet, ppi_file_path, baseyear_cluster, baseyear_IESA, intervals, carrier_demand_dict):
+def run_adopt(case_path, iteration_path, cluster_input_dict):
     """
     Runs the optimization loop for the cluster model for a given location and multiple intervals,
     configuring the model, linking energy prices from IESA, and setting up emission constraints.
 
     Args:
-        filepath (str or Path): Path to the IESA results or model directory
-        casepath (str): Base path to the PyPSA cluster model case files
+        case_path (str): Base path to the PyPSA cluster model case files
         iteration_path (str or Path): Path where outputs of this run will be saved
-        location (str): Location to model
-        linking_energy_prices (bool): Whether to link and input energy prices from IESA
-        linking_MPW (bool): Flag for alternative linking method (not yet implemented)
-        fast_run (bool): Whether to use a reduced optimization period
-        results_year_sheet (dict): Dictionary containing extracted data from IESA Excel files
-        ppi_file_path (str or Path): Path to price index file used for conversion
-        baseyear_cluster (int): Economic base year of the cluster model
-        baseyear_IESA (int): Economic base year of the IESA-Opt model
-        intervals (list): List of year intervals to extract
-
+        cluster_input_dict (dict): dictionary with input links for cluster model
     Returns:
         dict: Nested dictionary containing the input prices used for each interval and carrier,
               structured as input_cluster[location][interval][carrier] = price
@@ -49,16 +41,10 @@ def run_adopt(filepath, casepath, iteration_path, location, linking_energy_price
         nr_DD_days = 10  # Set to 10 if used for full-scale modelling
     pyhub = {}
 
-    input_cluster = {}
-    if location not in input_cluster:
-        input_cluster[location] = {}
 
     for i, interval in enumerate(intervals):
-        casepath_interval = casepath + interval
+        casepath_interval = case_path + interval
         json_filepath = Path(casepath_interval) / "ConfigModel.json"
-
-        if interval not in input_cluster[location]:
-            input_cluster[location][interval] = {}
 
         with open(json_filepath) as json_file:
             model_config = json.load(json_file)
@@ -117,95 +103,63 @@ def run_adopt(filepath, casepath, iteration_path, location, linking_energy_price
                 'value'] = interval + '_minC_fullres'
 
         if linking_energy_prices:
-
             # === Input of IESA-Opt values into the cluster model ===
+            for key in cluster_input_dict[location][interval].keys():
+                value = cluster_input_dict[location][interval][key]
 
-            # --- Naphtha ---
-            naphtha_price = (
-                    conversion_factor_IESA_to_cluster('EnergyCosts', 'Naphtha', ppi_file_path, baseyear_cluster,
-                                                      baseyear_IESA)
-                    * get_value_IESA_multiple(results_year_sheet, interval, 'EnergyCosts', Activity='Naphtha')
-            )
-            print(f"The value that is inputted for naphtha is {naphtha_price}")
-            input_cluster[location][interval]['Naphtha'] = naphtha_price
-            pyhub[interval].data.time_series['full'][
-                interval, location, 'naphtha', 'global', 'Import price'
-            ] = naphtha_price
+                if value is not None:
+                    #Read value in adopt
+                    pyhub[interval].data.time_series['full'][
+                        interval, location, key, 'global', 'Import price'
+                    ] = value
+                    if nr_DD_days > 0:
+                        pyhub[interval].data.time_series['clustered'][
+                            interval, location, key, 'global', 'Import price'
+                        ] = value
 
-            # --- Bio Naphtha ---
-            bio_naphtha_price = (
-                    conversion_factor_IESA_to_cluster('EnergyCosts', 'Bio Naphtha', ppi_file_path, baseyear_cluster,
-                                                      baseyear_IESA)
-                    * get_value_IESA_multiple(results_year_sheet, interval, 'EnergyCosts', Activity='Bio Naphtha')
-            )
-            print(f"The value that is inputted for bio naphtha is {bio_naphtha_price}")
-            input_cluster[location][interval]['Bio Naphtha'] = bio_naphtha_price
-            pyhub[interval].data.time_series['full'][
-                interval, location, 'naphtha_bio', 'global', 'Import price'
-            ] = bio_naphtha_price
+                    print(f"The input price for {key} is {value}")
 
-            # --- Methane (Natural Gas HD) ---
-            methane_price = (
-                    conversion_factor_IESA_to_cluster('EnergyCosts', 'Natural Gas HD', ppi_file_path, baseyear_cluster,
-                                                      baseyear_IESA)
-                    * get_value_IESA_multiple(results_year_sheet, interval, 'EnergyCosts', Activity='Natural Gas HD')
-            )
-            print(f"The value that is inputted for methane is {methane_price}")
-            input_cluster[location][interval]['Natural Gas HD'] = methane_price
-            pyhub[interval].data.time_series['full'][
-                interval, location, 'methane', 'global', 'Import price'
-            ] = methane_price
-
-            # --- Bio Methane (only if a valid average cost is available) ---
-            avg_bio_methane_cost = calculate_avg_bio_methane_cost(filepath, interval)
-
-            if avg_bio_methane_cost is not None:
-                conversion_factor = conversion_factor_IESA_to_cluster(
-                    'EnergyCosts', 'methane_bio', ppi_file_path, baseyear_cluster, baseyear_IESA
-                )
-
-                bio_methane_price = conversion_factor * avg_bio_methane_cost
-
-                print(f"The value that is inputted for bio methane is {bio_methane_price}")
-                input_cluster[location][interval]['methane_bio'] = bio_methane_price
-                pyhub[interval].data.time_series['full'][
-                    interval, location, 'methane_bio', 'global', 'Import price'
-                ] = bio_methane_price
-            else:
-                #import limit zero
-                print(f"No average bio methane supply for interval {interval}, set import limit to zero.")
-
-        elif linking_MPW:
-            # --- Mixed Plastic Waste (MPW) ---
-            sheet_key = f"results_{interval}_SupplyDemand"
-            total_mpw_supply = 0.0
-
-            for entry in results_year_sheet.get(sheet_key, []):
-                if entry.get("Activity") == "Mixed Plastic Waste" and entry.get("Type") == "supply":
-                    tech_id = entry.get("Tech_ID")
-                    value = entry.get("value")
-
-                    if value is None:
-                        print(f"⚠️ No value found for Tech_ID '{tech_id}' in interval {interval}")
-                        continue
-
-                    try:
-                        factor = conversion_factor_IESA_to_cluster(
-                            "SupplyDemand", tech_id, ppi_file_path, baseyear_cluster, baseyear_IESA
-                        )
-                        total_mpw_supply += factor * value
-                    except Exception as e:
-                        print(f"⚠️ Skipping {tech_id} due to error: {e}")
-
-            # Store the MPW import limit in cluster model input and PyPSA structure
-            input_cluster[location][interval]['Import limit MPW'] = total_mpw_supply
-            pyhub[interval].data.time_series['full'][
-                interval, location, 'MPW', 'global', 'Import limit'
-            ] = total_mpw_supply
+                else:
+                    # Read value in adopt
+                    pyhub[interval].data.time_series['full'][
+                        interval, location, key, 'global', 'Import limit'
+                    ] = 0
+                    if nr_DD_days > 0:
+                        pyhub[interval].data.time_series['clustered'][
+                            interval, location, key, 'global', 'Import limit'
+                        ] = 0
 
 
 
-            print(f"The value that is inputted as import limit for MPW is {total_mpw_supply:.2f}")
+        # elif linking_MPW:
+        #     # --- Mixed Plastic Waste (MPW) ---
+        #     sheet_key = f"results_{interval}_SupplyDemand"
+        #     total_mpw_supply = 0.0
+        #
+        #     for entry in results_year_sheet.get(sheet_key, []):
+        #         if entry.get("Activity") == "Mixed Plastic Waste" and entry.get("Type") == "supply":
+        #             tech_id = entry.get("Tech_ID")
+        #             value = entry.get("value")
+        #
+        #             if value is None:
+        #                 print(f"⚠️ No value found for Tech_ID '{tech_id}' in interval {interval}")
+        #                 continue
+        #
+        #             try:
+        #                 factor = conversion_factor_IESA_to_cluster(
+        #                     "SupplyDemand", tech_id, ppi_file_path, baseyear_cluster, baseyear_IESA
+        #                 )
+        #                 total_mpw_supply += factor * value
+        #             except Exception as e:
+        #                 print(f"⚠️ Skipping {tech_id} due to error: {e}")
+        #
+        #     # Store the MPW import limit in cluster model input and PyPSA structure
+        #     input_cluster[location][interval]['Import limit MPW'] = total_mpw_supply
+        #     pyhub[interval].data.time_series['full'][
+        #         interval, location, 'MPW', 'global', 'Import limit'
+        #     ] = total_mpw_supply
+        #
+        #     print(f"The value that is inputted as import limit for MPW is {total_mpw_supply:.2f}")
 
         # Start brownfield optimization
         pyhub[interval].construct_model()
@@ -221,7 +175,7 @@ def run_adopt(filepath, casepath, iteration_path, location, linking_energy_price
 
         pyhub[interval].solve()
 
-    return input_cluster
+    return pyhub
 
 
 
