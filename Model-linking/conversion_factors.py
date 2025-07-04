@@ -106,6 +106,14 @@ def conversion_factor_IESA_to_cluster(sheet, filter, ppi_file_path, baseyear_clu
             sheet_name = 'World Development Indicators'
             ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
             return ppi_cf * 14.7 # Meuro/PJ to euro/t
+        elif filter == 'Bio Ethanol':
+            sheet_name = 'World Development Indicators'
+            ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
+            return ppi_cf * 26.7 # Meuro/PJ to euro/t
+        elif filter == 'Bio LPG':
+            sheet_name = 'World Development Indicators'
+            ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
+            return ppi_cf * 55.08 # Meuro/PJ to euro/t
         else:
             raise ValueError(f"❌ Undefined filter '{filter}' for sheet '{sheet}'.")
 

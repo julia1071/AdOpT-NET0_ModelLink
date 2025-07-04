@@ -4,7 +4,7 @@
 
 def merge_existing_and_new_techs(updated_dict_cc, intervals, location):
     """
-    Merges technology sizes by summing each base technology with its '_existing' counterpart
+    Merges technology outputs by summing each base technology with its '_existing' counterpart
     for a given location and a list of intervals.
 
     Args:

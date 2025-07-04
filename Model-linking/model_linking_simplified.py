@@ -36,16 +36,16 @@ linking_MPW = False
 # Define the file path to the model and the procedures that you want to run,.
 command = [
         aimms_path,
-        "U:\\IESA-Opt-Dev_20250605_linking_correct\\ModelLinking.aimms", "--end-user",
+        "U:\\IESA-Opt-Dev_testing\\IESA-Opt-Dev_testing\\20250702_IESA_testing.aimms", "--end-user",
         "--run-only", "Run_IESA"
     ]
 
 # Pick the file path where AIMMS is saving the results of the optimization.
 # The name of the initial results document can be adjusted in AIMMS "Settings_Solve_Transition".
-file_path_IESA = Path("U:/IESA-Opt-Dev_20250605_linking_correct/Output/ResultsModelLinking")
+file_path_IESA = Path("U:/IESA-Opt-Dev_testing/IESA-Opt-Dev_testing/Output/ResultsModelLinking")
 
 # The input file name can be changed in AIMMS right-clicking on the procedure "runDataReading" selecting attributes
-original_name_input = file_path_IESA / "20250619_detailed_linked.xlsx"
+original_name_input = file_path_IESA / "20250701_detailed_linked.xlsx"
 original_name_output = file_path_IESA / "ResultsModelLinking_General.xlsx"
 
 # Define the new name of the input and output file
@@ -60,13 +60,13 @@ carrier_demand_dict = {'ethylene': 761310, 'propylene': 343487, 'PE_olefin': 612
 if linking_energy_prices and not linking_MPW:
     # Define simulation years cluster model and the excel sheets from which you want to extract data in IESA-Opt
     intervals = ['2030', '2040', '2050']
-    list_sheets = ['EnergyCosts']
+    list_sheets = ['EnergyCosts', 'EnergyCosts_secondary']
 
     nrows = [45]  # !Same order as list_sheets! =Number of rows in excel sheet -1
 
     # !Combine the headers and filters of the different sheets! Same order as list_sheets!
-    headers = ['Activity']
-    filters = [['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass']]
+    headers = ['Activity', 'Activity']
+    filters = [['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass', 'Bio LPG', 'Bio Ethanol'], ['Mixed Plastic Waste']]
 elif linking_MPW and not linking_energy_prices:  # Example of other use case: import limit MPW
     intervals = ['2030', '2040', '2050']
     list_sheets = ["SupplyDemand"]
@@ -77,14 +77,14 @@ elif linking_MPW and not linking_energy_prices:  # Example of other use case: im
     nrows = [830]
 elif linking_energy_prices and linking_MPW:
     intervals = ['2030', '2040', '2050']
-    list_sheets = ['EnergyCosts', 'SupplyDemand']
+    list_sheets = ['EnergyCosts', 'EnergyCosts_secondary', 'SupplyDemand']
     nrows = [45, 830]
     headers = [
-        'Activity',
+        'Activity', 'Activity',
         ("Activity", "Type", "Tech_ID")
     ]
     filters = [
-        ['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass'],
+        ['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass', 'Bio LPG', 'Bio Ethanol'], ['Mixed Plastic Waste'],
         [
             ("Mixed Plastic Waste", "supply", "WAI01_01"),
             ("Mixed Plastic Waste", "supply", "WAI01_02"),
@@ -146,13 +146,14 @@ tech_to_id = {"CrackerFurnace": "ICH01_01", "CrackerFurnace_CC": "ICH01_02", "Cr
               }
 
 # Excel must be installed on the server.
-input_path = "U:/IESA-Opt-Dev_20250605_linking_correct/data/20250619_detailed_linked.xlsx"
+input_path = "U:/IESA-Opt-Dev_testing/IESA-Opt-Dev_testing/data/20250701_detailed_linked.xlsx"
 
 # Convergence Criteria; the relative change in output for each technology in the cluster model must be lower than e
 e = 0.1
 max_iterations = 3
 
-def model_linking(max_iterations):
+
+def model_linking(max_iterations, e):
     i = 1
     inputs_cluster = {}
     outputs_cluster = {}
@@ -235,4 +236,4 @@ def model_linking(max_iterations):
             print(f"The next iteration, iteration {i} is started")
 
 
-model_linking(max_iterations)
+model_linking(max_iterations, e)

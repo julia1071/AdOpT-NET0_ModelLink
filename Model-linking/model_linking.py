@@ -165,7 +165,7 @@ e = 0.1
 max_iterations = 3
 
 
-def model_linking(max_iterations):
+def model_linking(max_iterations, e):
     i = 1
     inputs_cluster = {}
     outputs_cluster = {}
