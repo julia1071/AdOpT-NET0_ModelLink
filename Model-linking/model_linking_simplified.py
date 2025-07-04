@@ -62,7 +62,7 @@ if linking_energy_prices and not linking_MPW:
     intervals = ['2030', '2040', '2050']
     list_sheets = ['EnergyCosts', 'EnergyCosts_secondary']
 
-    nrows = [45]  # !Same order as list_sheets! =Number of rows in excel sheet -1
+    nrows = [45, 10]  # !Same order as list_sheets! =Number of rows in excel sheet -1
 
     # !Combine the headers and filters of the different sheets! Same order as list_sheets!
     headers = ['Activity', 'Activity']
@@ -78,7 +78,7 @@ elif linking_MPW and not linking_energy_prices:  # Example of other use case: im
 elif linking_energy_prices and linking_MPW:
     intervals = ['2030', '2040', '2050']
     list_sheets = ['EnergyCosts', 'EnergyCosts_secondary', 'SupplyDemand']
-    nrows = [45, 830]
+    nrows = [45, 10, 830]
     headers = [
         'Activity', 'Activity',
         ("Activity", "Type", "Tech_ID")

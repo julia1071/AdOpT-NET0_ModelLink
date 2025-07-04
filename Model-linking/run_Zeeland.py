@@ -128,9 +128,15 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
             )
             print(f"The value that is inputted for naphtha is {naphtha_price}")
             input_cluster[location][interval]['Naphtha'] = naphtha_price
-            pyhub[interval].data.time_series['full'][
-                interval, location, 'naphtha', 'global', 'Import price'
-            ] = naphtha_price
+            if nr_DD_days > 0:
+                pyhub[interval].data.time_series['clustered'][
+                    interval, location, 'naphtha', 'global', 'Import price'
+                ] = naphtha_price
+            else:
+                pyhub[interval].data.time_series['full'][
+                    interval, location, 'naphtha', 'global', 'Import price'
+                ] = naphtha_price
+
 
             # --- Bio Naphtha ---
             bio_naphtha_price = (
@@ -143,6 +149,14 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
             pyhub[interval].data.time_series['full'][
                 interval, location, 'naphtha_bio', 'global', 'Import price'
             ] = bio_naphtha_price
+            if nr_DD_days > 0:
+                pyhub[interval].data.time_series['clustered'][
+                    interval, location, 'naphtha_bio', 'global', 'Import price'
+                ] = bio_naphtha_price
+            else:
+                pyhub[interval].data.time_series['full'][
+                    interval, location, 'naphtha_bio', 'global', 'Import price'
+                ] = bio_naphtha_price
 
             # --- Methane (Natural Gas HD) ---
             methane_price = (
@@ -152,9 +166,14 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
             )
             print(f"The value that is inputted for methane is {methane_price}")
             input_cluster[location][interval]['Natural Gas HD'] = methane_price
-            pyhub[interval].data.time_series['full'][
-                interval, location, 'methane', 'global', 'Import price'
-            ] = methane_price
+            if nr_DD_days > 0:
+                pyhub[interval].data.time_series['clustered'][
+                    interval, location, 'naphtha_bio', 'global', 'Import price'
+                ] = methane_price
+            else:
+                pyhub[interval].data.time_series['full'][
+                    interval, location, 'methane', 'global', 'Import price'
+                ] = methane_price
 
             # --- Bio Methane (only if a valid average cost is available) ---
             avg_bio_methane_cost = calculate_avg_bio_methane_cost(filepath, interval)
@@ -168,9 +187,14 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
 
                 print(f"The value that is inputted for bio methane is {bio_methane_price}")
                 input_cluster[location][interval]['methane_bio'] = bio_methane_price
-                pyhub[interval].data.time_series['full'][
-                    interval, location, 'methane_bio', 'global', 'Import price'
-                ] = bio_methane_price
+                if nr_DD_days > 0:
+                    pyhub[interval].data.time_series['clustered'][
+                        interval, location, 'methane_bio', 'global', 'Import price'
+                    ] = bio_methane_price
+                else:
+                    pyhub[interval].data.time_series['full'][
+                        interval, location, 'methane_bio', 'global', 'Import price'
+                    ] = bio_methane_price
             else:
                 print(f"No average bio methane cost available for interval {interval}, skipping input.")
             
@@ -182,9 +206,14 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
             )
             print(f"The value that is inputted for bio ethanol is {ethanol_price}")
             input_cluster[location][interval]['Bio Ethanol'] = ethanol_price
-            pyhub[interval].data.time_series['full'][
-                interval, location, 'ethanol', 'global', 'Import price'
-            ] = ethanol_price
+            if nr_DD_days > 0:
+                pyhub[interval].data.time_series['clustered'][
+                    interval, location, 'ethanol', 'global', 'Import price'
+                ] = ethanol_price
+            else:
+                pyhub[interval].data.time_series['full'][
+                    interval, location, 'ethanol', 'global', 'Import price'
+                ] = ethanol_price
 
             # --- Bio LPG ---
             LPG_price = (
@@ -194,9 +223,14 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
             )
             print(f"The value that is inputted for propane is {LPG_price}")
             input_cluster[location][interval]['Bio LPG'] = LPG_price
-            pyhub[interval].data.time_series['full'][
-                interval, location, 'propane', 'global', 'Import price'
-            ] = LPG_price
+            if nr_DD_days > 0:
+                pyhub[interval].data.time_series['clustered'][
+                    interval, location, 'propane', 'global', 'Import price'
+                ] = LPG_price
+            else:
+                pyhub[interval].data.time_series['full'][
+                    interval, location, 'propane', 'global', 'Import price'
+                ] = LPG_price
 
             # --- Mixed Plastic Waste---
             MPW_price = (
@@ -204,9 +238,14 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
             )
             print(f"The value that is inputted for MPW is {MPW_price}")
             input_cluster[location][interval]['Mixed Plastic Waste'] = MPW_price
-            pyhub[interval].data.time_series['full'][
-                interval, location, 'MPW', 'global', 'Import price'
-            ] = MPW_price
+            if nr_DD_days > 0:
+                pyhub[interval].data.time_series['clustered'][
+                    interval, location, 'MPW', 'global', 'Import price'
+                ] = MPW_price
+            else:
+                pyhub[interval].data.time_series['full'][
+                    interval, location, 'MPW', 'global', 'Import price'
+                ] = MPW_price
 
         elif linking_MPW:
             # --- Mixed Plastic Waste (MPW) ---
@@ -232,11 +271,14 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
 
             # Store the MPW import limit in cluster model input and PyPSA structure
             input_cluster[location][interval]['Import limit MPW'] = total_mpw_supply
-            pyhub[interval].data.time_series['full'][
-                interval, location, 'MPW', 'global', 'Import limit'
-            ] = total_mpw_supply
-
-
+            if nr_DD_days > 0:
+                pyhub[interval].data.time_series['clustered'][
+                    interval, location, 'MPW', 'global', 'Import limit'
+                ] = total_mpw_supply
+            else:
+                pyhub[interval].data.time_series['full'][
+                    interval, location, 'MPW', 'global', 'Import limit'
+                ] = total_mpw_supply
 
             print(f"The value that is inputted as import limit for MPW is {total_mpw_supply:.2f}")
 

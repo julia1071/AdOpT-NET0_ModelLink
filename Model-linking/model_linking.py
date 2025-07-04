@@ -61,13 +61,13 @@ carrier_demand_dict = {'ethylene': 524400, 'propylene': 235600, 'PE_olefin': 957
 if linking_energy_prices and not linking_MPW:
     # Define simulation years cluster model and the excel sheets from which you want to extract data in IESA-Opt
     intervals = ['2030', '2040', '2050']
-    list_sheets = ['EnergyCosts']
+    list_sheets = ['EnergyCosts', 'EnergyCosts_secondary']
 
-    nrows = [45]  # !Same order as list_sheets! =Number of rows in excel sheet -1
+    nrows = [45, 10]  # !Same order as list_sheets! =Number of rows in excel sheet -1
 
     # !Combine the headers and filters of the different sheets! Same order as list_sheets!
-    headers = ['Activity']
-    filters = [['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass']]
+    headers = ['Activity', 'Activity']
+    filters = [['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass', 'Bio LPG', 'Bio Ethanol'], ['Mixed Plastic Waste']]
 elif linking_MPW and not linking_energy_prices:  # Example of other use case: import limit MPW
     intervals = ['2030', '2040', '2050']
     list_sheets = ["SupplyDemand"]
@@ -78,14 +78,14 @@ elif linking_MPW and not linking_energy_prices:  # Example of other use case: im
     nrows = [830]
 elif linking_energy_prices and linking_MPW:
     intervals = ['2030', '2040', '2050']
-    list_sheets = ['EnergyCosts', 'SupplyDemand']
-    nrows = [45, 830]
+    list_sheets = ['EnergyCosts', 'EnergyCosts_secondary', 'SupplyDemand']
+    nrows = [45, 10, 830]
     headers = [
-        'Activity',
+        'Activity', 'Activity',
         ("Activity", "Type", "Tech_ID")
     ]
     filters = [
-        ['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass'],
+        ['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass', 'Bio LPG', 'Bio Ethanol'], ['Mixed Plastic Waste'],
         [
             ("Mixed Plastic Waste", "supply", "WAI01_01"),
             ("Mixed Plastic Waste", "supply", "WAI01_02"),
