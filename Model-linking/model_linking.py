@@ -175,6 +175,17 @@ def model_linking(max_iterations, e):
     os.makedirs(map_name_cluster, exist_ok=True)
     os.makedirs(map_name_IESA, exist_ok=True)
     while True:
+        if i == 1:
+            clear_input_file_IESA(
+                input_path,
+                sheet_name="Technologies",
+                tech_id_col="A",
+                tech_id_row_start=7,
+                merged_row=2,
+                header_row=5,
+                merged_name="Minimum use in a year",
+                tech_to_id=tech_to_id
+                )
         results_path_IESA = run_IESA_change_name_files(i, command, original_name_output, original_name_input,
                                                        output_basename, input_basename, map_name_IESA)
         results_year_sheet = extract_data_IESA_multiple(intervals, list_sheets, nrows, filters, headers,
@@ -220,17 +231,6 @@ def model_linking(max_iterations, e):
                 json.dump(outputs_cluster, f, indent=4)
 
             print(f"📝 Saved inputs and outputs of the cluster model")
-
-            clear_input_file_IESA(
-                input_path,
-                sheet_name="Technologies",
-                tech_id_col="A",
-                tech_id_row_start=7,
-                merged_row=2,
-                header_row=5,
-                merged_name="Minimum use in a year",
-                tech_to_id=tech_to_id
-                )
             break  # ← loop ends here
         else:
             update_input_file_IESA(
