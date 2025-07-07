@@ -39,7 +39,7 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
         nr_DD_days = 0
     else:
         nr_DD_days = 10  # Set to 10 if used for full-scale modelling
-    pyhub = {}
+    adopt_hub = {}
 
 
     for i, interval in enumerate(intervals):
@@ -58,9 +58,9 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
             model_config['optimization']['objective']['value'] = "costs_emissionlimit"
             if nr_DD_days > 0:
                 limit = (interval_emissionLim[interval] *
-                         pyhub[prev_interval].model['clustered'].var_emissions_net.value)
+                         adopt_hub[prev_interval].model['clustered'].var_emissions_net.value)
             else:
-                limit = interval_emissionLim[interval] * pyhub[prev_interval].model['full'].var_emissions_net.value
+                limit = interval_emissionLim[interval] * adopt_hub[prev_interval].model['full'].var_emissions_net.value
             model_config['optimization']['emission_limit']['value'] = limit
 
         # other constraint options
@@ -82,24 +82,24 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
 
         if i != 0:
             prev_interval = intervals[i - 1]
-            installed_capacities_existing(pyhub, interval, prev_interval, location, casepath_interval)
+            installed_capacities_existing(adopt_hub, interval, prev_interval, location, casepath_interval)
 
         # Construct and solve the model
-        pyhub[interval] = ModelHub()
+        adopt_hub[interval] = ModelHub()
         if fast_run:
             # Solve model for the first 10 hours
-            pyhub[interval].read_data(casepath_interval, start_period=0, end_period=10)
+            adopt_hub[interval].read_data(casepath_interval, start_period=0, end_period=10)
         else:
-            pyhub[interval].read_data(casepath_interval)
+            adopt_hub[interval].read_data(casepath_interval)
 
         # Set case name
         if nr_DD_days > 0:
-            pyhub[interval].data.model_config['reporting']['case_name'][
+            adopt_hub[interval].data.model_config['reporting']['case_name'][
                 'value'] = (interval + '_minC_' +
                             'DD' +
-                            str(pyhub[interval].data.model_config['optimization']['typicaldays']['N']['value']))
+                            str(adopt_hub[interval].data.model_config['optimization']['typicaldays']['N']['value']))
         else:
-            pyhub[interval].data.model_config['reporting']['case_name'][
+            adopt_hub[interval].data.model_config['reporting']['case_name'][
                 'value'] = interval + '_minC_fullres'
 
         if linking_energy_prices:
@@ -109,11 +109,11 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
 
                 if value is not None:
                     #Read value in adopt
-                    pyhub[interval].data.time_series['full'][
+                    adopt_hub[interval].data.time_series['full'][
                         interval, location, key, 'global', 'Import price'
                     ] = value
                     if nr_DD_days > 0:
-                        pyhub[interval].data.time_series['clustered'][
+                        adopt_hub[interval].data.time_series['clustered'][
                             interval, location, key, 'global', 'Import price'
                         ] = value
 
@@ -121,11 +121,11 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
 
                 else:
                     # Read value in adopt
-                    pyhub[interval].data.time_series['full'][
+                    adopt_hub[interval].data.time_series['full'][
                         interval, location, key, 'global', 'Import limit'
                     ] = 0
                     if nr_DD_days > 0:
-                        pyhub[interval].data.time_series['clustered'][
+                        adopt_hub[interval].data.time_series['clustered'][
                             interval, location, key, 'global', 'Import limit'
                         ] = 0
 
@@ -162,20 +162,20 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
         #     print(f"The value that is inputted as import limit for MPW is {total_mpw_supply:.2f}")
 
         # Start brownfield optimization
-        pyhub[interval].construct_model()
-        pyhub[interval].construct_balances()
+        adopt_hub[interval].construct_model()
+        adopt_hub[interval].construct_balances()
 
         # add annual constraint
         if annual_demand:
-            set_annual_export_demand(pyhub[interval], interval, carrier_demand_dict)
+            set_annual_export_demand(adopt_hub[interval], interval, carrier_demand_dict)
 
         # add DAC CO2 export limit constraint
-        set_negative_CO2_limit(pyhub[interval], interval,
+        set_negative_CO2_limit(adopt_hub[interval], interval,
                                ["SteamReformer", "WGS_m", "SteamReformer_existing", "WGS_m_existing"])
 
-        pyhub[interval].solve()
+        adopt_hub[interval].solve()
 
-    return pyhub
+    return adopt_hub
 
 
 
