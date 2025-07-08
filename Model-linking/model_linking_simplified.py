@@ -11,7 +11,7 @@ from get_results_cluster_dict_output import extract_technology_outputs
 from extract_and_apply_cc_fractions import extract_and_apply_cc_fractions
 from split_technologies_cc import apply_cc_splitting
 from merge_and_group_technologies import merge_existing_and_new_techs
-from extract_import_share_naphtha import extract_import_bio_ratios_naphtha
+from extract_and_apply_import_share_bio import extract_and_apply_import_bio_ratios
 from split_technologies_bio import apply_bio_splitting
 from map_techs_to_ID import map_techs_to_ID
 from update_input_file_IESA import update_input_file_IESA
@@ -179,7 +179,7 @@ def model_linking(max_iterations):
         merged_tech_output_dict = merge_existing_and_new_techs(updated_dict_cc)
         print(r"The merged_tech_output_dict created:")
         print(merged_tech_output_dict)
-        bio_ratios = extract_import_bio_ratios_naphtha(iteration_path, intervals, location)
+        bio_ratios = extract_and_apply_import_bio_ratios(iteration_path, intervals, location)
         updated_dict_bio = apply_bio_splitting(merged_tech_output_dict, bio_ratios, bio_tech_names, location)
         print(r"The updated_dict_bio created:")
         print(updated_dict_bio)

@@ -145,6 +145,7 @@ cc_technologies = {
 
 # Create a dictionary stating which technologies are splitted in bio and non bio
 bio_tech_names = ["CrackerFurnace_CC", "CrackerFurnace_Electric"]
+bio_carriers = ['naphtha']
 
 # Create the dictionary where is stated which technology belongs to which Tech_ID.
 # More Tech_IDs can be coupled to one name "PDH" : [Tech_ID1, Tech_ID2]
