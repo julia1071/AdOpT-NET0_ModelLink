@@ -111,8 +111,7 @@ def convert_IESA_to_cluster_dict(results_IESA_dict, results_path_IESA):
                                          'Biomass': 'biomass', 'Mixed Plastic Waste': 'MPW'}
 
                 for activity in activity_list:
-                    conv = conversion_factor_IESA_to_cluster(sheet, activity,
-                                                             ppi_file_path, baseyear_cluster, baseyear_IESA)
+                    conv = conversion_factor_IESA_to_cluster(sheet, activity)
                     value = get_value_IESA_multiple(results_IESA_dict, interval, sheet, Activity=activity)
                     sheet_dict[cluster_carrier_names[activity]] = conv * value
 
@@ -120,8 +119,7 @@ def convert_IESA_to_cluster_dict(results_IESA_dict, results_path_IESA):
         avg_bio_methane_cost = calculate_avg_bio_methane_cost(results_path_IESA, interval)
 
         if avg_bio_methane_cost is not None:
-            conv = conversion_factor_IESA_to_cluster(sheet, 'methane_bio',
-                                                     ppi_file_path, baseyear_cluster, baseyear_IESA)
+            conv = conversion_factor_IESA_to_cluster('EnergyCost', 'methane_bio')
             sheet_dict['methane_bio'] = conv * avg_bio_methane_cost
         else:
             sheet_dict['methane_bio'] = None

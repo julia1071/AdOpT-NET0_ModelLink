@@ -8,8 +8,7 @@ from run_IESA_from_python import run_IESA_change_name_files
 from extract_data_IESA_multiple_headers import extract_data_IESA_multiple, convert_IESA_to_cluster_dict
 from run_adopt import run_adopt
 from get_results_cluster_dict_output import extract_technology_outputs
-from extract_cc_fractions import extract_cc_fractions
-from split_technologies_cc import apply_cc_splitting
+from extract_cc_fractions import extract_and_apply_cc_fractions
 from merge_existing_new_techs import merge_existing_and_new_techs
 from combine_tech_outputs import combine_tech_outputs
 from extract_import_share_naphtha import extract_import_bio_ratios_naphtha
@@ -54,15 +53,14 @@ def model_linking(max_iterations):
                                   cluster_input_dict=cluster_linked_input_dict)
 
 
-        tech_output_dict = extract_technology_outputs(base_tech_output_map, iteration_path, intervals, location,
-                                                      fast_run)
-        print(r"The tech_size_dict created:")
-        print(tech_output_dict)
-        cc_fraction_dict = extract_cc_fractions(iteration_path, intervals, location, cc_technologies)
-        updated_dict_cc = apply_cc_splitting(tech_output_dict, cc_fraction_dict, capture_rate)
+        tech_output_dict = extract_technology_outputs(adopt_hub=solution_cluster)
+        # print(r"The tech_size_dict created:")
+        # print(tech_output_dict)
+
+        tech_dict_updated_cc = extract_and_apply_cc_fractions(adopt_hub=solution_cluster, tech_output_dict=tech_output_dict)
         print(r"The updated_dict_cc created:")
-        print(updated_dict_cc)
-        merged_tech_output_dict = merge_existing_and_new_techs(updated_dict_cc, intervals, location)
+
+        merged_tech_output_dict = merge_existing_and_new_techs(tech_dict=tech_dict_updated_cc)
         print(r"The merged_tech_output_dict created:")
         print(merged_tech_output_dict)
         combined_dict = combine_tech_outputs(merged_tech_output_dict, group_map)
@@ -75,7 +73,7 @@ def model_linking(max_iterations):
         print(updates)
 
         outputs_cluster[f"iteration_{i}"] = updates
-        inputs_cluster[f"iteration_{i}"] = input_cluster
+        inputs_cluster[f"iteration_{i}"] = cluster_linked_input_dict
 
         if compare_outputs(outputs_cluster, i, e) or i == max_iterations:
             print(f"✅ Model linking is done after {i} iterations.")

@@ -11,6 +11,10 @@ fast_run = True  # fast optimization of the cluster model for a shorter period (
 linking_energy_prices = True
 linking_MPW = False
 
+#General data
+intervals = ['2030', '2040', '2050']
+location = "Zeeland"
+
 
 # === Paths ===
 #IESA paths
@@ -66,8 +70,6 @@ carrier_demand_dict = {'ethylene': 524400, 'propylene': 235600, 'PE_olefin': 957
 
 if linking_energy_prices and not linking_MPW:
     # Define simulation years cluster model and the excel sheets from which you want to extract data in IESA-Opt
-    intervals = ['2030', '2040', '2050']
-    location = "Zeeland"
     list_sheets = ['EnergyCosts', 'EnergyCosts_secondary']
 
     nrows = [45, 11]  # !Same order as list_sheets! =Number of rows in excel sheet -1
@@ -76,8 +78,6 @@ if linking_energy_prices and not linking_MPW:
     headers = ['Activity', 'Activity']
     filters = [['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass'], ['Mixed Plastic Waste']]
 elif linking_MPW and not linking_energy_prices:  # Example of other use case: import limit MPW
-    intervals = ['2030', '2040', '2050']
-    location = "Zeeland"
     list_sheets = ["SupplyDemand"]
     headers = [("Activity", "Type", "Tech_ID")]
     # Add all the possible technologies that can potentially supply MPW
@@ -85,8 +85,6 @@ elif linking_MPW and not linking_energy_prices:  # Example of other use case: im
                 ("Mixed Plastic Waste", "supply", "EPO01_03")]]
     nrows = [830]
 elif linking_energy_prices and linking_MPW:
-    intervals = ['2030', '2040', '2050']
-    location = "Zeeland"
     list_sheets = ['EnergyCosts', 'EnergyCosts_secondary', 'SupplyDemand']
     nrows = [45, 11, 830]
     headers = [
@@ -110,21 +108,21 @@ else:
 # The alias name (can be anything), the name of the tech in the cluster model,
 # and the name of the type of value that you want to extract from cluster results.
 base_tech_output_map = {
-    "CrackerFurnace": ("CrackerFurnace", "olefins_output"),
-    "CrackerFurnace_Electric": ("CrackerFurnace_Electric", "olefins_output"),
-    "EDH": ("EDH", "ethylene_output"),
-    "MTO": ("MTO", "propylene_output"),
-    "PDH": ("PDH", "propylene_output"),
-    "MPW2methanol_input": ("MPW2methanol", "MPW_input"),
-    "MPW2methanol_output": ("MPW2methanol", "methanol_output"),
-    "MeOHsynthesis": ("MeOHsynthesis", "methanol_output"),
-    "Biomass2methanol_input": ("Biomass2methanol", "biomass_input"),
-    "Biomass2methanol_output": ("Biomass2methanol", "methanol_output"),
-    "DirectMeOHsynthesis": ("DirectMeOHsynthesis", "methanol_output"),
-    "SteamReformer": ("SteamReformer", "HBfeed_output"),
-    "AEC": ("AEC", "hydrogen_output"),
-    "ElectricSMR_m": ("ElectricSMR_m", "syngas_r_output"),
-    "CO2electrolysis": ("CO2electrolysis", "ethylene_output")
+    "CrackerFurnace": ("CrackerFurnace", "olefins"),
+    "CrackerFurnace_Electric": ("CrackerFurnace_Electric", "olefins"),
+    "EDH": ("EDH", "ethylene"),
+    "MTO": ("MTO", "propylene"),
+    "PDH": ("PDH", "propylene"),
+    "MPW2methanol_input": ("MPW2methanol", "MPW"),
+    "MPW2methanol_output": ("MPW2methanol", "methanol"),
+    "MeOHsynthesis": ("MeOHsynthesis", "methanol"),
+    "Biomass2methanol_input": ("Biomass2methanol", "biomass"),
+    "Biomass2methanol_output": ("Biomass2methanol", "methanol"),
+    "DirectMeOHsynthesis": ("DirectMeOHsynthesis", "methanol"),
+    "SteamReformer": ("SteamReformer", "HBfeed"),
+    "AEC": ("AEC", "hydrogen"),
+    "ElectricSMR_m": ("ElectricSMR_m", "syngas_r"),
+    "CO2electrolysis": ("CO2electrolysis", "ethylene")
 }
 
 # Optionally, different outputs as defined above can be combined into one technology

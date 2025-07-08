@@ -1,6 +1,8 @@
 import pandas as pd
 import os
 
+from config_model_linking import *
+
 
 def conversion_factor_cluster_to_IESA(tech_id):
     """
@@ -41,7 +43,7 @@ def conversion_factor_cluster_to_IESA(tech_id):
         raise ValueError(f"❌ Conversion factor for tech_id '{tech_id}' is not defined.")
 
 
-def get_ppi_conversion_factor(PPI_file_path, sheet_name, baseyear_cluster, baseyear_IESA):
+def get_ppi_conversion_factor(sheet_name):
     """
     Converts values from IESA base year to cluster base year using CBS PPI data.
     Handles errors for missing file, sheet, or years.
@@ -50,11 +52,11 @@ def get_ppi_conversion_factor(PPI_file_path, sheet_name, baseyear_cluster, basey
         float: conversion factor = PPI_cluster / PPI_IESA
     """
     # --- Check if file exists ---
-    if not os.path.exists(PPI_file_path):
-        raise FileNotFoundError(f"❌ File not found: {PPI_file_path}")
+    if not os.path.exists(ppi_file_path):
+        raise FileNotFoundError(f"❌ File not found: {ppi_file_path}")
 
     try:
-        xls = pd.ExcelFile(PPI_file_path)
+        xls = pd.ExcelFile(ppi_file_path)
     except Exception as e:
         raise RuntimeError(f"❌ Failed to open Excel file: {e}")
 
@@ -88,27 +90,27 @@ def get_ppi_conversion_factor(PPI_file_path, sheet_name, baseyear_cluster, basey
     factor = ppi_cluster / ppi_iesa
     return factor
 
-def conversion_factor_IESA_to_cluster(sheet, filter, ppi_file_path, baseyear_cluster, baseyear_IESA):
+def conversion_factor_IESA_to_cluster(sheet, filter):
     if 'EnergyCosts' in sheet:
         if filter in ['Naphtha', 'Bio Naphtha']:
             sheet_name = 'World Development Indicators'
-            ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
+            ppi_cf = get_ppi_conversion_factor(sheet_name)
             return ppi_cf * 44.9  # Meuro/PJ to euro/t
         elif filter in ['Natural Gas HD']:
             sheet_name = 'World Development Indicators'
-            ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
+            ppi_cf = get_ppi_conversion_factor(sheet_name)
             return ppi_cf * 3.6 # Meuro/PJ to euro/MWh
         elif filter in ['methane_bio']:
             sheet_name = 'World Development Indicators'
-            ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
+            ppi_cf = get_ppi_conversion_factor(sheet_name)
             return ppi_cf * 3.6 # Meuro/PJ to euro/MWh
         elif filter == 'Biomass':
             sheet_name = 'World Development Indicators'
-            ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
+            ppi_cf = get_ppi_conversion_factor(sheet_name)
             return ppi_cf * 14.7 # Meuro/PJ to euro/t
         elif filter == 'Mixed Plastic Waste':
             sheet_name = 'World Development Indicators'
-            ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
+            ppi_cf = get_ppi_conversion_factor(sheet_name)
             return ppi_cf # Meuro/Mt to euro/t
         else:
             raise ValueError(f"❌ Undefined filter '{filter}' for sheet '{sheet}'.")

@@ -8,7 +8,7 @@ from run_IESA_from_python import run_IESA_change_name_files
 from extract_data_IESA_multiple_headers import extract_data_IESA_multiple
 from run_adopt import run_adopt
 from get_results_cluster_dict_output import extract_technology_outputs
-from extract_cc_fractions import extract_cc_fractions
+from extract_cc_fractions import extract_and_apply_cc_fractions
 from split_technologies_cc import apply_cc_splitting
 from merge_existing_new_techs import merge_existing_and_new_techs
 from extract_import_share_naphtha import extract_import_bio_ratios_naphtha
@@ -172,11 +172,11 @@ def model_linking(max_iterations):
                                                       fast_run)
         print(r"The tech_size_dict created:")
         print(tech_output_dict)
-        cc_fraction_dict = extract_cc_fractions(iteration_path, intervals, location, cc_technologies)
+        cc_fraction_dict = extract_and_apply_cc_fractions(iteration_path)
         updated_dict_cc = apply_cc_splitting(tech_output_dict, cc_fraction_dict, capture_rate)
         print(r"The updated_dict_cc created:")
         print(updated_dict_cc)
-        merged_tech_output_dict = merge_existing_and_new_techs(updated_dict_cc, intervals, location)
+        merged_tech_output_dict = merge_existing_and_new_techs(updated_dict_cc)
         print(r"The merged_tech_output_dict created:")
         print(merged_tech_output_dict)
         bio_ratios = extract_import_bio_ratios_naphtha(iteration_path, intervals, location)
