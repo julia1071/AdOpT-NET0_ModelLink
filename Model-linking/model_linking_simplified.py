@@ -45,7 +45,7 @@ command = [
 file_path_IESA = Path("U:/IESA-Opt-Dev_testing/IESA-Opt-Dev_testing/Output/ResultsModelLinking")
 
 # The input file name can be changed in AIMMS right-clicking on the procedure "runDataReading" selecting attributes
-original_name_input = file_path_IESA / "20250701_detailed_linked.xlsx"
+original_name_input = file_path_IESA / "20250708_detailed_linked.xlsx"
 original_name_output = file_path_IESA / "ResultsModelLinking_General.xlsx"
 
 # Define the new name of the input and output file
@@ -138,7 +138,7 @@ bio_tech_names = ["CrackerFurnace_CC", "CrackerFurnace_Electric"]
 # More Tech_IDs can be coupled to one name "PDH" : [Tech_ID1, Tech_ID2]
 tech_to_id = {"CrackerFurnace": "ICH01_01", "CrackerFurnace_CC": "ICH01_02", "CrackerFurnace_CC_bio": "ICH01_03",
               "CrackerFurnace_Electric": "ICH01_05",
-              "CrackerFurnace_Electric_bio": "ICH01_06", "MTO": "ICH01_12", "PDH": "ICH01_14",
+              "CrackerFurnace_Electric_bio": "ICH01_06", "MTO": "ICH01_12", "PDH": "ICH01_41",
               "MPW2methanol_input": "WAI01_10", "MPW2methanol_input_CC": "WAI01_11",
               "MPW2methanol_output": "RFS04_01",
               "SteamReformer": "Amm01_01", "SteamReformer_CC": "Amm01_02",
@@ -146,11 +146,11 @@ tech_to_id = {"CrackerFurnace": "ICH01_01", "CrackerFurnace_CC": "ICH01_02", "Cr
               }
 
 # Excel must be installed on the server.
-input_path = "U:/IESA-Opt-Dev_testing/IESA-Opt-Dev_testing/data/20250701_detailed_linked.xlsx"
+input_path = "U:/IESA-Opt-Dev_testing/IESA-Opt-Dev_testing/data/20250708_detailed_linked.xlsx"
 
 # Convergence Criteria; the relative change in output for each technology in the cluster model must be lower than e
 e = 0.1
-max_iterations = 3
+max_iterations = 4
 
 
 def model_linking(max_iterations, e):

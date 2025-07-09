@@ -17,13 +17,13 @@ def conversion_factor_cluster_to_IESA(tech_id):
         # Cluster: t ethylene/y → IESA: Mton Ey/y
         return 1 / 10**6
 
-    elif tech_id in ['ICH01_12', 'ICH01_14']:
+    elif tech_id in ['ICH01_12', 'ICH01_41']:
         # Cluster: t propylene/y → IESA: Mton Py/y
         return 1 / 10**6
 
     elif tech_id in ['WAI01_10', 'WAI01_11'] :
         # Cluster: t MPW/y → IESA: PJ/y (Syngas)
-        return 1 / (0.3*10**6)
+        return 1 / (0.03*10**6)
 
     elif tech_id in ['RFS04_01', 'RFS04_02']:
         # Cluster: t methanol/y → IESA: PJ/y (Methanol)

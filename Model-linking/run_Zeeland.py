@@ -17,7 +17,7 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
 
     Args:
         filepath (str or Path): Path to the IESA results or model directory
-        casepath (str): Base path to the PyPSA cluster model case files
+        casepath (str): Base path to the cluster model case files
         iteration_path (str or Path): Path where outputs of this run will be saved
         location (str): Location to model
         linking_energy_prices (bool): Whether to link and input energy prices from IESA
@@ -159,21 +159,21 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
                 ] = bio_naphtha_price
 
             # --- Methane (Natural Gas HD) ---
-            # methane_price = (
-            #         conversion_factor_IESA_to_cluster('EnergyCosts', 'Natural Gas HD', ppi_file_path, baseyear_cluster,
-            #                                           baseyear_IESA)
-            #         * get_value_IESA_multiple(results_year_sheet, interval, 'EnergyCosts', Activity='Natural Gas HD')
-            # )
-            # print(f"The value that is inputted for methane is {methane_price}")
-            # input_cluster[location][interval]['Natural Gas HD'] = methane_price
-            # if nr_DD_days > 0:
-            #     pyhub[interval].data.time_series['clustered'][
-            #         interval, location, 'naphtha_bio', 'global', 'Import price'
-            #     ] = methane_price
-            # else:
-            #     pyhub[interval].data.time_series['full'][
-            #         interval, location, 'methane', 'global', 'Import price'
-            #     ] = methane_price
+            methane_price = (
+                    conversion_factor_IESA_to_cluster('EnergyCosts', 'Natural Gas HD', ppi_file_path, baseyear_cluster,
+                                                      baseyear_IESA)
+                    * get_value_IESA_multiple(results_year_sheet, interval, 'EnergyCosts', Activity='Natural Gas HD')
+            )
+            print(f"The value that is inputted for methane is {methane_price}")
+            input_cluster[location][interval]['Natural Gas HD'] = methane_price
+            if nr_DD_days > 0:
+                pyhub[interval].data.time_series['clustered'][
+                    interval, location, 'naphtha_bio', 'global', 'Import price'
+                ] = methane_price
+            else:
+                pyhub[interval].data.time_series['full'][
+                    interval, location, 'methane', 'global', 'Import price'
+                ] = methane_price
 
             # --- Bio Methane (only if a valid average cost is available) ---
             avg_bio_methane_cost = calculate_avg_bio_methane_cost(filepath, interval)
