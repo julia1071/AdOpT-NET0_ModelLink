@@ -22,16 +22,17 @@ location = "Zeeland"
 if fast_run:
     IESA_path = Path("Z:/IESA-Opt/IESA-Opt-Dev_testing")
     IESA_modellink_path = IESA_path / "20250702_IESA_testing.aimms"
+    cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Testing")
 else:
     IESA_path = Path("Z:/IESA-Opt/IESA-Opt-Dev_full")
     IESA_modellink_path = IESA_path / "20250702_IESA_full.aimms"
+    cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full")
 
 IESA_input_data_path = IESA_path / "data/20250701_detailed_linked.xlsx"
 IESA_result_folder = IESA_path / "Output" / "ResultsModelLinking"
 
 #Cluster paths
 cluster_case_path = "Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Full/ML_Zeeland_bf_"
-cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full")
 
 #Other
 ppi_file_path = "Z:/IESA-Opt/Producer_Price_Index_CBS.xlsx"
