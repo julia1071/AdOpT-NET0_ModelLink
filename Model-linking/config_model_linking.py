@@ -131,7 +131,7 @@ group_map = {
     "methanol_from_syngas": [
         "MPW2methanol_output",
         "MeOHsynthesis",
-        "Biomass2methanol"
+        "Biomass2methanol_output"
     ]
 }
 
@@ -156,7 +156,7 @@ tech_to_id = {"CrackerFurnace": "ICH01_01",
               "CrackerFurnace_Electric_bio": "ICH01_06",
               "EDH": "ICH01_11",
               "MTO": "ICH01_12",
-              "PDH": "ICH01_14",
+              "PDH": "ICH01_41",
               "MPW2methanol_input": "WAI01_10",
               "MPW2methanol_input_CC": "WAI01_11",
               "methanol_from_syngas": "RFS04_01",

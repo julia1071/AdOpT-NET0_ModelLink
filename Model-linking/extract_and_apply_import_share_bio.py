@@ -29,20 +29,20 @@ def extract_and_apply_import_bio_ratios(adopt_hub, tech_output_dict):
         total_bio = total_fossil = 0.0
 
         for carrier in cfg.bio_carriers:
-            bio_carrier = f"bio_{carrier}"
+            bio_carrier = f"{carrier}_bio"
 
             # Sum bio and fossil import flows across all timesteps
-            bio_val = sum(node_block.var_import_flow[t, bio_carrier].value or 0 for t in set_t)
-            foss_val = sum(node_block.var_import_flow[t, carrier].value or 0 for t in set_t)
+            bio_val = sum(node_block.var_import_flow[t, bio_carrier].value for t in set_t) if any(car == bio_carrier for (_, car) in node_block.var_import_flow.index_set()) else 0
+            foss_val = sum(node_block.var_import_flow[t, carrier].value for t in set_t) if any(car == carrier for (_, car) in node_block.var_import_flow.index_set()) else 0
 
             total_bio += bio_val
             total_fossil += foss_val
 
-        total = total_bio + total_fossil
-        ratio = total_bio / total if total > 0 else 0.0
-        bio_ratios[(cfg.location, interval)] = ratio
+            total = total_bio + total_fossil
+            ratio = total_bio / total if total > 0 else 0.0
+            bio_ratios[(cfg.location, interval, carrier)] = ratio
 
-        print(f"📦 Interval '{interval}': bio import ratio = {ratio:.2%}")
+            print(f"📦 Interval '{interval}': {bio_carrier} import ratio = {ratio:.2%}")
 
     print("🔀 Splitting technologies in cfg.bio_tech_names into bio and non-bio")
 
@@ -51,14 +51,16 @@ def extract_and_apply_import_bio_ratios(adopt_hub, tech_output_dict):
             continue
 
         original_size = tech_output_dict[(loc, interval, tech)]
-        bio_ratio = bio_ratios.get((loc, interval), 0.0)
 
-        if bio_ratio > 0:
-            bio_size = original_size * bio_ratio
-            non_bio_size = original_size * (1 - bio_ratio)
+        for carrier in cfg.bio_carriers:
+            bio_ratio = bio_ratios.get((loc, interval, carrier), 0.0)
 
-            updated_dict[(loc, interval, f"{tech}_bio")] = bio_size
-            updated_dict[(loc, interval, tech)] = non_bio_size  # overwrite
+            if bio_ratio > 0:
+                bio_size = original_size * bio_ratio
+                non_bio_size = original_size * (1 - bio_ratio)
+
+                updated_dict[(loc, interval, f"{tech}_bio")] = bio_size
+                updated_dict[(loc, interval, tech)] = non_bio_size  # overwrite
 
     return updated_dict
 
