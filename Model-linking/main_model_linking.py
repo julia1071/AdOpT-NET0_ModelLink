@@ -25,16 +25,18 @@ def model_linking(max_iterations, e):
     os.makedirs(map_name_cluster, exist_ok=True)
     os.makedirs(map_name_IESA, exist_ok=True)
     while True:
-        #First clear the input file
-        clear_input_file_IESA(
-            sheet_name="Technologies",
-            tech_id_col="A",
-            tech_id_row_start=7,
-            merged_row=2,
-            header_row=5,
-            merged_name="Minimum use in a year",
-            tech_to_id=cfg.tech_to_id
-        )
+        #First clear the input file for iteration 1
+        if i == 1:
+            clear_input_file_IESA(
+                sheet_name="Technologies",
+                tech_id_col="A",
+                tech_id_row_start=7,
+                merged_row=2,
+                header_row=5,
+                merged_name="Minimum use in a year",
+                tech_to_id=cfg.tech_to_id
+            )
+
         #Run IESA
         results_path_IESA = run_IESA_change_name_files(iteration=i,
                                                        map_name_IESA=map_name_IESA)
