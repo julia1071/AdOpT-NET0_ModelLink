@@ -68,7 +68,7 @@ if execute == 1:
         # Read climate data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all_brownfield:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -121,7 +121,7 @@ if execute == 1:
                     with open(tech_data_file, "w") as json_tecdata_file:
                         json.dump(tech_data, json_tecdata_file, indent=4)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all_brownfield:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -162,7 +162,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=618, columns=['Import price'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
         dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
-        dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=467, columns=['Import price'], carriers=['MPW'])
         dp.fill_carrier_data(casepath, value_or_data=30, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
@@ -254,7 +254,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all_brownfield:
         set_tecs = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -311,7 +311,7 @@ if execute == 1:
                     with open(tech_data_file, "w") as json_tecdata_file:
                         json.dump(tech_data, json_tecdata_file, indent=4)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all_brownfield:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -352,7 +352,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=475, columns=['Import price'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
         dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
-        dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=467, columns=['Import price'], carriers=['MPW'])
         dp.fill_carrier_data(casepath, value_or_data=30, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
@@ -448,7 +448,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all_brownfield:
         set_tecs =["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -505,7 +505,7 @@ if execute == 1:
                     with open(tech_data_file, "w") as json_tecdata_file:
                         json.dump(tech_data, json_tecdata_file, indent=4)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all_brownfield:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -546,7 +546,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=355, columns=['Import price'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
         dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
-        dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=467, columns=['Import price'], carriers=['MPW'])
         dp.fill_carrier_data(casepath, value_or_data=30, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
