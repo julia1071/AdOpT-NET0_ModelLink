@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 
-from config_model_linking import *
+import config_model_linking as cfg
 from conversion_factors import conversion_factor_IESA_to_cluster
 from calculate_avg_bio_methane_cost import calculate_avg_bio_methane_cost
 
@@ -19,13 +19,13 @@ def get_results_IESA_dict(results_file_path):
     print("Start extracting data from IESA-Opt")
 
     # Validate input lengths
-    if len({len(list_sheets), len(nrows), len(headers), len(filters)}) != 1:
+    if len({len(cfg.list_sheets), len(cfg.nrows), len(cfg.headers), len(cfg.filters)}) != 1:
         raise ValueError("All input lists (sheets, nrows, headers, filters) must have the same length.")
 
     results_dict = {}
 
     # Iterate over sheets and associated filter definitions
-    for sheet_name, num_rows, header, sheet_filters in zip(list_sheets, nrows, headers, filters):
+    for sheet_name, num_rows, header, sheet_filters in zip(cfg.list_sheets, cfg.nrows, cfg.headers, cfg.filters):
         df = pd.read_excel(results_file_path, sheet_name=sheet_name, nrows=num_rows, header=0)
 
         # Validate header presence once
@@ -38,7 +38,7 @@ def get_results_IESA_dict(results_file_path):
                 raise ValueError(f"Headers {missing} not found in sheet '{sheet_name}'.")
 
         # Process each interval
-        for interval in intervals:
+        for interval in cfg.intervals:
             key = f"results_{interval}_{sheet_name}"
             results_dict.setdefault(key, [])
 
@@ -93,22 +93,19 @@ def get_value_IESA_multiple(dict, interval, sheet, **filters):
 
 
 def convert_IESA_to_cluster_dict(results_IESA_dict, results_path_IESA):
-    converted_results = {location: {}}
+    converted_results = {cfg.location: {}}
 
-    for interval in intervals:
+    for interval in cfg.intervals:
         sheet_dict = {}
-        for sheet, activity_list in zip(list_sheets, filters):
+        for sheet, activity_list in zip(cfg.list_sheets, cfg.filters):
 
 
-            if linking_energy_prices:
-
-                cluster_carrier_names = {'Naphtha': 'naphtha', 'Bio Naphtha': 'naphtha_bio', 'Natural Gas HD': 'methane',
-                                         'Biomass': 'biomass', 'Mixed Plastic Waste': 'MPW'}
+            if cfg.linking_energy_prices:
 
                 for activity in activity_list:
                     conv = conversion_factor_IESA_to_cluster(sheet, activity)
                     value = get_value_IESA_multiple(results_IESA_dict, interval, sheet, Activity=activity)
-                    sheet_dict[cluster_carrier_names[activity]] = conv * value
+                    sheet_dict[cfg.cluster_carrier_names[activity]] = conv * value
 
         # Special case: Bio Methane
         avg_bio_methane_cost = calculate_avg_bio_methane_cost(results_path_IESA, interval)
@@ -119,7 +116,7 @@ def convert_IESA_to_cluster_dict(results_IESA_dict, results_path_IESA):
         else:
             sheet_dict['methane_bio'] = None
 
-        converted_results[location][interval] = sheet_dict
+        converted_results[cfg.location][interval] = sheet_dict
 
     return converted_results
 

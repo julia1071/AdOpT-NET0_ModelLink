@@ -2,14 +2,11 @@ import json
 import os
 from pathlib import Path
 
-from config_model_linking import *
+import config_model_linking as cfg
 
 from adopt_net0.model_construction.extra_constraints import set_annual_export_demand, set_negative_CO2_limit
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.utilities import installed_capacities_existing
-from get_results_IESA import get_value_IESA_multiple
-from conversion_factors import conversion_factor_IESA_to_cluster
-from calculate_avg_bio_methane_cost import calculate_avg_bio_methane_cost
 
 
 def run_adopt(case_path, iteration_path, cluster_input_dict):
@@ -35,14 +32,14 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
 
     interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
 
-    if fast_run:
+    if cfg.fast_run:
         nr_DD_days = 0
     else:
         nr_DD_days = 10  # Set to 10 if used for full-scale modelling
     adopt_hub = {}
 
 
-    for i, interval in enumerate(intervals):
+    for i, interval in enumerate(cfg.intervals):
         casepath_interval = case_path + interval
         json_filepath = Path(casepath_interval) / "ConfigModel.json"
 
@@ -54,7 +51,7 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
         if interval == '2030':
             model_config['optimization']['objective']['value'] = 'costs'
         else:
-            prev_interval = intervals[i - 1]
+            prev_interval = cfg.intervals[i - 1]
             model_config['optimization']['objective']['value'] = "costs_emissionlimit"
             if nr_DD_days > 0:
                 limit = (interval_emissionLim[interval] *
@@ -69,7 +66,8 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
         # solver settings
         model_config['solveroptions']['timelim']['value'] = 24*30
         model_config['solveroptions']['mipgap']['value'] = 0.01
-        # model_config['solveroptions']['threads']['value'] = 8
+        if cfg.threads:
+            model_config['solveroptions']['threads']['value'] = cfg.threads
         # model_config['solveroptions']['nodefilestart']['value'] = 200
 
         # change save options
@@ -81,12 +79,12 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
             json.dump(model_config, json_file, indent=4)
 
         if i != 0:
-            prev_interval = intervals[i - 1]
-            installed_capacities_existing(adopt_hub, interval, prev_interval, location, casepath_interval)
+            prev_interval = cfg.intervals[i - 1]
+            installed_capacities_existing(adopt_hub, interval, prev_interval, cfg.location, casepath_interval)
 
         # Construct and solve the model
         adopt_hub[interval] = ModelHub()
-        if fast_run:
+        if cfg.fast_run:
             # Solve model for the first 10 hours
             adopt_hub[interval].read_data(casepath_interval, start_period=0, end_period=10)
         else:
@@ -102,19 +100,19 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
             adopt_hub[interval].data.model_config['reporting']['case_name'][
                 'value'] = interval + '_minC_fullres'
 
-        if linking_energy_prices:
+        if cfg.linking_energy_prices:
             # === Input of IESA-Opt values into the cluster model ===
-            for key in cluster_input_dict[location][interval].keys():
-                value = cluster_input_dict[location][interval][key]
+            for key in cluster_input_dict[cfg.location][interval].keys():
+                value = cluster_input_dict[cfg.location][interval][key]
 
                 if value is not None:
                     #Read value in adopt
                     adopt_hub[interval].data.time_series['full'][
-                        interval, location, key, 'global', 'Import price'
+                        interval, cfg.location, key, 'global', 'Import price'
                     ] = value
                     if nr_DD_days > 0:
                         adopt_hub[interval].data.time_series['clustered'][
-                            interval, location, key, 'global', 'Import price'
+                            interval, cfg.location, key, 'global', 'Import price'
                         ] = value
 
                     print(f"The input price for {key} is {value}")
@@ -122,11 +120,11 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
                 else:
                     # Read value in adopt
                     adopt_hub[interval].data.time_series['full'][
-                        interval, location, key, 'global', 'Import limit'
+                        interval, cfg.location, key, 'global', 'Import limit'
                     ] = 0
                     if nr_DD_days > 0:
                         adopt_hub[interval].data.time_series['clustered'][
-                            interval, location, key, 'global', 'Import limit'
+                            interval, cfg.location, key, 'global', 'Import limit'
                         ] = 0
 
 
@@ -167,7 +165,7 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
 
         # add annual constraint
         if annual_demand:
-            set_annual_export_demand(adopt_hub[interval], interval, carrier_demand_dict)
+            set_annual_export_demand(adopt_hub[interval], interval, cfg.carrier_demand_dict)
 
         # add DAC CO2 export limit constraint
         set_negative_CO2_limit(adopt_hub[interval], interval,

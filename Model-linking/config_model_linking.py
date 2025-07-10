@@ -3,9 +3,10 @@ from pathlib import Path
 
 # === Model settings ==
 # # Convergence Criteria; the relative change in output for each technology in the cluster model must be lower than e
-e = 0.1
+e = 0.01
 max_iterations = 3
 fast_run = True  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
+threads = None
 
 # Case study choice
 linking_energy_prices = True
@@ -22,8 +23,8 @@ if fast_run:
     IESA_path = Path("Z:/IESA-Opt/IESA-Opt-Dev_testing")
     IESA_modellink_path = IESA_path / "20250702_IESA_testing.aimms"
 else:
-    IESA_path = Path("Z:/IESA-Opt/IESA-Opt-Dev_testing")
-    IESA_modellink_path = IESA_path / "20250702_IESA_testing.aimms"
+    IESA_path = Path("Z:/IESA-Opt/IESA-Opt-Dev_full")
+    IESA_modellink_path = IESA_path / "20250702_IESA_full.aimms"
 
 IESA_input_data_path = IESA_path / "data/20250701_detailed_linked.xlsx"
 IESA_result_folder = IESA_path / "Output" / "ResultsModelLinking"
@@ -124,6 +125,10 @@ base_tech_output_map = {
     "ElectricSMR_m": ("ElectricSMR_m", "syngas_r"),
     "CO2electrolysis": ("CO2electrolysis", "ethylene")
 }
+
+cluster_carrier_names = {'Naphtha': 'naphtha', 'Bio Naphtha': 'naphtha_bio', 'Natural Gas HD': 'methane',
+                         'Biomass': 'biomass', 'Mixed Plastic Waste': 'MPW', 'Bio LPG': 'propane',
+                         'Bio Ethanol': 'ethanol'}
 
 # Optionally, different outputs as defined above can be combined into one technology
 # Such that this combined value is putted into IESA-Opt

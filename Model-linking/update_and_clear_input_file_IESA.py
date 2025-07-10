@@ -2,16 +2,10 @@ import xlwings as xw
 
 import config_model_linking as cfg
 
-def update_input_file_IESA(
-    sheet_name,
-    tech_id_col,
-    tech_id_row_start,
-    merged_row,
-    header_row,
-    merged_name,
-    update_data,
-    tech_to_id
-):
+def update_input_file_IESA(sheet_name, tech_id_col, tech_id_row_start, merged_row, header_row, merged_name,
+                           update_data, tech_to_id):
+
+
     print("📝 Updating the input file of IESA...")
 
     # First: Clean old values
