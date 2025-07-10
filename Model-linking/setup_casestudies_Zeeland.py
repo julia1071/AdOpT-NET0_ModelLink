@@ -9,6 +9,8 @@ import pandas as pd
 
 #global functions
 read_all_brownfield = 1
+basepath_case = Path("Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Full")
+basepath_data = Path("Z:/AdOpt_NET0/AdOpt_data/Model_Linking")
 
 
 #Create data Zeeland cluster short term
@@ -16,8 +18,8 @@ execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = Path("U:/Data AdOpt-NET0/Model_Linking/Case_Study/ML_Zeeland_bf_2030")
-    datapath = Path("U:/Data AdOpt-NET0/Model_Linking/Data/250619_ML_Data_Zeeland_bf")
+    casepath = basepath_case / "ML_Zeeland_bf_2030"
+    datapath = basepath_data / "250619_ML_Data_Zeeland_bf"
 
     firsttime = 0
     if firsttime:
@@ -33,9 +35,9 @@ if execute == 1:
             "nodes": ["Zeeland"],
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
                          "CO2", "CO2_DAC", "CO2captured", "hydrogen", "nitrogen",
-                         "ammonia", "ethylene", "propylene", "olefins",
+                         "ammonia", "ethylene", "propylene", "olefins", "PE_olefin",
                          "crackergas", "feedgas", "steam", "HBfeed", "syngas", "syngas_r",
-                         "methanol", "ethanol", "propane", "MPW"],
+                         "methanol", "ethanol", "propane", "MPW", "biomass"],
             "investment_periods": ["2030"],
             "start_date": "2022-01-01 00:00",
             "end_date": "2022-12-31 23:00",
@@ -66,15 +68,15 @@ if execute == 1:
         # Read climate data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all_brownfield:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
                         "ASU", "Boiler_Industrial_NG", "Boiler_El",
-                        "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
+                        "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol", "Biomass2methanol",
                         "Storage_CO2", "Storage_H2", "Storage_Battery",
                         "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "CO2_mixer", "HBfeed_mixer",
-                        "syngas_mixer"]
+                        "syngas_mixer", "PE_mixer"]
         set_tecs_existing = {"SteamReformer": 1068, "HaberBosch": 1248, "CrackerFurnace": 451, "OlefinSeparation": 451}
 
         json_file_path = casepath / "Topology.json"
@@ -108,8 +110,8 @@ if execute == 1:
                 spec_tec_size = {"AEC": 1900, "RWGS": 322, "MeOHsynthesis": 662, "MTO": 993, "SteamReformer": 1269,
                                  "ElectricSMR_m": 2114, "WGS_m": 398, "HaberBosch": 1609, "CrackerFurnace": 535,
                                  "CrackerFurnace_Electric": 892, "OlefinSeparation": 892, "ASU": 112,
-                                 "Boiler_Industrial_NG": 3310, "Boiler_El": 1900, "EDH": 688, "PDH": 456,
-                                 "MPW2methanol": 305}
+                                 "Boiler_Industrial_NG": 3310, "Boiler_El": 1900, "EDH": 662, "PDH": 456,
+                                 "MPW2methanol": 305, "Biomass2methanol": 1856}
                 for tec in spec_tec_size.keys():
                     tech_data_file = find_json_path(output_folder, tec)
                     with open(tech_data_file, "r") as json_tecdata_file:
@@ -134,10 +136,10 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=1900, columns=['Import limit'], carriers=['electricity'])
         dp.fill_carrier_data(casepath, value_or_data=7000, columns=['Import limit'],
                              carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'ethanol',
-                                       'propane', 'CO2_DAC'])
+                                       'propane', 'CO2_DAC', 'biomass'])
 
         # Import limit plastic waste
-        dp.fill_carrier_data(casepath, value_or_data=469, columns=['Import limit'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=305, columns=['Import limit'], carriers=['MPW'])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=4000, columns=['Export limit'],
@@ -145,7 +147,7 @@ if execute == 1:
 
         # Demand export limit
         dp.fill_carrier_data(casepath, value_or_data=250, columns=['Export limit'],
-                             carriers=["ammonia", "ethylene", "propylene"])
+                             carriers=["ammonia", "ethylene", "propylene", "PE_olefin"])
 
         # CO2 export
         dp.fill_carrier_data(casepath, value_or_data=285, columns=['Export limit'], carriers=['CO2'])
@@ -161,6 +163,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
         dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=30, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
@@ -201,8 +204,8 @@ execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = Path("U:/Data AdOpt-NET0/Model_Linking/Case_Study/ML_Zeeland_bf_2040")
-    datapath = Path("U:/Data AdOpt-NET0/Model_Linking/Data/250619_ML_Data_Zeeland_bf")
+    casepath = basepath_case / "ML_Zeeland_bf_2040"
+    datapath = basepath_data / "250619_ML_Data_Zeeland_bf"
 
     firsttime = 0
     if firsttime:
@@ -218,9 +221,9 @@ if execute == 1:
             "nodes": ["Zeeland"],
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
                          "CO2", "CO2_DAC", "CO2captured", "hydrogen", "nitrogen",
-                         "ammonia", "ethylene", "propylene", "olefins",
+                         "ammonia", "ethylene", "propylene", "olefins", "PE_olefin",
                          "crackergas", "feedgas", "steam", "HBfeed", "syngas", "syngas_r",
-                         "methanol", "ethanol", "propane", "MPW"],
+                         "methanol", "ethanol", "propane", "MPW", "biomass"],
             "investment_periods": ["2040"],
             "start_date": "2022-01-01 00:00",
             "end_date": "2022-12-31 23:00",
@@ -256,10 +259,10 @@ if execute == 1:
         set_tecs = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
                     "ASU", "Boiler_Industrial_NG", "Boiler_El",
-                    "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
+                    "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol", "Biomass2methanol",
                     "DirectMeOHsynthesis", "CO2electrolysis",
                     "Storage_CO2", "Storage_H2", "Storage_Battery",
-                    "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer"]
+                    "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer", "PE_mixer"]
         set_tecs_existing = {}
 
         json_file_path = casepath / "Topology.json"
@@ -296,8 +299,9 @@ if execute == 1:
                 spec_tec_size = {"AEC": 3250, "RWGS": 498, "MeOHsynthesis": 812, "MTO": 1195, "SteamReformer": 1269,
                                  "ElectricSMR_m": 2114, "WGS_m": 389, "HaberBosch": 1609, "CrackerFurnace": 535,
                                  "CrackerFurnace_Electric": 892, "OlefinSeparation": 892, "ASU": 112,
-                                 "Boiler_Industrial_NG": 3392, "Boiler_El": 3250, "EDH": 688, "PDH": 456,
-                                 "MPW2methanol": 344, "DirectMeOHsynthesis": 520, "CO2electrolysis": 283}
+                                 "Boiler_Industrial_NG": 3392, "Boiler_El": 3250, "EDH": 662, "PDH": 456,
+                                 "MPW2methanol": 344, "Biomass2methanol": 1856, "DirectMeOHsynthesis": 520,
+                                 "CO2electrolysis": 283}
                 for tec in spec_tec_size.keys():
                     tech_data_file = find_json_path(output_folder, tec)
                     with open(tech_data_file, "r") as json_tecdata_file:
@@ -322,10 +326,10 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=3250, columns=['Import limit'], carriers=['electricity'])
         dp.fill_carrier_data(casepath, value_or_data=7000, columns=['Import limit'],
                              carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'ethanol',
-                                       'propane', 'MPW', 'CO2_DAC'])
+                                       'propane', 'CO2_DAC', 'biomass'])
 
         # Import limit plastic waste
-        dp.fill_carrier_data(casepath, value_or_data=529, columns=['Import limit'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=344, columns=['Import limit'], carriers=['MPW'])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=4000, columns=['Export limit'],
@@ -333,7 +337,7 @@ if execute == 1:
 
         # Demand export limit
         dp.fill_carrier_data(casepath, value_or_data=250, columns=['Export limit'],
-                             carriers=["ammonia", "ethylene", "propylene"])
+                             carriers=["ammonia", "ethylene", "propylene", "PE_olefin"])
 
         # CO2 export
         dp.fill_carrier_data(casepath, value_or_data=354, columns=['Export limit'], carriers=['CO2'])
@@ -349,6 +353,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
         dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=30, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
@@ -393,8 +398,8 @@ execute = 1
 
 if execute == 1:
     # Specify the path to your input data
-    casepath = Path("U:/Data AdOpt-NET0/Model_Linking/Case_Study/ML_Zeeland_bf_2050")
-    datapath = Path("U:/Data AdOpt-NET0/Model_Linking/Data/250619_ML_Data_Zeeland_bf")
+    casepath = basepath_case / "ML_Zeeland_bf_2050"
+    datapath = basepath_data / "250619_ML_Data_Zeeland_bf"
 
     firsttime = 0
     if firsttime:
@@ -410,9 +415,9 @@ if execute == 1:
             "nodes": ["Zeeland"],
             "carriers": ["electricity", "methane", "methane_bio", "naphtha", "naphtha_bio",
                          "CO2", "CO2_DAC", "CO2captured", "hydrogen", "nitrogen",
-                         "ammonia", "ethylene", "propylene", "olefins",
+                         "ammonia", "ethylene", "propylene", "olefins", "PE_olefin",
                          "crackergas", "feedgas", "steam", "HBfeed", "syngas", "syngas_r",
-                         "methanol", "ethanol", "propane", "MPW"],
+                         "methanol", "ethanol", "propane", "MPW", "biomass"],
             "investment_periods": ["2050"],
             "start_date": "2022-01-01 00:00",
             "end_date": "2022-12-31 23:00",
@@ -448,10 +453,10 @@ if execute == 1:
         set_tecs =["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
                     "ASU", "Boiler_Industrial_NG", "Boiler_El",
-                    "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol",
+                    "RWGS", "MeOHsynthesis", "MTO", "EDH", "PDH", "MPW2methanol", "Biomass2methanol",
                     "DirectMeOHsynthesis", "CO2electrolysis",
                     "Storage_CO2", "Storage_H2", "Storage_Battery",
-                    "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer"]
+                    "CO2toEmission", "feedgas_mixer", "naphtha_mixer", "CO2_mixer", "HBfeed_mixer", "syngas_mixer", "PE_mixer"]
         set_tecs_existing = {}
 
         json_file_path = casepath / "Topology.json"
@@ -486,11 +491,11 @@ if execute == 1:
                     if tec_json_file_path:
                         shutil.copy(tec_json_file_path, output_folder)
 
-                spec_tec_size = {"AEC": 4600, "RWGS": 675, "MeOHsynthesis": 962, "MTO": 1659, "SteamReformer": 1269,
+                spec_tec_size = {"AEC": 4600, "RWGS": 675, "MeOHsynthesis": 968, "MTO": 1195, "SteamReformer": 1269,
                                  "ElectricSMR_m": 2114, "WGS_m": 389, "HaberBosch": 1609, "CrackerFurnace": 535,
                                  "CrackerFurnace_Electric": 892, "OlefinSeparation": 892, "ASU": 112,
-                                 "Boiler_Industrial_NG": 3392, "Boiler_El": 4600, "EDH": 688, "PDH": 456,
-                                 "MPW2methanol": 382, "DirectMeOHsynthesis": 707, "CO2electrolysis": 401}
+                                 "Boiler_Industrial_NG": 3392, "Boiler_El": 4600, "EDH": 662, "PDH": 456,
+                                 "MPW2methanol": 382, "Biomass2methanol": 1856, "DirectMeOHsynthesis": 707, "CO2electrolysis": 401}
                 for tec in spec_tec_size.keys():
                     tech_data_file = find_json_path(output_folder, tec)
                     with open(tech_data_file, "r") as json_tecdata_file:
@@ -515,10 +520,10 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=4600, columns=['Import limit'], carriers=['electricity'])
         dp.fill_carrier_data(casepath, value_or_data=7000, columns=['Import limit'],
                              carriers=['methane', 'naphtha', 'methane_bio', 'naphtha_bio', 'ethanol',
-                                       'propane', 'MPW', 'CO2_DAC'])
+                                       'propane', 'CO2_DAC', 'biomass'])
 
         # Import limit plastic waste
-        dp.fill_carrier_data(casepath, value_or_data=588, columns=['Import limit'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=382, columns=['Import limit'], carriers=['MPW'])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=4000, columns=['Export limit'],
@@ -526,7 +531,7 @@ if execute == 1:
 
         # Demand export limit
         dp.fill_carrier_data(casepath, value_or_data=250, columns=['Export limit'],
-                             carriers=["ammonia", "ethylene", "propylene"])
+                             carriers=["ammonia", "ethylene", "propylene", "PE_olefin"])
 
         # CO2 export
         dp.fill_carrier_data(casepath, value_or_data=742, columns=['Export limit'], carriers=['CO2'])
@@ -542,6 +547,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
         dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=780, columns=['Import price'], carriers=['MPW'])
+        dp.fill_carrier_data(casepath, value_or_data=30, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
