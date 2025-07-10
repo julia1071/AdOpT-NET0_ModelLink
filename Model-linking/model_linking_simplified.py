@@ -14,8 +14,7 @@ from merge_and_group_technologies import merge_existing_and_new_techs
 from extract_and_apply_import_share_bio import extract_and_apply_import_bio_ratios
 from split_technologies_bio import apply_bio_splitting
 from map_techs_to_ID import map_techs_to_ID
-from update_input_file_IESA import update_input_file_IESA
-from clear_input_file_IESA import clear_input_file_IESA
+from update_and_clear_input_file_IESA import update_input_file_IESA
 from compare_outputs import compare_outputs
 
 # Configuration for the function run_IESA_change_name_files
