@@ -4,7 +4,7 @@ def compare_outputs(outputs_cluster, i, e):
     Returns True if all relative differences are < e, else False.
     """
 
-    if i <= 1:
+    if i == 1:
         print("First iteration, skipping comparison.")
         return False  # Treat as pass to continue the loop
 

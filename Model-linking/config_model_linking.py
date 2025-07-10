@@ -72,11 +72,11 @@ if linking_energy_prices and not linking_MPW:
     # Define simulation years cluster model and the excel sheets from which you want to extract data in IESA-Opt
     list_sheets = ['EnergyCosts', 'EnergyCosts_secondary']
 
-    nrows = [45, 11]  # !Same order as list_sheets! =Number of rows in excel sheet -1
+    nrows = [45, 10]  # !Same order as list_sheets! =Number of rows in excel sheet -1
 
     # !Combine the headers and filters of the different sheets! Same order as list_sheets!
     headers = ['Activity', 'Activity']
-    filters = [['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass'], ['Mixed Plastic Waste']]
+    filters = [['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass', 'Bio LPG', 'Bio Ethanol'], ['Mixed Plastic Waste']]
 elif linking_MPW and not linking_energy_prices:  # Example of other use case: import limit MPW
     list_sheets = ["SupplyDemand"]
     headers = [("Activity", "Type", "Tech_ID")]
@@ -86,14 +86,14 @@ elif linking_MPW and not linking_energy_prices:  # Example of other use case: im
     nrows = [830]
 elif linking_energy_prices and linking_MPW:
     list_sheets = ['EnergyCosts', 'EnergyCosts_secondary', 'SupplyDemand']
-    nrows = [45, 11, 830]
+    nrows = [45, 10, 830]
     headers = [
         'Activity',
         'Activity',
         ("Activity", "Type", "Tech_ID")
     ]
     filters = [
-        ['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass'],
+        ['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass', 'Bio LPG', 'Bio Ethanol'],
         ['Mixed Plastic Waste'],
         [
             ("Mixed Plastic Waste", "supply", "WAI01_01"),

@@ -2,7 +2,7 @@ import config_model_linking as cfg
 
 def merge_and_group_technologies(tech_dict):
     """
-    Merges '_existing' and new technology sizes, then aggregates group-level totals.
+    Merges '_existing' and new technology outputs, then aggregates group-level totals.
 
     Args:
         tech_dict (dict): {(location, interval, tech): size}
