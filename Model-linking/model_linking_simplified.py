@@ -5,9 +5,9 @@ import json
 from datetime import datetime
 
 from run_IESA_from_python import run_IESA_change_name_files
-from extract_data_IESA_multiple_headers import extract_data_IESA_multiple
+from get_results_IESA import get_results_IESA_dict
 from run_adopt import run_adopt
-from get_results_cluster_dict_output import extract_technology_outputs
+from get_results_cluster import get_results_cluster_technology_output_dict
 from extract_and_apply_cc_fractions import extract_and_apply_cc_fractions
 from split_technologies_cc import apply_cc_splitting
 from merge_and_group_technologies import merge_existing_and_new_techs
@@ -15,7 +15,7 @@ from extract_and_apply_import_share_bio import extract_and_apply_import_bio_rati
 from split_technologies_bio import apply_bio_splitting
 from map_techs_to_ID import map_techs_to_ID
 from update_and_clear_input_file_IESA import update_input_file_IESA
-from compare_outputs import compare_outputs
+from convergence_criteria import compare_cluster_outputs
 
 # Configuration for the function run_IESA_change_name_files
 
@@ -163,12 +163,12 @@ def model_linking(max_iterations):
     while True:
         results_path_IESA = run_IESA_change_name_files(i, command, original_name_input, original_name_output,
                                                        input_basename, output_basename, map_name_IESA)
-        results_year_sheet = extract_data_IESA_multiple(results_path_IESA, intervals, list_sheets, nrows, filters,
-                                                        headers)
+        results_year_sheet = get_results_IESA_dict(results_path_IESA, intervals, list_sheets, nrows, filters,
+                                                   headers)
         iteration_path = map_name_cluster / f"Iteration_{i}"
         input_cluster = run_adopt(results_path_IESA, casepath)
-        tech_output_dict = extract_technology_outputs(base_tech_output_map, iteration_path, intervals, location,
-                                                      fast_run)
+        tech_output_dict = get_results_cluster_technology_output_dict(base_tech_output_map, iteration_path, intervals, location,
+                                                                      fast_run)
         print(r"The tech_size_dict created:")
         print(tech_output_dict)
         cc_fraction_dict = extract_and_apply_cc_fractions(iteration_path)
@@ -189,7 +189,7 @@ def model_linking(max_iterations):
         outputs_cluster[f"iteration_{i}"] = updates
         inputs_cluster[f"iteration_{i}"] = input_cluster
 
-        if compare_outputs(outputs_cluster, i, e) or i == max_iterations:
+        if compare_cluster_outputs(outputs_cluster, i, e) or i == max_iterations:
             print(f"✅ Model linking is done after {i} iterations.")
 
             # Save outputs_cluster to JSON

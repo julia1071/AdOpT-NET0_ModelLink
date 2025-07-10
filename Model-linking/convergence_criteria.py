@@ -1,4 +1,4 @@
-def compare_outputs(outputs_cluster, i, e):
+def compare_cluster_outputs(outputs_cluster, i, e):
     """
     Compare outputs from iteration i and i-1.
     Returns True if all relative differences are < e, else False.

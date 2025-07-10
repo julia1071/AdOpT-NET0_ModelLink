@@ -7,7 +7,7 @@ from config_model_linking import *
 from adopt_net0.model_construction.extra_constraints import set_annual_export_demand, set_negative_CO2_limit
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.utilities import installed_capacities_existing
-from extract_data_IESA_multiple_headers import get_value_IESA_multiple
+from get_results_IESA import get_value_IESA_multiple
 from conversion_factors import conversion_factor_IESA_to_cluster
 from calculate_avg_bio_methane_cost import calculate_avg_bio_methane_cost
 

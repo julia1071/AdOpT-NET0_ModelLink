@@ -3,15 +3,15 @@ import json
 from datetime import datetime
 
 from run_IESA_from_python import run_IESA_change_name_files
-from extract_data_IESA_multiple_headers import extract_data_IESA_multiple, convert_IESA_to_cluster_dict
+from get_results_IESA import get_results_IESA_dict, convert_IESA_to_cluster_dict
 from run_adopt import run_adopt
-from get_results_cluster_dict_output import extract_technology_outputs
+from get_results_cluster import get_results_cluster_technology_output_dict
 from extract_and_apply_cc_fractions import extract_and_apply_cc_fractions
 from merge_and_group_technologies import merge_and_group_technologies
 from extract_and_apply_import_share_bio import extract_and_apply_import_bio_ratios
 from map_techs_to_ID import map_techs_to_ID
 from update_and_clear_input_file_IESA import update_input_file_IESA, clear_input_file_IESA
-from compare_outputs import compare_outputs
+from convergence_criteria import compare_cluster_outputs
 
 import config_model_linking as cfg
 
@@ -44,7 +44,7 @@ def model_linking(max_iterations, e):
                                                        map_name_IESA=map_name_IESA)
 
         #Read results into a dictionary
-        results_IESA_dict = extract_data_IESA_multiple(results_file_path=results_path_IESA)
+        results_IESA_dict = get_results_IESA_dict(results_file_path=results_path_IESA)
 
         #Convert dictionary to correct cluster input units
         cluster_linked_input_dict = convert_IESA_to_cluster_dict(results_IESA_dict=results_IESA_dict,
@@ -57,7 +57,7 @@ def model_linking(max_iterations, e):
                                   cluster_input_dict=cluster_linked_input_dict)
 
         #Extract technology sizes from cluster model and save in dict
-        tech_output_dict = extract_technology_outputs(adopt_hub=solution_cluster)
+        tech_output_dict = get_results_cluster_technology_output_dict(adopt_hub=solution_cluster)
 
         #Update dict to include CC fractions of technologies
         tech_dict_updated_cc = extract_and_apply_cc_fractions(adopt_hub=solution_cluster, tech_output_dict=tech_output_dict)
@@ -76,7 +76,7 @@ def model_linking(max_iterations, e):
         outputs_cluster[f"iteration_{i}"] = updates_to_IESA
         inputs_cluster[f"iteration_{i}"] = cluster_linked_input_dict
 
-        if compare_outputs(outputs_cluster, i, e) or i == max_iterations:
+        if compare_cluster_outputs(outputs_cluster, i, e) or i == max_iterations:
             print(f"✅ Model linking is done after {i} iterations.")
 
             # Save outputs_cluster to JSON
