@@ -24,17 +24,17 @@ def run_IESA_change_name_files(iteration, map_name_IESA):
     subprocess.call(cfg.command)
     print("AIMMS exited")
 
-    output_filename = f"{cfg.output_basename}{iteration}.xlsx"
-    input_filename = f"{cfg.input_basename}{iteration}.xlsx"
+    output_filename = f"{cfg.basename_new_output_IESA}{iteration}.xlsx"
+    input_filename = f"{cfg.basename_new_input_IESA}{iteration}.xlsx"
     new_name_output = map_name_IESA / output_filename
     new_name_input = map_name_IESA / input_filename
 
     # Rename output
     try:
-        os.rename(cfg.original_name_output, new_name_output)
+        os.rename(cfg.original_filename_output_IESA, new_name_output)
         print(f"✔ Output file moved to: {new_name_output}")
     except FileNotFoundError:
-        raise FileNotFoundError(f"Original output file not found: {cfg.original_name_output}")
+        raise FileNotFoundError(f"Original output file not found: {cfg.original_filename_output_IESA}")
     except FileExistsError:
         raise FileExistsError(f"New output file already exists: {new_name_output}")
     except Exception as e:
@@ -42,10 +42,10 @@ def run_IESA_change_name_files(iteration, map_name_IESA):
 
     # Rename input
     try:
-        os.rename(cfg.original_name_input, new_name_input)
+        os.rename(cfg.original_filename_input_IESA, new_name_input)
         print(f"✔ Input file moved to: {new_name_input}")
     except FileNotFoundError:
-        raise FileNotFoundError(f"Original input file not found: {cfg.original_name_input}")
+        raise FileNotFoundError(f"Original input file not found: {cfg.original_filename_input_IESA}")
     except FileExistsError:
         raise FileExistsError(f"New input file already exists: {new_name_input}")
     except Exception as e:
