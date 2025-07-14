@@ -122,6 +122,10 @@ def conversion_factor_IESA_to_cluster(sheet, filter, ppi_file_path, baseyear_clu
             return (1 / 8760) * 10**6  # Mton/year to t/hour
         else:
             raise ValueError(f"❌ Undefined filter '{filter}' for sheet '{sheet}'.")
-
+    elif sheet == 'EnergyCosts_secondary':
+        if filter in ['Mixed Plastic Waste']:
+            sheet_name = 'World Development Indicators'
+            ppi_cf = get_ppi_conversion_factor(ppi_file_path, sheet_name, baseyear_cluster, baseyear_IESA)
+            return ppi_cf
     else:
         raise ValueError(f"❌ Undefined sheet '{sheet}' in conversion logic.")

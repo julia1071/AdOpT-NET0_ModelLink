@@ -234,7 +234,9 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
 
             # --- Mixed Plastic Waste---
             MPW_price = (
-                    get_value_IESA_multiple(results_year_sheet, interval, 'EnergyCosts_secondary', Activity='Mixed Plastic Waste')
+                    conversion_factor_IESA_to_cluster('EnergyCosts_secondary', 'Mixed Plastic Waste', ppi_file_path, baseyear_cluster,
+                                                  baseyear_IESA)
+                    * get_value_IESA_multiple(results_year_sheet, interval, 'EnergyCosts_secondary', Activity='Mixed Plastic Waste')
             )
             print(f"The value that is inputted for MPW is {MPW_price}")
             input_cluster[location][interval]['Mixed Plastic Waste'] = MPW_price

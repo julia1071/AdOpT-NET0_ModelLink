@@ -1,8 +1,9 @@
 import os
 import sys
+import time
 from pathlib import Path
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from run_aimms_on_python import run_IESA_change_name_files
 from extract_data_IESA_multiple_headers import extract_data_IESA_multiple
@@ -157,6 +158,7 @@ def model_linking(max_iterations, e):
     i = 1
     inputs_cluster = {}
     outputs_cluster = {}
+    start_time = time.time()
     timestamp = datetime.now().strftime("%Y%m%d_%H_%M")
     map_name_cluster = result_folder / f"Results_model_linking_{timestamp}"
     map_name_IESA = file_path_IESA / f"Results_model_linking_simplified_{timestamp}"
@@ -218,6 +220,10 @@ def model_linking(max_iterations, e):
                 json.dump(outputs_cluster, f, indent=4)
 
             print(f"📝 Saved inputs and outputs of the cluster model")
+            end_time = time.time()
+            elapsed_seconds = end_time - start_time
+            elapsed = timedelta(seconds = elapsed_seconds)
+            print(f"Elapsed time to run the model linking script: {elapsed:.2f} seconds")
             break  # ← loop ends here
         else:
             update_input_file_IESA(
