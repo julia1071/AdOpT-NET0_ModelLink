@@ -196,7 +196,15 @@ def run_Zeeland(filepath, casepath, iteration_path, location, linking_energy_pri
                         interval, location, 'methane_bio', 'global', 'Import price'
                     ] = bio_methane_price
             else:
-                print(f"No average bio methane cost available for interval {interval}, skipping input.")
+                if nr_DD_days > 0:
+                    pyhub[interval].data.time_series['clustered'][
+                        interval, location, 'methane_bio', 'global', 'Import price'
+                    ] = 10000
+                else:
+                    pyhub[interval].data.time_series['full'][
+                        interval, location, 'methane_bio', 'global', 'Import price'
+                    ] = 10000
+                print(f"No average bio methane cost available for interval {interval}, input is really high as it is not available in IESA-Opt")
             
             # --- Bio ethanol ---
             ethanol_price = (
