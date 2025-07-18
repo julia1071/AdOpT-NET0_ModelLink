@@ -68,7 +68,7 @@ if execute == 1:
         # Read climate data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all_brownfield:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -192,8 +192,8 @@ if execute == 1:
                 data = pd.read_csv(file_path, delimiter=';')
 
                 # Set the price to 300 and subsidy to 0 for all rows
-                data['price'] = 150.31
-                data['subsidy'] = 150.31
+                data['price'] = 152.10
+                data['subsidy'] = 152.10
 
                 # Save the modified CSV file
                 data.to_csv(file_path, index=False, sep=';')
@@ -254,7 +254,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all_brownfield:
         set_tecs = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -384,8 +384,8 @@ if execute == 1:
                 data = pd.read_csv(file_path, delimiter=';')
 
                 # Set the price to 300 and subsidy to 0 for all rows
-                data['price'] = 150.31
-                data['subsidy'] = 150.31
+                data['price'] = 152.10
+                data['subsidy'] = 152.10
 
                 # Save the modified CSV file
                 data.to_csv(file_path, index=False, sep=';')
@@ -448,7 +448,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all_brownfield:
         set_tecs =["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -578,8 +578,8 @@ if execute == 1:
                 data = pd.read_csv(file_path, delimiter=';')
 
                 # Set the price to 400 and subsidy to 0 for all rows
-                data['price'] = 150.31
-                data['subsidy'] = 150.31
+                data['price'] = 152.10
+                data['subsidy'] = 152.10
 
                 # Save the modified CSV file
                 data.to_csv(file_path, index=False, sep=';')
