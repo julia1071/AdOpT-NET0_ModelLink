@@ -163,7 +163,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=916, columns=['Import price'], carriers=['ethanol'])
         dp.fill_carrier_data(casepath, value_or_data=2472, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=467, columns=['Import price'], carriers=['MPW'])
-        dp.fill_carrier_data(casepath, value_or_data=160, columns=['Import price'], carriers=['biomass'])
+        dp.fill_carrier_data(casepath, value_or_data=164, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
@@ -353,7 +353,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=916, columns=['Import price'], carriers=['ethanol'])
         dp.fill_carrier_data(casepath, value_or_data=2073, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=467, columns=['Import price'], carriers=['MPW'])
-        dp.fill_carrier_data(casepath, value_or_data=160, columns=['Import price'], carriers=['biomass'])
+        dp.fill_carrier_data(casepath, value_or_data=164, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
@@ -547,7 +547,7 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=916, columns=['Import price'], carriers=['ethanol'])
         dp.fill_carrier_data(casepath, value_or_data=1674, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=467, columns=['Import price'], carriers=['MPW'])
-        dp.fill_carrier_data(casepath, value_or_data=160, columns=['Import price'], carriers=['biomass'])
+        dp.fill_carrier_data(casepath, value_or_data=164, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])

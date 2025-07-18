@@ -25,11 +25,11 @@ def conversion_factor_cluster_to_IESA(tech_id):
 
     elif tech_id in ['WAI01_10', 'WAI01_11'] :
         # Cluster: t MPW/y → IESA: PJ/y (Syngas)
-        return 1 / (0.03*10**6)
+        return 1 / (0.04*10**6)
 
     elif tech_id == 'RFS03_01':
         # Cluster: t biomass/y → IESA: PJ/y (Syngas)
-        return 14.7 / (0.63 * 10 ** 6)
+        return 15.1 / (0.63 * 10 ** 6)
 
     elif tech_id in ['RFS04_01', 'RFS04_02']:
         # Cluster: t methanol/y → IESA: PJ/y (Methanol)
@@ -111,7 +111,7 @@ def conversion_factor_IESA_to_cluster(sheet, filter):
         elif filter == 'Biomass':
             sheet_name = 'World Development Indicators'
             ppi_cf = get_ppi_conversion_factor(sheet_name)
-            return ppi_cf * 14.7 # Meuro/PJ to euro/t
+            return ppi_cf * 15.1 # Meuro/PJ to euro/t
         elif filter == 'Mixed Plastic Waste':
             sheet_name = 'World Development Indicators'
             ppi_cf = get_ppi_conversion_factor(sheet_name)
