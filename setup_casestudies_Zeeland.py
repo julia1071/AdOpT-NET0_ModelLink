@@ -68,7 +68,7 @@ if execute == 1:
         # Read climate data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all_brownfield:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -107,11 +107,11 @@ if execute == 1:
                 if tec_json_file_path:
                     shutil.copy(tec_json_file_path, output_folder)
 
-                spec_tec_size = {"AEC": 1900, "RWGS": 322, "MeOHsynthesis": 662, "MTO": 993, "SteamReformer": 1269,
+                spec_tec_size = {"AEC": 1900, "RWGS": 322, "MeOHsynthesis": 662, "MTO": 1143, "SteamReformer": 1269,
                                  "ElectricSMR_m": 2114, "WGS_m": 398, "HaberBosch": 1609, "CrackerFurnace": 535,
                                  "CrackerFurnace_Electric": 892, "OlefinSeparation": 892, "ASU": 112,
                                  "Boiler_Industrial_NG": 3310, "Boiler_El": 1900, "EDH": 662, "PDH": 456,
-                                 "MPW2methanol": 305, "Biomass2methanol": 1856}
+                                 "MPW2methanol": 407, "Biomass2methanol": 1856}
                 for tec in spec_tec_size.keys():
                     tech_data_file = find_json_path(output_folder, tec)
                     with open(tech_data_file, "r") as json_tecdata_file:
@@ -139,7 +139,7 @@ if execute == 1:
                                        'propane', 'CO2_DAC', 'biomass'])
 
         # Import limit plastic waste
-        dp.fill_carrier_data(casepath, value_or_data=305, columns=['Import limit'], carriers=['MPW'])
+        # dp.fill_carrier_data(casepath, value_or_data=305, columns=['Import limit'], carriers=['MPW'])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=4000, columns=['Export limit'],
@@ -155,15 +155,15 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Export emission factor'], carriers=['CO2'])
 
         # Constant import prices
-        dp.fill_carrier_data(casepath, value_or_data=56, columns=['Import price'], carriers=['methane'])
-        dp.fill_carrier_data(casepath, value_or_data=732, columns=['Import price'], carriers=['naphtha'])
-        dp.fill_carrier_data(casepath, value_or_data=141, columns=['Import price'], carriers=['methane_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=1830, columns=['Import price'], carriers=['naphtha_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=25, columns=['Import price'], carriers=['methane'])
+        dp.fill_carrier_data(casepath, value_or_data=307, columns=['Import price'], carriers=['naphtha'])
+        dp.fill_carrier_data(casepath, value_or_data=74, columns=['Import price'], carriers=['methane_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=1295, columns=['Import price'], carriers=['naphtha_bio'])
         dp.fill_carrier_data(casepath, value_or_data=618, columns=['Import price'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
+        dp.fill_carrier_data(casepath, value_or_data=919, columns=['Import price'], carriers=['ethanol'])
+        dp.fill_carrier_data(casepath, value_or_data=2028, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=467, columns=['Import price'], carriers=['MPW'])
-        dp.fill_carrier_data(casepath, value_or_data=30, columns=['Import price'], carriers=['biomass'])
+        dp.fill_carrier_data(casepath, value_or_data=164, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
@@ -254,7 +254,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all_brownfield:
         set_tecs = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -300,7 +300,7 @@ if execute == 1:
                                  "ElectricSMR_m": 2114, "WGS_m": 389, "HaberBosch": 1609, "CrackerFurnace": 535,
                                  "CrackerFurnace_Electric": 892, "OlefinSeparation": 892, "ASU": 112,
                                  "Boiler_Industrial_NG": 3392, "Boiler_El": 3250, "EDH": 662, "PDH": 456,
-                                 "MPW2methanol": 344, "Biomass2methanol": 1856, "DirectMeOHsynthesis": 520,
+                                 "MPW2methanol": 407, "Biomass2methanol": 1856, "DirectMeOHsynthesis": 520,
                                  "CO2electrolysis": 283}
                 for tec in spec_tec_size.keys():
                     tech_data_file = find_json_path(output_folder, tec)
@@ -329,7 +329,7 @@ if execute == 1:
                                        'propane', 'CO2_DAC', 'biomass'])
 
         # Import limit plastic waste
-        dp.fill_carrier_data(casepath, value_or_data=344, columns=['Import limit'], carriers=['MPW'])
+        # dp.fill_carrier_data(casepath, value_or_data=344, columns=['Import limit'], carriers=['MPW'])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=4000, columns=['Export limit'],
@@ -345,15 +345,15 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Export emission factor'], carriers=['CO2'])
 
         # Constant import prices
-        dp.fill_carrier_data(casepath, value_or_data=56, columns=['Import price'], carriers=['methane'])
-        dp.fill_carrier_data(casepath, value_or_data=732, columns=['Import price'], carriers=['naphtha'])
-        dp.fill_carrier_data(casepath, value_or_data=141, columns=['Import price'], carriers=['methane_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=1830, columns=['Import price'], carriers=['naphtha_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=18, columns=['Import price'], carriers=['methane'])
+        dp.fill_carrier_data(casepath, value_or_data=470, columns=['Import price'], carriers=['naphtha'])
+        dp.fill_carrier_data(casepath, value_or_data=54, columns=['Import price'], carriers=['methane_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=1086, columns=['Import price'], carriers=['naphtha_bio'])
         dp.fill_carrier_data(casepath, value_or_data=475, columns=['Import price'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
+        dp.fill_carrier_data(casepath, value_or_data=919, columns=['Import price'], carriers=['ethanol'])
+        dp.fill_carrier_data(casepath, value_or_data=1701, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=467, columns=['Import price'], carriers=['MPW'])
-        dp.fill_carrier_data(casepath, value_or_data=30, columns=['Import price'], carriers=['biomass'])
+        dp.fill_carrier_data(casepath, value_or_data=164, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
@@ -448,7 +448,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all_brownfield:
         set_tecs =["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -495,7 +495,7 @@ if execute == 1:
                                  "ElectricSMR_m": 2114, "WGS_m": 389, "HaberBosch": 1609, "CrackerFurnace": 535,
                                  "CrackerFurnace_Electric": 892, "OlefinSeparation": 892, "ASU": 112,
                                  "Boiler_Industrial_NG": 3392, "Boiler_El": 4600, "EDH": 662, "PDH": 456,
-                                 "MPW2methanol": 382, "Biomass2methanol": 1856, "DirectMeOHsynthesis": 707, "CO2electrolysis": 401}
+                                 "MPW2methanol": 407, "Biomass2methanol": 1856, "DirectMeOHsynthesis": 707, "CO2electrolysis": 401}
                 for tec in spec_tec_size.keys():
                     tech_data_file = find_json_path(output_folder, tec)
                     with open(tech_data_file, "r") as json_tecdata_file:
@@ -523,7 +523,7 @@ if execute == 1:
                                        'propane', 'CO2_DAC', 'biomass'])
 
         # Import limit plastic waste
-        dp.fill_carrier_data(casepath, value_or_data=382, columns=['Import limit'], carriers=['MPW'])
+        # dp.fill_carrier_data(casepath, value_or_data=382, columns=['Import limit'], carriers=['MPW'])
 
         # No export limit
         dp.fill_carrier_data(casepath, value_or_data=4000, columns=['Export limit'],
@@ -539,15 +539,15 @@ if execute == 1:
         dp.fill_carrier_data(casepath, value_or_data=-1, columns=['Export emission factor'], carriers=['CO2'])
 
         # Constant import prices
-        dp.fill_carrier_data(casepath, value_or_data=59, columns=['Import price'], carriers=['methane'])
-        dp.fill_carrier_data(casepath, value_or_data=732, columns=['Import price'], carriers=['naphtha'])
-        dp.fill_carrier_data(casepath, value_or_data=148, columns=['Import price'], carriers=['methane_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=1830, columns=['Import price'], carriers=['naphtha_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=18, columns=['Import price'], carriers=['methane'])
+        dp.fill_carrier_data(casepath, value_or_data=433, columns=['Import price'], carriers=['naphtha'])
+        dp.fill_carrier_data(casepath, value_or_data=54, columns=['Import price'], carriers=['methane_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=877, columns=['Import price'], carriers=['naphtha_bio'])
         dp.fill_carrier_data(casepath, value_or_data=355, columns=['Import price'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=1734, columns=['Import price'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=1473, columns=['Import price'], carriers=['propane'])
+        dp.fill_carrier_data(casepath, value_or_data=919, columns=['Import price'], carriers=['ethanol'])
+        dp.fill_carrier_data(casepath, value_or_data=1374, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=467, columns=['Import price'], carriers=['MPW'])
-        dp.fill_carrier_data(casepath, value_or_data=30, columns=['Import price'], carriers=['biomass'])
+        dp.fill_carrier_data(casepath, value_or_data=164, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
