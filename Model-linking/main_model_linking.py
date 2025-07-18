@@ -101,6 +101,19 @@ def model_linking(max_iterations, e):
                 update_data=updates_to_IESA,
                 tech_to_id=cfg.tech_to_id
             )
+
+            # Save outputs_cluster to JSON
+            output_file = map_name_cluster / "outputs_cluster.json"
+            input_file = map_name_cluster / "inputs_cluster.json"
+
+            with open(input_file, "w") as f:
+                json.dump(inputs_cluster, f, indent=4)
+
+            with open(output_file, "w") as f:
+                json.dump(outputs_cluster, f, indent=4)
+
+            print(f"📝 Saved inputs and outputs of the cluster model")
+
             print(f"Linking iteration {i} is executed")
             i += 1
             print(f"The next iteration, iteration {i} is started")
