@@ -156,14 +156,14 @@ if execute == 1:
 
         # Constant import prices
         dp.fill_carrier_data(casepath, value_or_data=25, columns=['Import price'], carriers=['methane'])
-        dp.fill_carrier_data(casepath, value_or_data=307, columns=['Import price'], carriers=['naphtha'])
+        dp.fill_carrier_data(casepath, value_or_data=313, columns=['Import price'], carriers=['naphtha'])
         dp.fill_carrier_data(casepath, value_or_data=74, columns=['Import price'], carriers=['methane_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=1295, columns=['Import price'], carriers=['naphtha_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=1322, columns=['Import price'], carriers=['naphtha_bio'])
         dp.fill_carrier_data(casepath, value_or_data=618, columns=['Import price'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=919, columns=['Import price'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=2028, columns=['Import price'], carriers=['propane'])
+        dp.fill_carrier_data(casepath, value_or_data=916, columns=['Import price'], carriers=['ethanol'])
+        dp.fill_carrier_data(casepath, value_or_data=2472, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=467, columns=['Import price'], carriers=['MPW'])
-        dp.fill_carrier_data(casepath, value_or_data=164, columns=['Import price'], carriers=['biomass'])
+        dp.fill_carrier_data(casepath, value_or_data=160, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
@@ -346,14 +346,14 @@ if execute == 1:
 
         # Constant import prices
         dp.fill_carrier_data(casepath, value_or_data=18, columns=['Import price'], carriers=['methane'])
-        dp.fill_carrier_data(casepath, value_or_data=470, columns=['Import price'], carriers=['naphtha'])
+        dp.fill_carrier_data(casepath, value_or_data=480, columns=['Import price'], carriers=['naphtha'])
         dp.fill_carrier_data(casepath, value_or_data=54, columns=['Import price'], carriers=['methane_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=1086, columns=['Import price'], carriers=['naphtha_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=1109, columns=['Import price'], carriers=['naphtha_bio'])
         dp.fill_carrier_data(casepath, value_or_data=475, columns=['Import price'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=919, columns=['Import price'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=1701, columns=['Import price'], carriers=['propane'])
+        dp.fill_carrier_data(casepath, value_or_data=916, columns=['Import price'], carriers=['ethanol'])
+        dp.fill_carrier_data(casepath, value_or_data=2073, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=467, columns=['Import price'], carriers=['MPW'])
-        dp.fill_carrier_data(casepath, value_or_data=164, columns=['Import price'], carriers=['biomass'])
+        dp.fill_carrier_data(casepath, value_or_data=160, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
@@ -540,14 +540,14 @@ if execute == 1:
 
         # Constant import prices
         dp.fill_carrier_data(casepath, value_or_data=18, columns=['Import price'], carriers=['methane'])
-        dp.fill_carrier_data(casepath, value_or_data=433, columns=['Import price'], carriers=['naphtha'])
+        dp.fill_carrier_data(casepath, value_or_data=442, columns=['Import price'], carriers=['naphtha'])
         dp.fill_carrier_data(casepath, value_or_data=54, columns=['Import price'], carriers=['methane_bio'])
-        dp.fill_carrier_data(casepath, value_or_data=877, columns=['Import price'], carriers=['naphtha_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=895, columns=['Import price'], carriers=['naphtha_bio'])
         dp.fill_carrier_data(casepath, value_or_data=355, columns=['Import price'], carriers=['CO2_DAC'])
-        dp.fill_carrier_data(casepath, value_or_data=919, columns=['Import price'], carriers=['ethanol'])
-        dp.fill_carrier_data(casepath, value_or_data=1374, columns=['Import price'], carriers=['propane'])
+        dp.fill_carrier_data(casepath, value_or_data=916, columns=['Import price'], carriers=['ethanol'])
+        dp.fill_carrier_data(casepath, value_or_data=1674, columns=['Import price'], carriers=['propane'])
         dp.fill_carrier_data(casepath, value_or_data=467, columns=['Import price'], carriers=['MPW'])
-        dp.fill_carrier_data(casepath, value_or_data=164, columns=['Import price'], carriers=['biomass'])
+        dp.fill_carrier_data(casepath, value_or_data=160, columns=['Import price'], carriers=['biomass'])
 
         # Constant import emission factor fossil feedstocks
         dp.fill_carrier_data(casepath, value_or_data=0.2, columns=['Import emission factor'], carriers=['methane'])
