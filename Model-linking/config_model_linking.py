@@ -29,7 +29,7 @@ else:
     IESA_modellink_path = IESA_path / "20250702_IESA_full.aimms"
     cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full")
 
-IESA_input_data_path = IESA_path / "data/20250701_detailed_linked.xlsx"
+IESA_input_data_path = IESA_path / "data/20250715_detailed_linked.xlsx"
 IESA_result_folder = IESA_path / "Output" / "ResultsModelLinking"
 
 #Cluster paths
@@ -39,7 +39,7 @@ cluster_case_path = "Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Full/ML_Zeela
 ppi_file_path = "Z:/IESA-Opt/Producer_Price_Index_CBS.xlsx"
 
 # Original and new filenames for IESA input and output folders
-original_filename_input_IESA = IESA_result_folder / "20250701_detailed_linked.xlsx"
+original_filename_input_IESA = IESA_result_folder / "20250715_detailed_linked.xlsx"
 original_filename_output_IESA = IESA_result_folder / "ResultsModelLinking_General.xlsx"
 
 # Define the new name of the input and output file
@@ -73,13 +73,13 @@ carrier_demand_dict = {'ethylene': 524400, 'propylene': 235600, 'PE_olefin': 957
 
 if linking_energy_prices and not linking_MPW:
     # Define simulation years cluster model and the excel sheets from which you want to extract data in IESA-Opt
-    list_sheets = ['EnergyCosts', 'EnergyCosts_secondary']
+    list_sheets = ['EnergyCosts']
 
-    nrows = [45, 10]  # !Same order as list_sheets! =Number of rows in excel sheet -1
+    nrows = [45]  # !Same order as list_sheets! =Number of rows in excel sheet -1
 
     # !Combine the headers and filters of the different sheets! Same order as list_sheets!
-    headers = ['Activity', 'Activity']
-    filters = [['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass', 'Bio LPG', 'Bio Ethanol'], ['Mixed Plastic Waste']]
+    headers = ['Activity']
+    filters = [['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass', 'Bio LPG', 'Bio Ethanol']]
 elif linking_MPW and not linking_energy_prices:  # Example of other use case: import limit MPW
     list_sheets = ["SupplyDemand"]
     headers = [("Activity", "Type", "Tech_ID")]
@@ -89,15 +89,13 @@ elif linking_MPW and not linking_energy_prices:  # Example of other use case: im
     nrows = [830]
 elif linking_energy_prices and linking_MPW:
     list_sheets = ['EnergyCosts', 'EnergyCosts_secondary', 'SupplyDemand']
-    nrows = [45, 10, 830]
+    nrows = [45, 830]
     headers = [
-        'Activity',
         'Activity',
         ("Activity", "Type", "Tech_ID")
     ]
     filters = [
         ['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass', 'Bio LPG', 'Bio Ethanol'],
-        ['Mixed Plastic Waste'],
         [
             ("Mixed Plastic Waste", "supply", "WAI01_01"),
             ("Mixed Plastic Waste", "supply", "WAI01_02"),

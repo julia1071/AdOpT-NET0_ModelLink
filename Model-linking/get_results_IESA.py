@@ -93,32 +93,66 @@ def get_value_IESA_multiple(dict, interval, sheet, **filters):
 
 
 def convert_IESA_to_cluster_dict(results_IESA_dict, results_path_IESA):
-    converted_results = {cfg.location: {}}
+    cluster_results = {}
 
     for interval in cfg.intervals:
-        sheet_dict = {}
-        for sheet, activity_list in zip(cfg.list_sheets, cfg.filters):
+        interval_data = {}
 
-
-            if cfg.linking_energy_prices:
-
+        # --- Linking energy prices ---
+        if cfg.linking_energy_prices:
+            for sheet, activity_list in zip(cfg.list_sheets, cfg.filters):
                 for activity in activity_list:
                     conv = conversion_factor_IESA_to_cluster(sheet, activity)
                     value = get_value_IESA_multiple(results_IESA_dict, interval, sheet, Activity=activity)
-                    sheet_dict[cfg.cluster_carrier_names[activity]] = conv * value
+                    carrier = cfg.cluster_carrier_names[activity]
+                    interval_data[carrier] = conv * value
 
-        # Special case: Bio Methane
-        avg_bio_methane_cost = calculate_avg_bio_methane_cost(results_path_IESA, interval)
+            # Special case: Bio Methane
+            bio_cost = calculate_avg_bio_methane_cost(results_path_IESA, interval)
+            conv_bio = conversion_factor_IESA_to_cluster('EnergyCosts', 'methane_bio')
+            interval_data['methane_bio'] = conv_bio * bio_cost if bio_cost is not None else None
 
-        if avg_bio_methane_cost is not None:
-            conv = conversion_factor_IESA_to_cluster('EnergyCost', 'methane_bio')
-            sheet_dict['methane_bio'] = conv * avg_bio_methane_cost
-        else:
-            sheet_dict['methane_bio'] = None
+        # # --- Linking MPW availability ---
+        # elif cfg.linking_MPW:
+        #     # Example logic — adjust as needed for your actual MPW workflow
+        #     mpw_data = get_mpw_availability(results_IESA_dict, interval)
+        #     for mpw_type, value in mpw_data.items():
+        #         conv = conversion_factor_IESA_to_cluster('MPWAvailability', mpw_type)
+        #         interval_data[mpw_type] = conv * value
 
-        converted_results[cfg.location][interval] = sheet_dict
+        cluster_results[interval] = interval_data
 
-    return converted_results
+    return {cfg.location: cluster_results}
+
+
+# def convert_IESA_to_cluster_dict(results_IESA_dict, results_path_IESA):
+#     converted_results = {cfg.location: {}}
+#
+#     for interval in cfg.intervals:
+#         sheet_dict = {}
+#         for sheet, activity_list in zip(cfg.list_sheets, cfg.filters):
+#
+#
+#             if cfg.linking_energy_prices:
+#
+#                 for activity in activity_list:
+#                     conv = conversion_factor_IESA_to_cluster(sheet, activity)
+#                     value = get_value_IESA_multiple(results_IESA_dict, interval, sheet, Activity=activity)
+#                     sheet_dict[cfg.cluster_carrier_names[activity]] = conv * value
+#
+#         # Special case: Bio Methane
+#         if cfg.linking_energy_prices:
+#             avg_bio_methane_cost = calculate_avg_bio_methane_cost(results_path_IESA, interval)
+#
+#             if avg_bio_methane_cost is not None:
+#                 conv = conversion_factor_IESA_to_cluster('EnergyCost', 'methane_bio')
+#                 sheet_dict['methane_bio'] = conv * avg_bio_methane_cost
+#             else:
+#                 sheet_dict['methane_bio'] = None
+#
+#         converted_results[cfg.location][interval] = sheet_dict
+#
+#     return converted_results
 
 
             # elif linking_MPW:
