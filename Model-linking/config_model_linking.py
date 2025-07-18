@@ -8,13 +8,14 @@ max_iterations = 3
 fast_run = True  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
 threads = None
 
-# Case study choice
+# Linking scenario choice
 linking_energy_prices = True
 linking_MPW = False
 
-#General data
+#General data case study
 intervals = ['2030', '2040', '2050']
 location = "Zeeland"
+scope3 = 0
 
 
 # === Paths ===

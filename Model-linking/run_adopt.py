@@ -27,7 +27,7 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
     os.makedirs(iteration_path, exist_ok=True)
 
     # select simulation types
-    scope3 = 1  # Do you want the scope 3 emissions to be accounted in the optimization?
+    scope3 = cfg.scope3  # Do you want the scope 3 emissions to be accounted in the optimization?
     annual_demand = 1
 
     interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
