@@ -15,6 +15,7 @@ from convergence_criteria import compare_cluster_outputs
 
 import config_model_linking as cfg
 
+
 def model_linking(max_iterations, e):
     i = 1
     inputs_cluster = {}
@@ -51,20 +52,22 @@ def model_linking(max_iterations, e):
         #Run cluster model
         iteration_path = map_name_cluster / f"Iteration_{i}"
         solution_cluster = run_adopt(case_path=cfg.cluster_case_path,
-                                  iteration_path=iteration_path,
-                                  cluster_input_dict=cluster_linked_input_dict)
+                                     iteration_path=iteration_path,
+                                     cluster_input_dict=cluster_linked_input_dict)
 
         #Extract technology sizes from cluster model and save in dict
         tech_output_dict = get_results_cluster_technology_output_dict(adopt_hub=solution_cluster)
 
         #Update dict to include CC fractions of technologies
-        tech_dict_updated_cc = extract_and_apply_cc_fractions(adopt_hub=solution_cluster, tech_output_dict=tech_output_dict)
+        tech_dict_updated_cc = extract_and_apply_cc_fractions(adopt_hub=solution_cluster,
+                                                              tech_output_dict=tech_output_dict)
 
         #Merge new with existing technologies and group technologies for use in IESA
         merged_tech_output_dict = merge_and_group_technologies(tech_dict=tech_dict_updated_cc)
 
         #Update dict to include fraction of bio based technology
-        tech_dict_updated_bio = extract_and_apply_import_bio_ratios(adopt_hub=solution_cluster, tech_output_dict=merged_tech_output_dict)
+        tech_dict_updated_bio = extract_and_apply_import_bio_ratios(adopt_hub=solution_cluster,
+                                                                    tech_output_dict=merged_tech_output_dict)
 
         #Map techs to ID as final step to update IESA
         updates_to_IESA = map_techs_to_ID(tech_dict_updated_bio, cfg.tech_to_id)
