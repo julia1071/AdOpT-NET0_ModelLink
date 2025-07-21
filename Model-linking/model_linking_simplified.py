@@ -151,7 +151,7 @@ input_path = "U:/IESA-Opt-Dev_testing/IESA-Opt-Dev_testing/data/20250708_detaile
 
 # Convergence Criteria; the relative change in output for each technology in the cluster model must be lower than e
 e = 0.1
-max_iterations = 4
+max_iterations = 3
 
 
 def model_linking(max_iterations, e):
@@ -165,7 +165,7 @@ def model_linking(max_iterations, e):
     os.makedirs(map_name_cluster, exist_ok=True)
     os.makedirs(map_name_IESA, exist_ok=True)
     while True:
-        if i == 1:
+        if i == 0:
             clear_input_file_IESA(
                 input_path,
                 sheet_name="Technologies",
@@ -222,8 +222,8 @@ def model_linking(max_iterations, e):
             print(f"📝 Saved inputs and outputs of the cluster model")
             end_time = time.time()
             elapsed_seconds = end_time - start_time
-            elapsed = timedelta(seconds = elapsed_seconds)
-            print(f"Elapsed time to run the model linking script: {elapsed:.2f} seconds")
+            elapsed = timedelta(seconds=round(elapsed_seconds))
+            print(f"Elapsed time to run the model linking script: {elapsed}")
             break  # ← loop ends here
         else:
             update_input_file_IESA(
