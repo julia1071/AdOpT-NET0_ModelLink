@@ -72,6 +72,7 @@ baseyear_IESA = 2019
 carrier_demand_dict = {'ethylene': 524400, 'propylene': 235600, 'PE_olefin': 957310, 'ammonia': 1184000}
 
 if linking_energy_prices and not linking_MPW:
+    save_extension_link = 'Prices'
     # Define simulation years cluster model and the excel sheets from which you want to extract data in IESA-Opt
     list_sheets = ['EnergyCosts']
 
@@ -81,6 +82,7 @@ if linking_energy_prices and not linking_MPW:
     headers = ['Activity']
     filters = [['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass', 'Bio LPG', 'Bio Ethanol']]
 elif linking_MPW and not linking_energy_prices:  # Example of other use case: import limit MPW
+    save_extension_link = 'MPW'
     list_sheets = ["SupplyDemand"]
     headers = [("Activity", "Type", "Tech_ID")]
     # Add all the possible technologies that can potentially supply MPW
@@ -88,6 +90,7 @@ elif linking_MPW and not linking_energy_prices:  # Example of other use case: im
                 ("Mixed Plastic Waste", "supply", "EPO01_03")]]
     nrows = [830]
 elif linking_energy_prices and linking_MPW:
+    save_extension_link = 'Combi'
     list_sheets = ['EnergyCosts', 'EnergyCosts_secondary', 'SupplyDemand']
     nrows = [45, 830]
     headers = [

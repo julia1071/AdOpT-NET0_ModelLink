@@ -21,8 +21,8 @@ def model_linking(max_iterations, e):
     inputs_cluster = {}
     outputs_cluster = {}
     timestamp = datetime.now().strftime("%Y%m%d_%H_%M")
-    map_name_cluster = cfg.cluster_result_folder / f"Results_model_linking_{timestamp}"
-    map_name_IESA = cfg.IESA_result_folder / f"Results_model_linking_simplified_{timestamp}"
+    map_name_cluster = cfg.cluster_result_folder / cfg.save_extension_link / f"Results_model_linking_{timestamp}"
+    map_name_IESA = cfg.IESA_result_folder / cfg.save_extension_link / f"Results_model_linking_{timestamp}"
     os.makedirs(map_name_cluster, exist_ok=True)
     os.makedirs(map_name_IESA, exist_ok=True)
     while True:
