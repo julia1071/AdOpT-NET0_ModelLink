@@ -9,13 +9,13 @@ fast_run = True  # fast optimization of the cluster model for a shorter period (
 threads = None
 
 # Linking scenario choice
-linking_energy_prices = True
-linking_MPW = False
+linking_energy_prices = False
+linking_MPW = True
 
 #General data case study
 intervals = ['2030', '2040', '2050']
 location = "Zeeland"
-scope3 = 0
+scope3 = 1
 
 
 # === Paths ===
@@ -69,7 +69,7 @@ baseyear_cluster = 2022
 baseyear_IESA = 2019
 
 # Partly stiff and flexible P/E ratio, base on maximum demand propylene in IESA-Opt.
-carrier_demand_dict = {'ethylene': 524400, 'propylene': 235600, 'PE_olefin': 957310, 'ammonia': 1184000}
+carrier_demand_dict = {'ethylene': 647310, 'PE_olefin': 1070000, 'ammonia': 1184000}
 
 if linking_energy_prices and not linking_MPW:
     save_extension_link = 'Prices'
@@ -148,7 +148,8 @@ capture_rate = 0.9  # The capture rate of the carbon capture technology
 cc_technologies = {
     "CrackerFurnace": "CrackerFurnace",
     "SteamReformer": "SteamReformer",
-    "MPW2methanol_input": "MPW2methanol"
+    "MPW2methanol_input": "MPW2methanol",
+    "Biomass2methanol_input": "Biomass2methanol"
 }
 
 # Create a dictionary stating which technologies are splitted in bio and non bio
@@ -174,5 +175,6 @@ tech_to_id = {"CrackerFurnace": "ICH01_01",
               "AEC": "Amm01_05",
               "ElectricSMR_m": "Amm01_08",
               "CO2electrolysis": "ICH01_40",
-              "Biomass2methanol_input": "RFS03_01"
+              "Biomass2methanol_input": "RFS03_01",
+              "Biomass2methanol_input_CC": "RFS03_02"
               }

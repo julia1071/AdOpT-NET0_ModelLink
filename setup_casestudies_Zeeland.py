@@ -147,7 +147,7 @@ if execute == 1:
 
         # Demand export limit
         dp.fill_carrier_data(casepath, value_or_data=250, columns=['Export limit'],
-                             carriers=["ammonia", "ethylene", "propylene", "PE_olefin"])
+                             carriers=["ammonia", "ethylene", "PE_olefin"])
 
         # CO2 export
         dp.fill_carrier_data(casepath, value_or_data=285, columns=['Export limit'], carriers=['CO2'])
@@ -337,7 +337,7 @@ if execute == 1:
 
         # Demand export limit
         dp.fill_carrier_data(casepath, value_or_data=250, columns=['Export limit'],
-                             carriers=["ammonia", "ethylene", "propylene", "PE_olefin"])
+                             carriers=["ammonia", "ethylene", "PE_olefin"])
 
         # CO2 export
         dp.fill_carrier_data(casepath, value_or_data=354, columns=['Export limit'], carriers=['CO2'])
@@ -531,7 +531,7 @@ if execute == 1:
 
         # Demand export limit
         dp.fill_carrier_data(casepath, value_or_data=250, columns=['Export limit'],
-                             carriers=["ammonia", "ethylene", "propylene", "PE_olefin"])
+                             carriers=["ammonia", "ethylene", "PE_olefin"])
 
         # CO2 export
         dp.fill_carrier_data(casepath, value_or_data=742, columns=['Export limit'], carriers=['CO2'])
