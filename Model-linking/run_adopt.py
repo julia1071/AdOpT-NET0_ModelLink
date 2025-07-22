@@ -127,37 +127,18 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
                             interval, cfg.location, key, 'global', 'Import limit'
                         ] = 0
 
+        if cfg.linking_MPW:
+            total_mpw_supply = cluster_input_dict[cfg.location][interval]['Import limit MPW']
 
+            adopt_hub[interval].data.time_series['full'][
+                interval, cfg.location, 'MPW', 'global', 'Import limit'
+            ] = total_mpw_supply
+            if nr_DD_days > 0:
+                adopt_hub[interval].data.time_series['clustered'][
+                    interval, cfg.location, 'MPW', 'global', 'Import limit'
+                ] = total_mpw_supply
 
-        # elif linking_MPW:
-        #     # --- Mixed Plastic Waste (MPW) ---
-        #     sheet_key = f"results_{interval}_SupplyDemand"
-        #     total_mpw_supply = 0.0
-        #
-        #     for entry in results_year_sheet.get(sheet_key, []):
-        #         if entry.get("Activity") == "Mixed Plastic Waste" and entry.get("Type") == "supply":
-        #             tech_id = entry.get("Tech_ID")
-        #             value = entry.get("value")
-        #
-        #             if value is None:
-        #                 print(f"⚠️ No value found for Tech_ID '{tech_id}' in interval {interval}")
-        #                 continue
-        #
-        #             try:
-        #                 factor = conversion_factor_IESA_to_cluster(
-        #                     "SupplyDemand", tech_id, ppi_file_path, baseyear_cluster, baseyear_IESA
-        #                 )
-        #                 total_mpw_supply += factor * value
-        #             except Exception as e:
-        #                 print(f"⚠️ Skipping {tech_id} due to error: {e}")
-        #
-        #     # Store the MPW import limit in cluster model input and PyPSA structure
-        #     input_cluster[location][interval]['Import limit MPW'] = total_mpw_supply
-        #     pyhub[interval].data.time_series['full'][
-        #         interval, location, 'MPW', 'global', 'Import limit'
-        #     ] = total_mpw_supply
-        #
-        #     print(f"The value that is inputted as import limit for MPW is {total_mpw_supply:.2f}")
+            print(f"The import limit for MPW is {total_mpw_supply:.2f}")
 
         # Start brownfield optimization
         adopt_hub[interval].construct_model()
