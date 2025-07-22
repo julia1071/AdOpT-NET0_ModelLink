@@ -11,7 +11,7 @@ sensitivity = 0
 zeeland = 1
 
 if sensitivity:
-    data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long_sensitivity.xlsx'
+    data_to_excel_path = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting_old/result_data_long_sensitivity.xlsx'
     result_types = ['EmissionLimit Greenfield', 'EmissionLimit Brownfield'] # Add multiple result types
 elif zeeland:
     data_to_excel_path = '"U:/Data AdOpt-NET0/Model_Linking/Results/Zeeland/technology_sizes.xlsx"'

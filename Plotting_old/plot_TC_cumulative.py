@@ -6,7 +6,7 @@ import matplotlib.font_manager as fm
 from openpyxl.reader.excel import load_workbook
 
 # --- Configurable options ---
-file_path = "C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long.xlsx"
+file_path = "C:/EHubversions/AdOpT-NET0_Julia/Plotting_old/result_data_long.xlsx"
 metric = "costs"       # Choose: "costs" or "emissions"
 scale_type = "per_tonne"   # Choose: "total" or "per_tonne"
 saveas = 'pdf'  # Options: "no", "svg", "pdf", "both"
@@ -103,7 +103,7 @@ else:
         bf_scope_vals = [val * 1e6 / (total_product * 10) for val in bf_scope_vals]
 
 if stacked:
-    # --- Plotting ---
+    # --- Plotting_old ---
     fig, ax = plt.subplots(figsize=(10, 3))
     x = np.arange(8)
 
@@ -157,7 +157,7 @@ if stacked:
 
 
 else:
-    # --- Plotting ---
+    # --- Plotting_old ---
     fig, ax = plt.subplots(figsize=(10, 3))
 
     years = ['2030', '2040', '2050']

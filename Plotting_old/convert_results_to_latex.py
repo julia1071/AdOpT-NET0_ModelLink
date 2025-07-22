@@ -7,7 +7,7 @@ execute = 0
 
 if execute:
     # Load the Excel file
-    file_path = "C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long.xlsx"
+    file_path = "C:/EHubversions/AdOpT-NET0_Julia/Plotting_old/result_data_long.xlsx"
     df = pd.read_excel(file_path, sheet_name="Sheet1", header=None)
 
     # Use the first and third rows as headers
@@ -136,7 +136,7 @@ if execute:
     df_emission_scope = pd.concat([filtered_df[[('', 'Technology'), ('', 'Unit')]], df_emission_scope], axis=1)
 
     # Ensure output folder exists and save the filtered data
-    output_dir = "C:/EHubversions/AdOpT-NET0_Julia/Plotting"
+    output_dir = "C:/EHubversions/AdOpT-NET0_Julia/Plotting_old"
     os.makedirs(output_dir, exist_ok=True)  # Ensure output folder exists
 
     filtered_excel_path = os.path.join(output_dir, "filtered_data.xlsx")
@@ -184,7 +184,7 @@ execute = 1
 
 if execute:
     # Load the Excel file
-    file_path = "C:/EHubversions/AdOpT-NET0_Julia/Plotting/result_data_long_sensitivity.xlsx"
+    file_path = "C:/EHubversions/AdOpT-NET0_Julia/Plotting_old/result_data_long_sensitivity.xlsx"
     df = pd.read_excel(file_path, sheet_name="Sheet1", header=None)
 
     # Use the first and third rows as headers
@@ -312,7 +312,7 @@ if execute:
     filtered_df = filtered_df.drop(columns=[('Greenfield (Scope 1, 2, and 3)', 'Tighter Short-Term Emission Limit')])
 
     # Ensure output folder exists and save the filtered data
-    output_dir = "C:/EHubversions/AdOpT-NET0_Julia/Plotting"
+    output_dir = "C:/EHubversions/AdOpT-NET0_Julia/Plotting_old"
     os.makedirs(output_dir, exist_ok=True)  # Ensure output folder exists
 
     filtered_excel_path = os.path.join(output_dir, "filtered_data_sensitivity.xlsx")

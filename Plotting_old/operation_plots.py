@@ -12,10 +12,10 @@ from adopt_net0 import extract_datasets_from_h5group, extract_dataset_from_h5
 
 # Define the data paths
 RESULT_FOLDER = "Z:/AdOpt_NET0/AdOpt_results/MY/"
-DATA_TO_EXCEL_PATH = 'C:/EHubversions/AdOpT-NET0_Julia//Plotting/operation_flex_import.xlsx'
-DATA_TO_EXCEL_PATH1 = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/operation_flex.xlsx'
-DATA_TO_EXCEL_PATH2 = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting/operation_flex_storage.xlsx'
-DATAPATH = "C:/EHubversions/AdOpT-NET0_Julia/Plotting"
+DATA_TO_EXCEL_PATH = 'C:/EHubversions/AdOpT-NET0_Julia//Plotting_old/operation_flex_import.xlsx'
+DATA_TO_EXCEL_PATH1 = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting_old/operation_flex.xlsx'
+DATA_TO_EXCEL_PATH2 = 'C:/EHubversions/AdOpT-NET0_Julia/Plotting_old/operation_flex_storage.xlsx'
+DATAPATH = "C:/EHubversions/AdOpT-NET0_Julia/Plotting_old"
 EL_LOAD_PATH = "Z:/AdOpt_NET0/AdOpt_data/MY/241119_MY_Data_Chemelot/import_data/Electricity_data_MY.xlsx"
 
 
