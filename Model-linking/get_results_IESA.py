@@ -81,15 +81,15 @@ def get_results_IESA_dict(results_file_path):
     return results_dict
 
 
-def get_value_IESA_multiple(dict, interval, sheet, **filters):
-    key = f"results_{interval}_{sheet}"
-    entries = dict.get(key, [])
-
-    for entry in entries:
-        if all(entry.get(k) == v for k, v in filters.items()):
-            return entry['value']
-
-    raise ValueError(f"No value found for {interval}, {sheet}, filters: {filters}")
+# def get_value_IESA_multiple(dict, interval, sheet, **filters):
+#     key = f"results_{interval}_{sheet}"
+#     entries = dict.get(key, [])
+#
+#     for entry in entries:
+#         if all(entry.get(k) == v for k, v in filters.items()):
+#             return entry['value']
+#
+#     raise ValueError(f"No value found for {interval}, {sheet}, filters: {filters}")
 
 
 def convert_IESA_to_cluster_dict(results_IESA_dict, results_path_IESA):
@@ -100,12 +100,14 @@ def convert_IESA_to_cluster_dict(results_IESA_dict, results_path_IESA):
 
         # --- Linking energy prices ---
         if cfg.linking_energy_prices:
-            for sheet, activity_list in zip(cfg.list_sheets, cfg.filters):
-                for activity in activity_list:
-                    conv = conversion_factor_IESA_to_cluster(sheet, activity)
-                    value = get_value_IESA_multiple(results_IESA_dict, interval, sheet, Activity=activity)
-                    carrier = cfg.cluster_carrier_names[activity]
-                    interval_data[carrier] = conv * value
+            sheet_key = f"results_{interval}_EnergyCosts"
+
+            for entry in results_IESA_dict.get(sheet_key, []):
+                activity = entry.get("Activity")
+                value = entry.get("value")
+                conv = conversion_factor_IESA_to_cluster('EnergyCosts', activity)
+                carrier = cfg.cluster_carrier_names[activity]
+                interval_data[carrier] = conv * value
 
             # Special case: Bio Methane
             bio_cost = calculate_avg_bio_methane_cost(results_path_IESA, interval)
@@ -113,7 +115,7 @@ def convert_IESA_to_cluster_dict(results_IESA_dict, results_path_IESA):
             interval_data['methane_bio'] = conv_bio * bio_cost if bio_cost is not None else None
 
         # # --- Linking MPW availability ---
-        elif cfg.linking_MPW:
+        if cfg.linking_MPW:
             sheet_key = f"results_{interval}_SupplyDemand"
             total_mpw_supply = 0.0
 

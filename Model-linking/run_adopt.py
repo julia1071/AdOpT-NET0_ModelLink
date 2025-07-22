@@ -103,39 +103,42 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
         if cfg.linking_energy_prices:
             # === Input of IESA-Opt values into the cluster model ===
             for key in cluster_input_dict[cfg.location][interval].keys():
-                value = cluster_input_dict[cfg.location][interval][key]
+                if key in adopt_hub[interval].data.time_series['full'][interval, cfg.location, 'CarrierData']:
+                    value = cluster_input_dict[cfg.location][interval][key]
 
-                if value is not None:
-                    #Read value in adopt
-                    adopt_hub[interval].data.time_series['full'][
-                        interval, cfg.location, key, 'global', 'Import price'
-                    ] = value
-                    if nr_DD_days > 0:
-                        adopt_hub[interval].data.time_series['clustered'][
-                            interval, cfg.location, key, 'global', 'Import price'
+                    if value is not None:
+                        #Read value in adopt
+                        adopt_hub[interval].data.time_series['full'][
+                            interval, cfg.location, 'CarrierData', key, 'Import price'
                         ] = value
+                        if nr_DD_days > 0:
+                            adopt_hub[interval].data.time_series['clustered'][
+                                interval, cfg.location, 'CarrierData', key, 'Import price'
+                            ] = value
 
-                    print(f"The input price for {key} is {value}")
+                        print(f"The input price for {key} is {value}")
 
-                else:
-                    # Read value in adopt
-                    adopt_hub[interval].data.time_series['full'][
-                        interval, cfg.location, key, 'global', 'Import limit'
-                    ] = 0
-                    if nr_DD_days > 0:
-                        adopt_hub[interval].data.time_series['clustered'][
-                            interval, cfg.location, key, 'global', 'Import limit'
+                    else:
+                        # Read value in adopt
+                        adopt_hub[interval].data.time_series['full'][
+                            interval, cfg.location, 'CarrierData', key, 'Import limit'
                         ] = 0
+                        if nr_DD_days > 0:
+                            adopt_hub[interval].data.time_series['clustered'][
+                                interval, cfg.location, 'CarrierData', key, 'Import limit'
+                            ] = 0
+
+                        print(f"The import limit for {key} is 0")
 
         if cfg.linking_MPW:
             total_mpw_supply = cluster_input_dict[cfg.location][interval]['Import limit MPW']
 
             adopt_hub[interval].data.time_series['full'][
-                interval, cfg.location, 'MPW', 'global', 'Import limit'
+                interval, cfg.location, 'CarrierData', 'MPW', 'Import limit'
             ] = total_mpw_supply
             if nr_DD_days > 0:
                 adopt_hub[interval].data.time_series['clustered'][
-                    interval, cfg.location, 'MPW', 'global', 'Import limit'
+                    interval, cfg.location, 'CarrierData', 'MPW', 'Import limit'
                 ] = total_mpw_supply
 
             print(f"The import limit for MPW is {total_mpw_supply:.2f}")

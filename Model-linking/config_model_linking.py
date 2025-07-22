@@ -4,12 +4,12 @@ from pathlib import Path
 # === Model settings ==
 # # Convergence Criteria; the relative change in output for each technology in the cluster model must be lower than e
 e = 0.01
-max_iterations = 3
+max_iterations = 5
 fast_run = True  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
 threads = None
 
 # Linking scenario choice
-linking_energy_prices = False
+linking_energy_prices = True
 linking_MPW = True
 
 #General data case study
@@ -91,7 +91,7 @@ elif linking_MPW and not linking_energy_prices:  # Example of other use case: im
     nrows = [830]
 elif linking_energy_prices and linking_MPW:
     save_extension_link = 'Combi'
-    list_sheets = ['EnergyCosts', 'EnergyCosts_secondary', 'SupplyDemand']
+    list_sheets = ['EnergyCosts', 'SupplyDemand']
     nrows = [45, 830]
     headers = [
         'Activity',
@@ -149,7 +149,7 @@ cc_technologies = {
     "CrackerFurnace": "CrackerFurnace",
     "SteamReformer": "SteamReformer",
     "MPW2methanol_input": "MPW2methanol",
-    "Biomass2methanol_input": "Biomass2methanol"
+    # "Biomass2methanol_input": "Biomass2methanol"
 }
 
 # Create a dictionary stating which technologies are splitted in bio and non bio
@@ -176,5 +176,5 @@ tech_to_id = {"CrackerFurnace": "ICH01_01",
               "ElectricSMR_m": "Amm01_08",
               "CO2electrolysis": "ICH01_40",
               "Biomass2methanol_input": "RFS03_01",
-              "Biomass2methanol_input_CC": "RFS03_02"
+              # "Biomass2methanol_input_CC": "RFS03_02"
               }
