@@ -1,6 +1,7 @@
 from pathlib import Path
-from adopt_net0.utilities import get_set_t
 
+import numpy as np
+from adopt_net0.utilities import get_set_t
 import config_model_linking as cfg
 
 
@@ -43,6 +44,18 @@ def get_results_cluster_technology_output_dict(adopt_hub):
                 if annual_prod > 0:
                     tech_output_dict[(cfg.location, interval, alias)] = annual_prod * factor_fast_run
                     print(f"ℹ️ Output of {alias} in {interval} at {cfg.location}: {annual_prod * factor_fast_run}")
+
+                if cfg.linking_operation and actual_tech_name in cfg.link_ops_techs:
+                    if "Operation" not in tech_output_dict:
+                        tech_output_dict["Operation"] = {}
+
+                    size = tech_block.var_size.value
+                    operation_tech = np.array([tech_block.var_input_tot[t, "electricity"].value for t in set_t])
+                    if size > 0:
+                        capacity_factor = operation_tech / (size * len(set_t))
+                        tech_output_dict[("Operation", cfg.location, interval, alias)] = capacity_factor
+                    else:
+                        tech_output_dict[("Operation", cfg.location, interval, alias)] = None
 
 
     return tech_output_dict

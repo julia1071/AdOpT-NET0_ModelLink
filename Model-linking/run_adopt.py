@@ -119,16 +119,20 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
                         print(f"The input price for {key} is {value}")
 
                     else:
-                        # Read value in adopt
-                        adopt_hub[interval].data.time_series['full'][
-                            interval, cfg.location, 'CarrierData', key, 'Import limit'
-                        ] = 0
-                        if nr_DD_days > 0:
-                            adopt_hub[interval].data.time_series['clustered'][
+                        # check if carrier has international import
+                        if key in cfg.car_import_international:
+                            print(f"The input price for {key} is not updated as there is no national supply.")
+                        else:
+                            # Read value in adopt
+                            adopt_hub[interval].data.time_series['full'][
                                 interval, cfg.location, 'CarrierData', key, 'Import limit'
                             ] = 0
+                            if nr_DD_days > 0:
+                                adopt_hub[interval].data.time_series['clustered'][
+                                    interval, cfg.location, 'CarrierData', key, 'Import limit'
+                                ] = 0
 
-                        print(f"The import limit for {key} is 0")
+                            print(f"The import limit for {key} is 0")
 
         if cfg.linking_MPW:
             total_mpw_supply = cluster_input_dict[cfg.location][interval]['Import limit MPW']

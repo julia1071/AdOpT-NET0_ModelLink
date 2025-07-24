@@ -3,7 +3,6 @@ from pathlib import Path
 
 import config_model_linking as cfg
 from conversion_factors import conversion_factor_IESA_to_cluster
-from calculate_avg_bio_methane_cost import calculate_avg_bio_methane_cost
 
 def get_results_IESA_dict(results_file_path):
     """
@@ -81,17 +80,6 @@ def get_results_IESA_dict(results_file_path):
     return results_dict
 
 
-# def get_value_IESA_multiple(dict, interval, sheet, **filters):
-#     key = f"results_{interval}_{sheet}"
-#     entries = dict.get(key, [])
-#
-#     for entry in entries:
-#         if all(entry.get(k) == v for k, v in filters.items()):
-#             return entry['value']
-#
-#     raise ValueError(f"No value found for {interval}, {sheet}, filters: {filters}")
-
-
 def convert_IESA_to_cluster_dict(results_IESA_dict, results_path_IESA):
     cluster_results = {}
 
@@ -107,7 +95,11 @@ def convert_IESA_to_cluster_dict(results_IESA_dict, results_path_IESA):
                 value = entry.get("value")
                 conv = conversion_factor_IESA_to_cluster('EnergyCosts', activity)
                 carrier = cfg.cluster_carrier_names[activity]
-                interval_data[carrier] = conv * value
+                check_prod = check_carrier_prod_IESA(results_path_IESA, interval, activity)
+                if check_prod:
+                    interval_data[carrier] = conv * value
+                else:
+                    interval_data[carrier] = None
 
             # Special case: Bio Methane
             bio_cost = calculate_avg_bio_methane_cost(results_path_IESA, interval)
@@ -140,3 +132,112 @@ def convert_IESA_to_cluster_dict(results_IESA_dict, results_path_IESA):
         cluster_results[interval] = interval_data
 
     return {cfg.location: cluster_results}
+
+
+def check_carrier_prod_IESA(file_path, interval, carrier):
+    """
+    Check if there is any positive supply for a given carrier at a given interval.
+
+    Args:
+        file_path (str): Path to the Excel file.
+        interval (str or int): Column name representing the time interval.
+        carrier (str): Carrier name to check.
+
+    Returns:
+        bool: True if there is positive supply, False otherwise.
+    """
+    try:
+        df_sd = pd.read_excel(file_path, sheet_name="SupplyDemand")
+    except Exception as e:
+        raise ValueError(f"❌ Failed to load Excel sheet 'SupplyDemand': {e}")
+
+    # Filter rows where the activity matches the carrier and type is 'supply'
+    mask = (df_sd["Activity"] == carrier) & (df_sd["Type"] == "supply")
+    relevant_rows = df_sd.loc[mask]
+
+    try:
+        # Safely extract values for the given interval
+        values = relevant_rows[interval].values
+        total_output = pd.to_numeric(values, errors='coerce').sum()
+        return total_output > 0
+    except KeyError:
+        raise ValueError(f"❌ Interval '{interval}' not found in the Excel file.")
+    except Exception as e:
+        raise ValueError(f"❌ Failed to compute supply value: {e}")
+
+
+def calculate_avg_bio_methane_cost(file_path, year):
+    """
+    Calculates the weighted average cost of bio-methane production based on LCOE components
+    and technology outputs for a given year. Provides a summary of found and missing data.
+
+    Args:
+        file_path (str or Path): Path to the Excel file containing IESA output data
+        year (str): The target year to extract values for
+
+    Returns:
+        float or None: The weighted average cost, or None if no output is found
+    """
+
+    technologies = ["Gas04_01", "Gas04_02", "Gas04_03", "Gas04_04"]
+    components = ["CAPEX", "FOM", "VOC", "Fuels"]
+
+    try:
+        df_lcoe = pd.read_excel(file_path, sheet_name="LCOEs")
+        df_sd = pd.read_excel(file_path, sheet_name="SupplyDemand")
+    except Exception as e:
+        raise ValueError(f"❌ Failed to load Excel sheets: {e}")
+
+    # === Extract LCOE values ===
+    costs = []
+    found_costs = {}  # {tech: [found components]}
+    for tech in technologies:
+        total_cost = 0
+        found_components = []
+        for comp in components:
+            mask = (
+                (df_lcoe["Tech_ID"] == tech) &
+                (df_lcoe["Type1"] == "Real") &
+                (df_lcoe["Type2"] == comp)
+            )
+            row = df_lcoe[mask]
+            try:
+                val = float(row[year].values[0])
+                total_cost += val
+                found_components.append(comp)
+            except (IndexError, KeyError, ValueError):
+                pass  # missing component is allowed
+        if found_components:
+            found_costs[tech] = found_components
+        costs.append((tech, total_cost))
+
+    # === Extract output values ===
+    outputs = []
+    found_outputs = []
+    for tech in technologies:
+        mask = (
+            (df_sd["Type"] == "supply") &
+            (df_sd["Tech_ID"] == tech)
+        )
+        row = df_sd[mask]
+        try:
+            output = float(row[year].values[0])
+            found_outputs.append(tech)
+        except (IndexError, KeyError, ValueError):
+            output = 0
+        outputs.append((tech, output))
+
+    # === Summary: what was found ===
+    print("\n📦 Bio-methane output summary:")
+    if found_outputs:
+        print(f"Found outputs for: {', '.join(found_outputs)}")
+    else:
+        print("⚠️ No outputs found for any bio-methane technologies.")
+
+    # === Weighted average cost calculation ===
+    weighted_sum = sum(c * o for (t1, c), (t2, o) in zip(costs, outputs) if o)
+    total_output = sum(o for _, o in outputs if o)
+
+    avg_cost = weighted_sum / total_output if total_output > 0 else None
+
+    return avg_cost

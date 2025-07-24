@@ -4,13 +4,14 @@ from pathlib import Path
 # === Model settings ==
 # # Convergence Criteria; the relative change in output for each technology in the cluster model must be lower than e
 e = 0.01
-max_iterations = 5
+max_iterations = 10
 fast_run = True  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
 threads = None
 
 # Linking scenario choice
 linking_energy_prices = True
 linking_MPW = True
+linking_operation = True
 
 #General data case study
 intervals = ['2030', '2040', '2050']
@@ -109,6 +110,21 @@ else:
     print("Case study not defined, model linking stops")
     sys.exit()
 
+if linking_operation:
+    save_extension_link = save_extension_link + '_ops'
+
+    link_ops_techs = {"CrackerFurnace_Electric", "ElectricSMR_m", "AEC", "CO2electrolysis"}
+    # list_sheets = ["SupplyDemand"]
+    # headers = [("Activity", "Type", "Tech_ID")]
+    # # Add all the possible technologies that can potentially supply MPW
+    # filters = [[("Mixed Plastic Waste", "supply", "WAI01_01"), ("Mixed Plastic Waste", "supply", "WAI01_02"),
+    #             ("Mixed Plastic Waste", "supply", "EPO01_03")]]
+    # nrows = [830]
+
+
+#Carriers with import possible outside system boundaries
+car_import_international = ['naphtha', 'naphtha_bio', 'methane', 'biomass', 'MPW', 'propane', 'ethanol']
+
 # The alias name (can be anything), the name of the tech in the cluster model,
 # and the name of the type of value that you want to extract from cluster results.
 base_tech_output_map = {
@@ -176,5 +192,5 @@ tech_to_id = {"CrackerFurnace": "ICH01_01",
               "ElectricSMR_m": "Amm01_08",
               "CO2electrolysis": "ICH01_40",
               "Biomass2methanol_input": "RFS03_01",
-              # "Biomass2methanol_input_CC": "RFS03_02"
+              # "Biomass2methanol_input_CC": "RFS03_05"
               }
