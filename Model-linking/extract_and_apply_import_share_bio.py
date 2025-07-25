@@ -18,7 +18,7 @@ def extract_and_apply_import_bio_ratios(adopt_hub, tech_output_dict):
     print("🔍 Extracting bio import ratios and splitting technologies")
 
     resolution = 'full' if cfg.fast_run else 'clustered'
-    updated_dict = tech_output_dict.copy()
+    updated_dict = {cat: vals.copy() for cat, vals in tech_output_dict.items()}
     bio_ratios = {}
 
     for interval in cfg.intervals:
@@ -46,21 +46,22 @@ def extract_and_apply_import_bio_ratios(adopt_hub, tech_output_dict):
 
     print("🔀 Splitting technologies in cfg.bio_tech_names into bio and non-bio")
 
-    for (loc, interval, tech) in list(tech_output_dict):
-        if tech not in cfg.bio_tech_names:
-            continue
+    for category, subdict in tech_output_dict.items():
+        for (loc, interval, tech) in list(subdict):
+            if tech not in cfg.bio_tech_names:
+                continue
 
-        original_size = tech_output_dict[(loc, interval, tech)]
+            original_size = subdict[(loc, interval, tech)]
 
-        for carrier in cfg.bio_carriers:
-            bio_ratio = bio_ratios.get((loc, interval, carrier), 0.0)
+            for carrier in cfg.bio_carriers:
+                bio_ratio = bio_ratios.get((loc, interval, carrier), 0.0)
 
-            if bio_ratio > 0:
-                bio_size = original_size * bio_ratio
-                non_bio_size = original_size * (1 - bio_ratio)
+                if bio_ratio > 0:
+                    bio_size = original_size * bio_ratio
+                    non_bio_size = original_size * (1 - bio_ratio)
 
-                updated_dict[(loc, interval, f"{tech}_bio")] = bio_size
-                updated_dict[(loc, interval, tech)] = non_bio_size  # overwrite
+                    updated_dict[category][(loc, interval, f"{tech}_bio")] = bio_size
+                    updated_dict[category][(loc, interval, tech)] = non_bio_size
 
     return updated_dict
 

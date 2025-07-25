@@ -4,14 +4,17 @@ import config_model_linking as cfg
 def extract_and_apply_cc_fractions(adopt_hub, tech_output_dict):
     """
     Extracts carbon capture (CC) fractions for selected technologies from HDF5 results.
-    Includes "_existing" variants automatically.
+    Applies fraction only to scalar outputs (e.g., "AnnualOutput").
 
     Args:
         adopt_hub: The model object with the results of the cluster.
-        tech_output_dict (dict): {(location, interval, tech): size}
+        tech_output_dict (dict): {
+            "AnnualOutput": {(location, interval, tech): value},
+            "Operation": {(location, interval, tech): np.array}
+        }
 
     Returns:
-        dict: updated technology dictionary with separated CC and non-CC variants
+        dict: updated tech_output_dict with split CC/non-CC variants in applicable categories
     """
     print("Extracting CC fractions for selected technologies (including _existing variants)")
 
@@ -56,37 +59,43 @@ def extract_and_apply_cc_fractions(adopt_hub, tech_output_dict):
                 frac_CC = numerator / denominator
                 cc_fraction_dict[(cfg.location, interval, alias)] = frac_CC
 
+    # Filter zero or missing values
+    cc_fraction_dict = {k: v for k, v in cc_fraction_dict.items() if v > 0}
 
-    # Filter out entries with zero CC fraction
-    cc_fraction_dict = {
-        key: value for key, value in cc_fraction_dict.items() if value > 0
-    }
+    print("Splitting technologies into CC and non-CC variants for applicable output categories")
 
-    print("The technologies dictionary will be split into carbon capture and non-carbon capture")
+    updated_dict = tech_output_dict.copy()
 
-    updated_dict_cc = tech_output_dict.copy()
+    for category, data in tech_output_dict.items():
+        if category not in ["AnnualOutput"]:  # Skip "Operation", etc.
+            updated_dict[category] = data
+            continue
 
-    for (location, interval, tech), cc_frac in cc_fraction_dict.items():
-        key = (location, interval, tech)
-        if key not in tech_output_dict:
-            raise ValueError(
-                f"❌ Inconsistent data detected:\n"
-                f" - Technology: '{tech}'\n"
-                f" - Interval: '{interval}'\n"
-                f" - Location: '{location}'\n"
-                f"A carbon capture fraction was found, but the technology's output value is missing.\n"
-                f"➡️ Check if the correct 'output_var_name' is defined in base_tech_output_map."
-            )
+        new_data = data.copy()
 
-        original_size = tech_output_dict[key]
-        cc_ratio = min(cc_frac / cfg.capture_rate, 1.0)
-        non_cc_ratio = 1 - cc_ratio
+        for (location, interval, tech), cc_frac in cc_fraction_dict.items():
+            key = (location, interval, tech)
+            if key not in data:
+                raise ValueError(
+                    f"❌ Inconsistent data:\n"
+                    f" - Technology: '{tech}'\n"
+                    f" - Interval: '{interval}'\n"
+                    f" - Location: '{location}'\n"
+                    f"A CC fraction was found, but the technology is missing from '{category}'."
+                )
 
-        size_cc = original_size * cc_ratio
-        size_non_cc = original_size * non_cc_ratio
+            original_size = data[key]
+            cc_ratio = min(cc_frac / cfg.capture_rate, 1.0)
+            non_cc_ratio = 1 - cc_ratio
 
-        updated_dict_cc[(location, interval, get_cc_tech_name(tech))] = size_cc
-        updated_dict_cc[key] = size_non_cc
+            size_cc = original_size * cc_ratio
+            size_non_cc = original_size * non_cc_ratio
 
-    return updated_dict_cc
+            new_data[get_cc_tech_name(key[2])] = size_cc
+            new_data[key] = size_non_cc
+
+        updated_dict[category] = new_data
+
+    return updated_dict
+
 

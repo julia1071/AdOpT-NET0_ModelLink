@@ -24,11 +24,16 @@ def get_results_cluster_technology_output_dict(adopt_hub):
         tech_output_map[alias] = (actual_tech, output_var)
         tech_output_map[f"{alias}_existing"] = (f"{actual_tech}_existing", output_var)
 
+    tech_ops_map = cfg.link_ops_techs.union({f"{alias}_existing" for alias in cfg.link_ops_techs})
+
     # Define scaling factor if using fast_run
     factor_fast_run = 876 if cfg.fast_run else 1
     resolution = 'full' if cfg.fast_run else 'clustered'
 
-    tech_output_dict = {}
+    tech_output_dict = {
+        "AnnualOutput": {},
+        "Operation": {}
+    }
 
     for interval in cfg.intervals:
         interval_block = adopt_hub[interval].model[resolution].periods[interval]
@@ -42,20 +47,23 @@ def get_results_cluster_technology_output_dict(adopt_hub):
                     annual_prod = sum(tech_block.var_output_tot[t, output_var_name].value for t in set_t)
 
                 if annual_prod > 0:
-                    tech_output_dict[(cfg.location, interval, alias)] = annual_prod * factor_fast_run
+                    tech_output_dict["AnnualOutput"][(cfg.location, interval, alias)] = annual_prod * factor_fast_run
                     print(f"ℹ️ Output of {alias} in {interval} at {cfg.location}: {annual_prod * factor_fast_run}")
 
-                if cfg.linking_operation and actual_tech_name in cfg.link_ops_techs:
-                    if "Operation" not in tech_output_dict:
-                        tech_output_dict["Operation"] = {}
-
-                    size = tech_block.var_size.value
+                if cfg.linking_operation and actual_tech_name in tech_ops_map:
+                    total_cons = sum(tech_block.var_input_tot[t, "electricity"].value for t in set_t)
                     operation_tech = np.array([tech_block.var_input_tot[t, "electricity"].value for t in set_t])
-                    if size > 0:
-                        capacity_factor = operation_tech / (size * len(set_t))
-                        tech_output_dict[("Operation", cfg.location, interval, alias)] = capacity_factor
+                    if total_cons > 0:
+
+                        capacity_factor = operation_tech / total_cons
+                        if cfg.fast_run:
+                            repeats = 8760 // len(capacity_factor)
+                            capacity_factor = np.tile(capacity_factor, repeats)
+                            capacity_factor = capacity_factor / factor_fast_run
+
+                        tech_output_dict["Operation"][(cfg.location, interval, alias)] = capacity_factor
                     else:
-                        tech_output_dict[("Operation", cfg.location, interval, alias)] = None
+                        tech_output_dict["Operation"][(cfg.location, interval, alias)] = None
 
 
     return tech_output_dict
