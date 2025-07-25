@@ -11,7 +11,8 @@ from merge_and_group_technologies import merge_and_group_technologies
 from extract_and_apply_import_share_bio import extract_and_apply_import_bio_ratios
 from map_techs_to_ID import map_techs_to_ID
 from update_and_clear_input_file_IESA import update_input_file_IESA, clear_input_file_IESA
-from convergence_criteria import compare_cluster_outputs
+from convergence_criteria import compare_cluster_outputs, get_cluster_epsilon
+from utils import convert_ndarrays_to_lists
 
 import config_model_linking as cfg
 
@@ -20,6 +21,7 @@ def model_linking(max_iterations, e):
     i = 1
     inputs_cluster = {}
     outputs_cluster = {}
+    epsilon = {}
     timestamp = datetime.now().strftime("%Y%m%d_%H_%M")
     map_name_cluster = cfg.cluster_result_folder / cfg.save_extension_link / f"Results_model_linking_{timestamp}"
     map_name_IESA = cfg.IESA_result_folder / cfg.save_extension_link / f"Results_model_linking_{timestamp}"
@@ -76,19 +78,25 @@ def model_linking(max_iterations, e):
 
         outputs_cluster[f"iteration_{i}"] = updates_to_IESA
         inputs_cluster[f"iteration_{i}"] = cluster_linked_input_dict
+        if i > 1:
+            epsilon[f"iteration_{i}"] = get_cluster_epsilon(outputs_cluster["AnnualOutput"], i)
 
-        if compare_cluster_outputs(outputs_cluster, i, e) or i == max_iterations:
+        if compare_cluster_outputs(epsilon, i, e) or i == max_iterations:
             print(f"✅ Model linking is done after {i} iterations.")
 
             # Save outputs_cluster to JSON
             output_file = map_name_cluster / "outputs_cluster.json"
             input_file = map_name_cluster / "inputs_cluster.json"
+            epsilon_file = map_name_cluster / "epsilons.json"
 
             with open(input_file, "w") as f:
                 json.dump(inputs_cluster, f, indent=4)
 
             with open(output_file, "w") as f:
-                json.dump(outputs_cluster, f, indent=4)
+                json.dump(convert_ndarrays_to_lists(outputs_cluster), f, indent=4)
+
+            with open(epsilon_file, "w") as f:
+                json.dump(epsilon, f, indent=4)
 
             print(f"📝 Saved inputs and outputs of the cluster model")
 
@@ -108,12 +116,16 @@ def model_linking(max_iterations, e):
             # Save outputs_cluster to JSON
             output_file = map_name_cluster / "outputs_cluster.json"
             input_file = map_name_cluster / "inputs_cluster.json"
+            epsilon_file = map_name_cluster / "epsilons.json"
 
             with open(input_file, "w") as f:
                 json.dump(inputs_cluster, f, indent=4)
 
             with open(output_file, "w") as f:
-                json.dump(outputs_cluster, f, indent=4)
+                json.dump(convert_ndarrays_to_lists(outputs_cluster), f, indent=4)
+
+            with open(epsilon_file, "w") as f:
+                json.dump(epsilon, f, indent=4)
 
             print(f"📝 Saved inputs and outputs of the cluster model")
 

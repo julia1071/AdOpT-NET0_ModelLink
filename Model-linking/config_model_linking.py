@@ -4,7 +4,9 @@ from pathlib import Path
 # === Model settings ==
 # # Convergence Criteria; the relative change in output for each technology in the cluster model must be lower than e
 e = 0.01
+e_max = 0.1
 max_iterations = 10
+convergence_type = 'Median_max'    #can be 'All', 'Average', 'Average_max', 'Median' or 'Median_max'
 fast_run = True  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
 threads = None
 
