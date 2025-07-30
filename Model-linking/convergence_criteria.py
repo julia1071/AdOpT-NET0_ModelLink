@@ -1,3 +1,5 @@
+import math
+
 import config_model_linking as cfg
 
 import numpy as np
@@ -20,17 +22,23 @@ def compare_cluster_outputs(epsilon, i, e):
         print("🌀 First iteration, skipping convergence check.")
         return False
 
-    # Flatten all epsilon values into a list
-    epsilon_values = []
-    for tech_eps in epsilon.values():
-        for val in tech_eps.values():
-            if np.isfinite(val):  # exclude inf values from convergence check
-                epsilon_values.append(val)
+    iter_key = f"iteration_{i}"
+    if iter_key not in epsilon:
+        print(f"⚠️ No epsilon data found for iteration {i}.")
+        return False
+
+    # Flatten all epsilon values into a list of floats
+    epsilon_values = [
+        val
+        for tech_eps in epsilon[iter_key].values()
+        for val in tech_eps.values()
+    ]
 
     if not epsilon_values:
         print("⚠️ No valid epsilon values to compare.")
         return False
 
+    # Convergence checks based on type
     if cfg.convergence_type == "All":
         converged = all(val < e for val in epsilon_values)
 
@@ -52,7 +60,8 @@ def compare_cluster_outputs(epsilon, i, e):
     if converged:
         print(f"✅ Converged at iteration {i} with type '{cfg.convergence_type}' — threshold {e}")
     else:
-        print(f"❌ Not converged at iteration {i} — max ε = {max(epsilon_values):.4f}, avg = {np.mean(epsilon_values):.4f}")
+        print(
+            f"❌ Not converged at iteration {i} — max ε = {max(epsilon_values):.4f}, avg = {np.mean(epsilon_values):.4f}")
 
     return converged
 
@@ -72,8 +81,8 @@ def get_cluster_epsilon(outputs_cluster, i):
         dict: Nested dictionary of {tech: {year: epsilon}} with relative changes.
     """
 
-    prev = outputs_cluster[f"iteration_{i - 1}"]
-    curr = outputs_cluster[f"iteration_{i}"]
+    prev = outputs_cluster[f"iteration_{i - 1}"]["AnnualOutput"]
+    curr = outputs_cluster[f"iteration_{i}"]["AnnualOutput"]
 
     all_techs = set(prev.keys()).union(curr.keys())
     epsilon = {}

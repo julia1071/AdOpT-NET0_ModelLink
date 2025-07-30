@@ -1,3 +1,4 @@
+import numpy as np
 import xlwings as xw
 
 import config_model_linking as cfg
@@ -62,7 +63,7 @@ def update_input_file_IESA(sheet_name, tech_id_col, tech_id_row_start, merged_ro
 
     # Expand data
     expanded_update_data = {}
-    for tech_id, year_vals in update_data.items():
+    for tech_id, year_vals in update_data["AnnualOutput"].items():
         expanded_year_vals = {}
         sorted_years = sorted(year_vals.keys())
         for year in sorted_years:
@@ -92,6 +93,12 @@ def update_input_file_IESA(sheet_name, tech_id_col, tech_id_row_start, merged_ro
             row = tech_id_to_row[tech_id]
             print(f"✍️ Writing {val} to row {row}, col {col} (Tech_ID={tech_id}, Year={year})")
             ws.range((row, col)).value = val
+
+    if cfg.linking_operation:
+        update_operations_IESA(sheet_name="HourlyProfiles",
+                               header_row=3,
+                               profile_row_start=5,
+                               update_data=update_data)
 
     wb.save()
     wb.close()
@@ -181,7 +188,96 @@ def clear_input_file_IESA(sheet_name, tech_id_col, tech_id_row_start, merged_row
                 if col:
                     ws.range((row, col)).clear_contents()
 
+    clear_input_operations_IESA(sheet_name="HourlyProfiles",
+                               header_row=3,
+                               profile_row_start=5)
+
     wb.save()
     wb.close()
     app.quit()
     print("✅ IESA input file cleaned successfully.")
+
+
+def update_operations_IESA(sheet_name, header_row, profile_row_start, update_data):
+    """
+    Updates IESA Excel sheet with average operation profiles per technology,
+    averaged over available years (ignoring None entries).
+
+    Args:
+        sheet_name (str): Sheet name in the Excel file.
+        header_row (int): Row number containing technology names as headers.
+        profile_row_start (int): First row where the 8760 profile begins.
+        update_data (dict): {"Operation": {tech: {year: array or None}}}
+    """
+    print("📄 Updating IESA operation profiles with averaged data...")
+
+    # Start Excel and open workbook
+    app = xw.App(visible=False)
+    wb = xw.Book(cfg.IESA_input_data_path)
+    ws = wb.sheets[sheet_name]
+
+    # Get header row values (tech names from columns 22–26)
+    headers = ws.range((header_row, 22), (header_row, 26)).value
+    start_col = 22  # Excel column V
+
+    # Build average profiles: {tech: avg_array}
+    avg_profiles = {}
+    for tech, year_data in update_data.get("Operation", {}).items():
+        valid_profiles = [np.array(profile) for profile in year_data.values() if profile is not None]
+        if valid_profiles:
+            avg_profiles[tech] = np.mean(valid_profiles, axis=0)
+
+    # Write to sheet using correct column indices
+    for col_offset, header in enumerate(headers):
+        col_idx = start_col + col_offset
+        if header in avg_profiles:
+            profile = avg_profiles[header]
+            if not np.isnan(profile).all():
+                profile = np.array(profile, dtype=float)  # force numeric type
+                write_range = ws.range(
+                    (profile_row_start, col_idx),
+                    (profile_row_start + len(profile) - 1, col_idx)
+                )
+                write_range.value = [[float(val)] for val in profile]
+                write_range.number_format = "0.000000"
+                print(f"✅ Wrote averaged profile for {header} in column {col_idx}")
+
+    print("💾 Averaged IESA operation profiles written successfully.")
+
+
+def clear_input_operations_IESA(sheet_name, header_row, profile_row_start):
+    """
+    Clears the IESA Excel sheet with a default operation profile of 1/8760
+    for each hour of the year for each technology.
+
+    Args:
+        sheet_name (str): Sheet name in the Excel file.
+        header_row (int): Row number containing technology names as headers.
+        profile_row_start (int): First row where the 8760 profile begins.
+    """
+    print("🧹 Clearing IESA operation profiles to default...")
+
+    # Start Excel and open workbook
+    app = xw.App(visible=False)
+    wb = xw.Book(cfg.IESA_input_data_path)
+    ws = wb.sheets[sheet_name]
+
+    # Read headers from columns 22–26 (Excel columns V to Z)
+    headers = ws.range((header_row, 22), (header_row, 26)).value
+    start_col = 22  # Starting at Excel column V
+
+    # Default profile: 1/8760 for each hour
+    profile = np.full(8760, 1.0 / 8760, dtype=float)
+
+    for col_offset, header in enumerate(headers):
+        col_idx = start_col + col_offset
+
+        write_range = ws.range(
+            (profile_row_start, col_idx),
+            (profile_row_start + len(profile) - 1, col_idx)
+        )
+        write_range.value = [[float(val)] for val in profile]
+        write_range.number_format = "0.000000"
+
+
+

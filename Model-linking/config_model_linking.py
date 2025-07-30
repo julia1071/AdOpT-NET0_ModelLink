@@ -6,7 +6,7 @@ from pathlib import Path
 e = 0.01
 e_max = 0.1
 max_iterations = 10
-convergence_type = 'Median_max'    #can be 'All', 'Average', 'Average_max', 'Median' or 'Median_max'
+convergence_type = 'Average_Max'    #can be 'All', 'Average', 'Average_Max', 'Median' or 'Median_Max'
 fast_run = True  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
 threads = None
 
@@ -32,7 +32,7 @@ else:
     IESA_modellink_path = IESA_path / "20250702_IESA_full.aimms"
     cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full")
 
-IESA_input_data_path = IESA_path / "data/20250715_detailed_linked.xlsx"
+IESA_input_data_path = IESA_path / "data/20250729_detailed_linked.xlsx"
 IESA_result_folder = IESA_path / "Output" / "ResultsModelLinking"
 
 #Cluster paths
@@ -42,7 +42,7 @@ cluster_case_path = "Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Full/ML_Zeela
 ppi_file_path = "Z:/IESA-Opt/Producer_Price_Index_CBS.xlsx"
 
 # Original and new filenames for IESA input and output folders
-original_filename_input_IESA = IESA_result_folder / "20250715_detailed_linked.xlsx"
+original_filename_input_IESA = IESA_result_folder / "20250729_detailed_linked.xlsx"
 original_filename_output_IESA = IESA_result_folder / "ResultsModelLinking_General.xlsx"
 
 # Define the new name of the input and output file
@@ -115,13 +115,8 @@ else:
 if linking_operation:
     save_extension_link = save_extension_link + '_ops'
 
-    link_ops_techs = {"CrackerFurnace_Electric", "ElectricSMR_m", "AEC", "CO2electrolysis"}
-    # list_sheets = ["SupplyDemand"]
-    # headers = [("Activity", "Type", "Tech_ID")]
-    # # Add all the possible technologies that can potentially supply MPW
-    # filters = [[("Mixed Plastic Waste", "supply", "WAI01_01"), ("Mixed Plastic Waste", "supply", "WAI01_02"),
-    #             ("Mixed Plastic Waste", "supply", "EPO01_03")]]
-    # nrows = [830]
+    link_ops_techs = {"CrackerFurnace_Electric", "CrackerFurnace_Electric_bio", "ElectricSMR_m", "AEC", "CO2electrolysis"}
+
 
 
 #Carriers with import possible outside system boundaries
@@ -144,7 +139,8 @@ base_tech_output_map = {
     "SteamReformer": ("SteamReformer", "HBfeed"),
     "AEC": ("AEC", "hydrogen"),
     "ElectricSMR_m": ("ElectricSMR_m", "syngas_r"),
-    "CO2electrolysis": ("CO2electrolysis", "ethylene")
+    "CO2electrolysis": ("CO2electrolysis", "ethylene"),
+    "RWGS": ("RWGS", "syngas")
 }
 
 cluster_carrier_names = {'Naphtha': 'naphtha', 'Bio Naphtha': 'naphtha_bio', 'Natural Gas HD': 'methane',
@@ -167,7 +163,7 @@ cc_technologies = {
     "CrackerFurnace": "CrackerFurnace",
     "SteamReformer": "SteamReformer",
     "MPW2methanol_input": "MPW2methanol",
-    # "Biomass2methanol_input": "Biomass2methanol"
+    "Biomass2methanol_input": "Biomass2methanol"
 }
 
 # Create a dictionary stating which technologies are splitted in bio and non bio
@@ -194,5 +190,6 @@ tech_to_id = {"CrackerFurnace": "ICH01_01",
               "ElectricSMR_m": "Amm01_08",
               "CO2electrolysis": "ICH01_40",
               "Biomass2methanol_input": "RFS03_01",
-              # "Biomass2methanol_input_CC": "RFS03_05"
+              "Biomass2methanol_input_CC": "RFS03_05",
+              "RWGS": "RFS03_02"
               }

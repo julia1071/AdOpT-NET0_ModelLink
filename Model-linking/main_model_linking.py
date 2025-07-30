@@ -79,7 +79,7 @@ def model_linking(max_iterations, e):
         outputs_cluster[f"iteration_{i}"] = updates_to_IESA
         inputs_cluster[f"iteration_{i}"] = cluster_linked_input_dict
         if i > 1:
-            epsilon[f"iteration_{i}"] = get_cluster_epsilon(outputs_cluster["AnnualOutput"], i)
+            epsilon[f"iteration_{i}"] = get_cluster_epsilon(outputs_cluster, i)
 
         if compare_cluster_outputs(epsilon, i, e) or i == max_iterations:
             print(f"✅ Model linking is done after {i} iterations.")
