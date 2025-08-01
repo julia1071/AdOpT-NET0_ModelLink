@@ -68,7 +68,7 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
         model_config['solveroptions']['mipgap']['value'] = 0.01
         if cfg.threads:
             model_config['solveroptions']['threads']['value'] = cfg.threads
-        # model_config['solveroptions']['nodefilestart']['value'] = 200
+        model_config['solveroptions']['nodefilestart']['value'] = 1e10
 
         # change save options
         model_config['reporting']['save_summary_path']['value'] = str(iteration_path)

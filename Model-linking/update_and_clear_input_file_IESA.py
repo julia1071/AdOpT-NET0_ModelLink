@@ -239,7 +239,7 @@ def update_operations_IESA(sheet_name, header_row, profile_row_start, update_dat
                     (profile_row_start + len(profile) - 1, col_idx)
                 )
                 write_range.value = [[float(val)] for val in profile]
-                write_range.number_format = "0.000000"
+                # write_range.number_format = "0.000000"
                 print(f"✅ Wrote averaged profile for {header} in column {col_idx}")
 
     print("💾 Averaged IESA operation profiles written successfully.")
@@ -277,7 +277,7 @@ def clear_input_operations_IESA(sheet_name, header_row, profile_row_start):
             (profile_row_start + len(profile) - 1, col_idx)
         )
         write_range.value = [[float(val)] for val in profile]
-        write_range.number_format = "0.000000"
+        # write_range.number_format = "0.00000000"
 
 
 
