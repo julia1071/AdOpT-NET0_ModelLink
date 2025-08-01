@@ -91,7 +91,7 @@ def extract_and_apply_cc_fractions(adopt_hub, tech_output_dict):
             size_cc = original_size * cc_ratio
             size_non_cc = original_size * non_cc_ratio
 
-            new_data[get_cc_tech_name(key[2])] = size_cc
+            new_data[(key[0], key[1], get_cc_tech_name(key[2]))] = size_cc
             new_data[key] = size_non_cc
 
         updated_dict[category] = new_data
