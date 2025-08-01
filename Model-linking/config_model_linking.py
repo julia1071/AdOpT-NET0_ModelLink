@@ -7,7 +7,7 @@ e = 0.01
 e_max = 0.1
 max_iterations = 10
 convergence_type = 'Average_Max'    #can be 'All', 'Average', 'Average_Max', 'Median' or 'Median_Max'
-fast_run = True  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
+fast_run = False  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
 threads = None
 
 # Linking scenario choice
@@ -51,14 +51,14 @@ basename_new_input_IESA = "Input_Iteration_"
 
 
 # === AIMMS Paths ===
-run_from_server = 0
+run_from_server = 1
 if run_from_server:
-    aimms_path = "C:/Program Files (x86)/AIMMS/IFA/Aimms/25.3.4.2-x64-VS2022/Bin/aimms.exe"
+    aimms_path = "C:/Program Files (x86)/AIMMS/IFA/Aimms/25.5.1.1-x64-VS2022/Bin/aimms.exe"
 else:
     aimms_path = "C:/Users/5637635/AppData/Local/AIMMS/IFA/Aimms/25.4.4.5-x64-VS2022/Bin/aimms.exe"  # Path on your local computer
 
 
-# Define the file path to the model and the procedures that you want to run,.
+# Define the file path to the model and the procedures that you want to run.
 command = [
         aimms_path,
         IESA_modellink_path,
