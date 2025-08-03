@@ -29,7 +29,7 @@ def conversion_factor_cluster_to_IESA(tech_id):
 
     elif tech_id == 'RFS03_01':
         # Cluster: t biomass/y → IESA: PJ/y (Syngas)
-        return 15.1 / (0.63 * 10 ** 6)
+        return 15.1 / (2.46 * 10 ** 6)
 
     elif tech_id == 'RFS03_02':
         # Cluster: t syngas/y → IESA: PJ/y (Syngas)
