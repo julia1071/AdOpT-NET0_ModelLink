@@ -5,9 +5,9 @@ from pathlib import Path
 # # Convergence Criteria; the relative change in output for each technology in the cluster model must be lower than e
 e = 0.01
 e_max = 0.1
-max_iterations = 10
+max_iterations = 5
 convergence_type = 'Average_Max'    #can be 'All', 'Average', 'Average_Max', 'Median' or 'Median_Max'
-fast_run = False  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
+fast_run = True  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
 threads = None
 
 # Linking scenario choice
@@ -20,6 +20,11 @@ intervals = ['2030', '2040', '2050']
 location = "Zeeland"
 scope3 = 1
 
+#save link extension
+if scope3:
+    save_extension_link = "Scope1-3"
+else:
+    save_extension_link = "Scope1-2"
 
 # === Paths ===
 #IESA paths
@@ -51,7 +56,7 @@ basename_new_input_IESA = "Input_Iteration_"
 
 
 # === AIMMS Paths ===
-run_from_server = 1
+run_from_server = 0
 if run_from_server:
     aimms_path = "C:/Program Files (x86)/AIMMS/IFA/Aimms/25.5.1.1-x64-VS2022/Bin/aimms.exe"
 else:
@@ -75,7 +80,6 @@ baseyear_IESA = 2019
 carrier_demand_dict = {'ethylene': 647310, 'PE_olefin': 1070000, 'ammonia': 1184000}
 
 if linking_energy_prices and not linking_MPW:
-    save_extension_link = 'Prices'
     # Define simulation years cluster model and the excel sheets from which you want to extract data in IESA-Opt
     list_sheets = ['EnergyCosts']
 
@@ -85,7 +89,6 @@ if linking_energy_prices and not linking_MPW:
     headers = ['Activity']
     filters = [['Naphtha', 'Bio Naphtha', 'Natural Gas HD', 'Biomass', 'Bio LPG', 'Bio Ethanol']]
 elif linking_MPW and not linking_energy_prices:  # Example of other use case: import limit MPW
-    save_extension_link = 'MPW'
     list_sheets = ["SupplyDemand"]
     headers = [("Activity", "Type", "Tech_ID")]
     # Add all the possible technologies that can potentially supply MPW
@@ -93,7 +96,6 @@ elif linking_MPW and not linking_energy_prices:  # Example of other use case: im
                 ("Mixed Plastic Waste", "supply", "EPO01_03")]]
     nrows = [830]
 elif linking_energy_prices and linking_MPW:
-    save_extension_link = 'Combi'
     list_sheets = ['EnergyCosts', 'SupplyDemand']
     nrows = [45, 830]
     headers = [
@@ -113,7 +115,6 @@ else:
     sys.exit()
 
 if linking_operation:
-    save_extension_link = save_extension_link + '_ops'
 
     link_ops_techs = {"CrackerFurnace_Electric", "CrackerFurnace_Electric_bio", "ElectricSMR_m", "AEC", "CO2electrolysis"}
 
@@ -127,20 +128,20 @@ car_import_international = ['naphtha', 'naphtha_bio', 'methane', 'biomass', 'MPW
 base_tech_output_map = {
     "CrackerFurnace": ("CrackerFurnace", "olefins"),
     "CrackerFurnace_Electric": ("CrackerFurnace_Electric", "olefins"),
-    "EDH": ("EDH", "ethylene"),
+    "SteamReformer": ("SteamReformer", "HBfeed"),
+    "ElectricSMR_m": ("ElectricSMR_m", "syngas_r"),
+    "AEC": ("AEC", "hydrogen"),
+    "RWGS": ("RWGS", "syngas"),
+    "MeOHsynthesis": ("MeOHsynthesis", "methanol"),
     "MTO": ("MTO", "propylene"),
+    "EDH": ("EDH", "ethylene"),
     "PDH": ("PDH", "propylene"),
     "MPW2methanol_input": ("MPW2methanol", "MPW"),
     "MPW2methanol_output": ("MPW2methanol", "methanol"),
-    "MeOHsynthesis": ("MeOHsynthesis", "methanol"),
     "Biomass2methanol_input": ("Biomass2methanol", "biomass"),
     "Biomass2methanol_output": ("Biomass2methanol", "methanol"),
     "DirectMeOHsynthesis": ("DirectMeOHsynthesis", "methanol"),
-    "SteamReformer": ("SteamReformer", "HBfeed"),
-    "AEC": ("AEC", "hydrogen"),
-    "ElectricSMR_m": ("ElectricSMR_m", "syngas_r"),
     "CO2electrolysis": ("CO2electrolysis", "ethylene"),
-    "RWGS": ("RWGS", "syngas")
 }
 
 cluster_carrier_names = {'Naphtha': 'naphtha', 'Bio Naphtha': 'naphtha_bio', 'Natural Gas HD': 'methane',
@@ -167,29 +168,30 @@ cc_technologies = {
 }
 
 # Create a dictionary stating which technologies are splitted in bio and non bio
-bio_tech_names = ["CrackerFurnace_CC", "CrackerFurnace_Electric"]
+bio_tech_names = ["CrackerFurnace", "CrackerFurnace_CC", "CrackerFurnace_Electric"]
 bio_carriers = ['naphtha']
 
 # Create the dictionary where is stated which technology belongs to which Tech_ID.
 # More Tech_IDs can be coupled to one name "PDH" : [Tech_ID1, Tech_ID2]
 tech_to_id = {"CrackerFurnace": "ICH01_01",
+              # "CrackerFurnace_bio": "ICH01_01",
               "CrackerFurnace_CC": "ICH01_02",
               "CrackerFurnace_CC_bio": "ICH01_03",
               "CrackerFurnace_Electric": "ICH01_05",
               "CrackerFurnace_Electric_bio": "ICH01_06",
-              "EDH": "ICH01_11",
+              "SteamReformer": "Amm01_01",
+              "SteamReformer_CC": "Amm01_02",
+              "ElectricSMR_m": "Amm01_08",
+              "AEC": "Amm01_05",
+              "RWGS": "RFS03_02",
+              "methanol_from_syngas": "RFS04_01",
               "MTO": "ICH01_12",
+              "EDH": "ICH01_11",
               "PDH": "ICH01_41",
               "MPW2methanol_input": "WAI01_10",
               "MPW2methanol_input_CC": "WAI01_11",
-              "methanol_from_syngas": "RFS04_01",
-              "DirectMeOHsynthesis": "RFS04_02",
-              "SteamReformer": "Amm01_01",
-              "SteamReformer_CC": "Amm01_02",
-              "AEC": "Amm01_05",
-              "ElectricSMR_m": "Amm01_08",
-              "CO2electrolysis": "ICH01_40",
               "Biomass2methanol_input": "RFS03_01",
               "Biomass2methanol_input_CC": "RFS03_05",
-              "RWGS": "RFS03_02"
+              "DirectMeOHsynthesis": "RFS04_02",
+              "CO2electrolysis": "ICH01_40"
               }

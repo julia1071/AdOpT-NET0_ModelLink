@@ -27,7 +27,7 @@ def conversion_factor_cluster_to_IESA(tech_id):
         # Cluster: t MPW/y → IESA: PJ/y (Syngas)
         return 1 / (0.04*10**6)
 
-    elif tech_id == 'RFS03_01':
+    elif tech_id == ['RFS03_01', 'RFS03_05']:
         # Cluster: t biomass/y → IESA: PJ/y (Syngas)
         return 15.1 / (2.46 * 10 ** 6)
 
@@ -97,6 +97,7 @@ def get_ppi_conversion_factor(sheet_name):
 
     factor = ppi_cluster / ppi_iesa
     return factor
+
 
 def conversion_factor_IESA_to_cluster(sheet, filter):
     if 'EnergyCosts' in sheet:

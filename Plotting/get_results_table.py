@@ -15,7 +15,7 @@ location = "Zeeland"
 basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + ambition
 result_folder = basepath_results + "/Results_model_linking_20250803_19_05"
 basepath_plots = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-data_to_excel_path = os.path.join(basepath_plots, "Plotting", "result_data_long.xlsx")
+data_to_excel_path = os.path.join(basepath_plots, "Plotting", f"result_data_long_{ambition}.xlsx")
 
 
 # Initialize an empty dictionary to collect DataFrame results
