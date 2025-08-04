@@ -227,8 +227,8 @@ def main():
     flag_cluster_ambition = "Scope1-3"
 
     # Define paths
-    basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/Combi_ops/"
-    result_folder = basepath_results + "Results_model_linking_20250801_09_50"
+    basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + flag_cluster_ambition
+    result_folder = basepath_results + "Results_model_linking_20250803_19_05"
     plot_folder = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/IterationBars_" + flag_cluster_ambition
 
     tec_mapping = {
