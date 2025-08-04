@@ -166,7 +166,7 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
 
     fig, axes = plt.subplots(2, 1, figsize=(12, 6), sharex=True)
 
-    def make_stacked_bars(ax, df):
+    def make_stacked_bars(ax, df, product):
         for idx_interval, interval in enumerate(intervals):
             for idx_iter, iteration in enumerate(iterations):
                 bar_index = idx_interval * group_size + idx_iter
@@ -176,13 +176,13 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
                     ax.bar(x[bar_index], value, bar_width, bottom=bottom, color=categories[category], label=category if bottom == 0 else "")
                     bottom += value
 
-        ax.set_ylabel("Share of total production")
+        ax.set_ylabel(f"Share of total production\n {product}")
         ax.set_ylim(0, 1)
         ax.set_xlim(-0.5, total_bars - 0.5)
         ax.spines[['top', 'right']].set_visible(False)
 
-    make_stacked_bars(axes[0], production_sum_olefins)
-    make_stacked_bars(axes[1], production_sum_ammonia)
+    make_stacked_bars(axes[0], production_sum_olefins, "olefins")
+    make_stacked_bars(axes[1], production_sum_ammonia, "ammonia")
 
     # Set x-ticks and labels
     xtick_labels = []
