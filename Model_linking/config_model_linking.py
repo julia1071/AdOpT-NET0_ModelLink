@@ -37,7 +37,7 @@ else:
     IESA_modellink_path = IESA_path / "20250730_IESA_full.aimms"
     cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full")
 
-IESA_input_data_path = IESA_path / "data/20250730_detailed_linked.xlsx"
+IESA_input_data_path = IESA_path / "data/20250805_detailed_linked.xlsx"
 IESA_result_folder = IESA_path / "Output" / "ResultsModelLinking"
 
 #Cluster paths
@@ -47,7 +47,7 @@ cluster_case_path = "Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Full/ML_Zeela
 ppi_file_path = "Z:/IESA-Opt/Producer_Price_Index_CBS.xlsx"
 
 # Original and new filenames for IESA input and output folders
-original_filename_input_IESA = IESA_result_folder / "20250730_detailed_linked.xlsx"
+original_filename_input_IESA = IESA_result_folder / "20250805_detailed_linked.xlsx"
 original_filename_output_IESA = IESA_result_folder / "ResultsModelLinking_General.xlsx"
 
 # Define the new name of the input and output file

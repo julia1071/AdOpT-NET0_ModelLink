@@ -248,7 +248,7 @@ def main():
     basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + flag_cluster_ambition
     result_folder = basepath_results + "/Results_model_linking_20250803_19_05"
     plot_folder = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/IterationBars_" + flag_cluster_ambition
-    COST_DATA_EXCEL = os.path.join(DATAPATH, "Plotting", f"result_data_long_{flag_cluster_ambition}.xlsx")
+    cost_data_excel = os.path.join(DATAPATH, "Plotting", f"result_data_long_{flag_cluster_ambition}.xlsx")
 
     tec_mapping = {
         "CrackerFurnace": ("Olefin", "Conventional", "olefins", 0.439),
@@ -292,7 +292,7 @@ def main():
     production_sum_ammonia = pd.read_excel(DATA_TO_EXCEL_PATH2, index_col=0, header=[0, 1])
 
     if include_prod_costs:
-        df_costs = pd.read_excel(COST_DATA_EXCEL, header=[0, 1], index_col=0)
+        df_costs = pd.read_excel(cost_data_excel, header=[0, 1], index_col=0)
         if 'costs_obj_interval' not in df_costs.index:
             raise KeyError("Row 'costs_obj_interval' not found in cost Excel")
         cost_values = df_costs.loc['costs_obj_interval']
