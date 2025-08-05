@@ -174,7 +174,7 @@ bio_carriers = ['naphtha']
 # Create the dictionary where is stated which technology belongs to which Tech_ID.
 # More Tech_IDs can be coupled to one name "PDH" : [Tech_ID1, Tech_ID2]
 tech_to_id = {"CrackerFurnace": "ICH01_01",
-              # "CrackerFurnace_bio": "ICH01_01",
+              "CrackerFurnace_bio": "ICH01_42",
               "CrackerFurnace_CC": "ICH01_02",
               "CrackerFurnace_CC_bio": "ICH01_03",
               "CrackerFurnace_Electric": "ICH01_05",

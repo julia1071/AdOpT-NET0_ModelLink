@@ -2,6 +2,9 @@ import os
 from pathlib import Path
 import h5py
 import matplotlib as mpl
+import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt, gridspec
 
 from adopt_net0 import extract_datasets_from_h5group
 
@@ -13,7 +16,6 @@ DATA_TO_EXCEL_PATH2 = os.path.join(DATAPATH, "Plotting", "production_shares_ammo
 
 def fetch_and_process_data_production(result_folder, data_to_excel_path_olefins, data_to_excel_path_ammonia,
                                       tec_mapping, categories, nr_iterations, location, ambition):
-    all_results = []
     olefin_results = []
     ammonia_results = []
 
@@ -121,7 +123,6 @@ def fetch_and_process_data_production(result_folder, data_to_excel_path_olefins,
                                 production_sum_ammonia.loc[
                                     tec_mapping[tec][1], (iteration, interval)] += ammonia_production
 
-        all_results.append(result_data)
         olefin_results.append(production_sum_olefins)
         ammonia_results.append(production_sum_ammonia)
 
@@ -129,10 +130,6 @@ def fetch_and_process_data_production(result_folder, data_to_excel_path_olefins,
     production_sum_olefins.to_excel(data_to_excel_path_olefins)
     production_sum_ammonia = pd.concat(ammonia_results, axis=1)
     production_sum_ammonia.to_excel(data_to_excel_path_ammonia)
-
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
 
 
 def plot_production_shares(production_sum_olefins, production_sum_ammonia, categories, nr_iterations):
@@ -207,7 +204,7 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
         axes[0].text(mid, 1.05, interval, ha='center', va='bottom', fontsize=14)
 
     # Set tighter spacing and room for legend below
-    plt.subplots_adjust(hspace=0.3, bottom=0.2, left=0.08, right=0.97)
+    plt.subplots_adjust(hspace=0.3, bottom=0.2, left=0.08, right=0.92)
 
     # Single shared legend centered below plot
     handles, labels = axes[0].get_legend_handles_labels()
@@ -219,17 +216,86 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
     return plt
 
 
+def add_production_costs(fig, axes, cost_data, intervals, iterations, separate, total_cost):
+    group_size = len(iterations)
+    total_bars = group_size * len(intervals)
+    x = np.arange(total_bars)
+
+    # Dummy fallback if no cost data
+    if not total_cost:
+        cost_data = cost_data / 2901310 #annual production in tonnes Zeeland
+
+    xtick_labels = []
+    for interval in intervals:
+        for i in range(group_size):
+            if i == 0:
+                xtick_labels.append("Standalone")
+            else:
+                xtick_labels.append(f"Iteration {i}")  # space instead of underscore
+
+    if separate:
+        # Clear current figure and rebuild with GridSpec (3 rows)
+        print('separate plot not working')
+        # fig.clf()
+        # gs = gridspec.GridSpec(3, 1, height_ratios=[1, 1, 0.6], hspace=0.35)
+        #
+        # # Rebuild original two subplots
+        # ax1 = fig.add_subplot(gs[0])
+        # ax2 = fig.add_subplot(gs[1])
+        # axes = [ax1, ax2]
+        #
+        # # (Optional) You could copy over bar plot content here if needed, or re-plot
+        #
+        # # Add cost subplot
+        # ax_new = fig.add_subplot(gs[2])
+        # ax_new.plot(x, cost_data, 'o', color='black', markersize=4, label='Production cost')
+        # ax_new.set_ylabel("Total cluster cost [€/t]")
+        # ax_new.set_xticks(x)
+        # ax_new.set_xticklabels(xtick_labels, rotation=45, ha='right')
+        # ax_new.spines['top'].set_visible(False)
+        # ax_new.spines['right'].set_visible(False)
+        # ax_new.set_ylim(0, max(cost_data) * 1.2)
+        # ax_new.legend(loc='upper right', fontsize=9)
+    else:
+        # Overlay on bottom subplot
+        ax = axes[1]
+        if hasattr(ax, 'secondary_ax'):
+            ax2 = ax.secondary_ax
+        else:
+            ax2 = ax.twinx()
+            ax.secondary_ax = ax2
+
+        ax2.cla()
+        ax2.plot(x, cost_data, 'o', color='black', markersize=4, label='Production cost')
+        ax2.set_ylabel("Total cluster cost [€/t]", color='black', loc='center')
+        ax2.yaxis.set_label_position("right")
+        ax2.yaxis.tick_right()
+        ax2.set_ylim(0, max(cost_data) * 1.2)
+        ax2.spines['top'].set_visible(False)
+        ax2.spines['right'].set_color('gray')
+        ax2.spines['right'].set_linewidth(1)
+
+        # Make sure x-ticks are set correctly on primary x-axis
+        ax.set_xticks(x)
+        ax.set_xticklabels(xtick_labels, rotation=45, ha='right')
+
+        ax2.legend(loc='upper right', fontsize=9)
+
 
 
 def main():
     #Define cluster ambition and number of iteration
     nr_iterations = 1
     flag_cluster_ambition = "Scope1-3"
+    include_prod_costs = True
+    intervals = ['2030', '2040', '2050']
+    iterations = ['Standalone'] + [f'Iteration_{i}' for i in range(1, nr_iterations + 1)]
 
     # Define paths
     basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + flag_cluster_ambition
-    result_folder = basepath_results + "Results_model_linking_20250803_19_05"
+    result_folder = basepath_results + "/Results_model_linking_20250803_19_05"
     plot_folder = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/IterationBars_" + flag_cluster_ambition
+    COST_DATA_EXCEL = os.path.join(DATAPATH, "Plotting", f"result_data_long_{flag_cluster_ambition}.xlsx")
 
     tec_mapping = {
         "CrackerFurnace": ("Olefin", "Conventional", "olefins", 0.439),
@@ -272,8 +338,26 @@ def main():
     production_sum_olefins = pd.read_excel(DATA_TO_EXCEL_PATH1, index_col=0, header=[0, 1])
     production_sum_ammonia = pd.read_excel(DATA_TO_EXCEL_PATH2, index_col=0, header=[0, 1])
 
-    plt = plot_production_shares(production_sum_olefins, production_sum_ammonia, categories, nr_iterations)
+    plot_production_shares(production_sum_olefins, production_sum_ammonia, categories, nr_iterations)
 
+
+    if include_prod_costs:
+        # Load production cost data from Excel (multi-level columns)
+        df_costs = pd.read_excel(COST_DATA_EXCEL, header=[0, 1], index_col=0)
+
+        # Extract cost values from the row 'costs_obj_interval' and flatten to list
+        if 'costs_obj_interval' in df_costs.index:
+            cost_values = df_costs.loc['costs_obj_interval']
+        else:
+            raise KeyError("Row 'costs_obj_interval' not found in COST_DATA_EXCEL")
+
+        # Add production costs to plot
+        fig = plt.gcf()
+        axes = fig.get_axes()[:2]  # Only the two main stacked bar subplots
+        add_production_costs(fig, axes, cost_data=cost_values, intervals=intervals, iterations=iterations,
+                             separate=False, total_cost=False)
+
+    #saving options
     save = "both"
     if save == "pdf":
         plt.savefig(f"{plot_folder}.pdf", format='pdf', bbox_inches='tight')
@@ -285,8 +369,6 @@ def main():
 
 
     plt.show()
-
-
 
 
 
