@@ -132,17 +132,14 @@ def fetch_and_process_data_production(result_folder, data_to_excel_path_olefins,
     production_sum_ammonia.to_excel(data_to_excel_path_ammonia)
 
 
-def plot_production_shares(production_sum_olefins, production_sum_ammonia, categories, nr_iterations):
+def plot_production_shares(production_sum_olefins, production_sum_ammonia, categories, intervals, iterations,
+                           include_costs=False, separate=False, cost_data=None, total_cost=False):
     mpl.rcParams['font.family'] = 'serif'
 
-    intervals = ['2030', '2040', '2050']
-    iterations = ['Standalone'] + [f'Iteration_{i}' for i in range(1, nr_iterations + 1)]
     group_size = len(iterations)
     total_bars = group_size * len(intervals)
-
-    # Prepare x-axis positions and bar width
     x = np.arange(total_bars)
-    bar_width = 0.6 / group_size  # Keep overall width constant regardless of nr_iterations
+    bar_width = 0.6 / group_size
 
     def normalize(df):
         df = df.sort_index(axis=1)  # Fix PerformanceWarning
@@ -161,19 +158,21 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
     production_sum_olefins = normalize(production_sum_olefins)
     production_sum_ammonia = normalize(production_sum_ammonia)
 
-    fig, axes = plt.subplots(2, 1, figsize=(12, 6), sharex=True)
+    n_rows = 3 if (include_costs and separate) else 2
+    fig, axes = plt.subplots(n_rows, 1, figsize=(12, 9 if n_rows == 3 else 6), sharex=True)
+    axes = axes if isinstance(axes, np.ndarray) else [axes]
 
     def make_stacked_bars(ax, df, product):
         for idx_interval, interval in enumerate(intervals):
             for idx_iter, iteration in enumerate(iterations):
                 bar_index = idx_interval * group_size + idx_iter
                 bottom = 0
-                for i, category in enumerate(categories):
-                    value = df.loc[category, (iteration, interval)] if (iteration, interval) in df.columns else 0
-                    ax.bar(x[bar_index], value, bar_width, bottom=bottom, color=categories[category], label=category if bottom == 0 else "")
-                    bottom += value
-
-        ax.set_ylabel(f"Share of total production\n {product}")
+                for category, color in categories.items():
+                    val = df.loc[category, (iteration, interval)] if (iteration, interval) in df.columns else 0
+                    ax.bar(x[bar_index], val, bar_width, bottom=bottom, color=color,
+                           label=category if bottom == 0 else "")
+                    bottom += val
+        ax.set_ylabel(f"Share of total production\n{product}")
         ax.set_ylim(0, 1)
         ax.set_xlim(-0.5, total_bars - 0.5)
         ax.spines[['top', 'right']].set_visible(False)
@@ -181,105 +180,58 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
     make_stacked_bars(axes[0], production_sum_olefins, "olefins")
     make_stacked_bars(axes[1], production_sum_ammonia, "ammonia")
 
-    # Set x-ticks and labels
+    # Common x-ticks and interval lines
     xtick_labels = []
     for interval in intervals:
-        for i in range(nr_iterations + 1):
-            if i == 0:
-                xtick_labels.append("Standalone")
-            else:
-                xtick_labels.append(f"Iteration {i}")  # space instead of underscore
-    axes[1].set_xticks(x)
-    axes[1].set_xticklabels(xtick_labels, rotation=45, ha='right')
+        for i in range(group_size):
+            xtick_labels.append("Standalone" if i == 0 else f"Iteration {i}")
 
-    # Add dashed lines and interval labels
+    axes[-1].set_xticks(x)
+    axes[-1].set_xticklabels(xtick_labels, rotation=45, ha='right')
+
     for i in range(1, len(intervals)):
         xpos = i * group_size - 0.5
-        for ax in axes:
+        for ax in axes[:2]:  # Don't add lines to cost axis
             ax.axvline(x=xpos, color='gray', linestyle='dashed', linewidth=1)
 
-    # Add interval labels above top plot
     for i, interval in enumerate(intervals):
         mid = (i * group_size + (i + 1) * group_size - 1) / 2
         axes[0].text(mid, 1.05, interval, ha='center', va='bottom', fontsize=14)
 
-    # Set tighter spacing and room for legend below
+    # Add costs if applicable
+    if include_costs and cost_data is not None:
+        if not total_cost:
+            cost_data = cost_data / 2_901_310  # Convert to €/t
+
+        if separate:
+            ax_cost = axes[2]
+            ax_cost.bar(x, cost_data, color='gray', width=0.8, label='Production cost')
+            ax_cost.set_ylabel("Total cluster cost [€/t]")
+            ax_cost.set_ylim(0, max(cost_data) * 1.2)
+            ax_cost.spines[['top', 'right']].set_visible(False)
+            ax_cost.spines['left'].set_color('navy')
+            ax_cost.spines['left'].set_linewidth(1)
+            ax_cost.legend(loc='upper right', fontsize=9)
+        else:
+            ax2 = axes[1].twinx()
+            ax2.plot(x, cost_data, 'o', color='black', markersize=4, label='Production cost')
+            ax2.set_ylabel("Total cluster cost [€/t]", color='black', loc='center')
+            ax2.yaxis.set_label_position("right")
+            ax2.yaxis.tick_right()
+            ax2.spines['top'].set_visible(False)
+            ax2.spines['right'].set_color('navy')
+            ax2.spines['right'].set_linewidth(1)
+            ax2.set_ylim(0, max(cost_data) * 1.2)
+            ax2.legend(loc='upper right', fontsize=9)
+
+    # Legend & layout
+    handles, labels = axes[0].get_legend_handles_labels()
+    unique = dict(zip(labels, handles))
+    fig.legend(unique.values(), unique.keys(), loc='lower center', ncol=6, fontsize=10,
+               bbox_to_anchor=(0.5, 0.01))
     plt.subplots_adjust(hspace=0.3, bottom=0.2, left=0.08, right=0.92)
 
-    # Single shared legend centered below plot
-    handles, labels = axes[0].get_legend_handles_labels()
-    unique = dict(zip(labels, handles))  # Remove duplicates
-    fig.legend(unique.values(), unique.keys(),
-               loc='lower center', ncol=6, fontsize=10,
-               bbox_to_anchor=(0.5, 0.01))  # Slightly inside the figure
-
     return plt
-
-
-def add_production_costs(fig, axes, cost_data, intervals, iterations, separate, total_cost):
-    group_size = len(iterations)
-    total_bars = group_size * len(intervals)
-    x = np.arange(total_bars)
-
-    # Dummy fallback if no cost data
-    if not total_cost:
-        cost_data = cost_data / 2901310 #annual production in tonnes Zeeland
-
-    xtick_labels = []
-    for interval in intervals:
-        for i in range(group_size):
-            if i == 0:
-                xtick_labels.append("Standalone")
-            else:
-                xtick_labels.append(f"Iteration {i}")  # space instead of underscore
-
-    if separate:
-        # Clear current figure and rebuild with GridSpec (3 rows)
-        print('separate plot not working')
-        # fig.clf()
-        # gs = gridspec.GridSpec(3, 1, height_ratios=[1, 1, 0.6], hspace=0.35)
-        #
-        # # Rebuild original two subplots
-        # ax1 = fig.add_subplot(gs[0])
-        # ax2 = fig.add_subplot(gs[1])
-        # axes = [ax1, ax2]
-        #
-        # # (Optional) You could copy over bar plot content here if needed, or re-plot
-        #
-        # # Add cost subplot
-        # ax_new = fig.add_subplot(gs[2])
-        # ax_new.plot(x, cost_data, 'o', color='black', markersize=4, label='Production cost')
-        # ax_new.set_ylabel("Total cluster cost [€/t]")
-        # ax_new.set_xticks(x)
-        # ax_new.set_xticklabels(xtick_labels, rotation=45, ha='right')
-        # ax_new.spines['top'].set_visible(False)
-        # ax_new.spines['right'].set_visible(False)
-        # ax_new.set_ylim(0, max(cost_data) * 1.2)
-        # ax_new.legend(loc='upper right', fontsize=9)
-    else:
-        # Overlay on bottom subplot
-        ax = axes[1]
-        if hasattr(ax, 'secondary_ax'):
-            ax2 = ax.secondary_ax
-        else:
-            ax2 = ax.twinx()
-            ax.secondary_ax = ax2
-
-        ax2.cla()
-        ax2.plot(x, cost_data, 'o', color='black', markersize=4, label='Production cost')
-        ax2.set_ylabel("Total cluster cost [€/t]", color='black', loc='center')
-        ax2.yaxis.set_label_position("right")
-        ax2.yaxis.tick_right()
-        ax2.set_ylim(0, max(cost_data) * 1.2)
-        ax2.spines['top'].set_visible(False)
-        ax2.spines['right'].set_color('gray')
-        ax2.spines['right'].set_linewidth(1)
-
-        # Make sure x-ticks are set correctly on primary x-axis
-        ax.set_xticks(x)
-        ax.set_xticklabels(xtick_labels, rotation=45, ha='right')
-
-        ax2.legend(loc='upper right', fontsize=9)
 
 
 
@@ -287,7 +239,8 @@ def main():
     #Define cluster ambition and number of iteration
     nr_iterations = 1
     flag_cluster_ambition = "Scope1-3"
-    include_prod_costs = True
+    include_prod_costs = False
+    separate = False
     intervals = ['2030', '2040', '2050']
     iterations = ['Standalone'] + [f'Iteration_{i}' for i in range(1, nr_iterations + 1)]
 
@@ -338,27 +291,26 @@ def main():
     production_sum_olefins = pd.read_excel(DATA_TO_EXCEL_PATH1, index_col=0, header=[0, 1])
     production_sum_ammonia = pd.read_excel(DATA_TO_EXCEL_PATH2, index_col=0, header=[0, 1])
 
-    plot_production_shares(production_sum_olefins, production_sum_ammonia, categories, nr_iterations)
-
-
     if include_prod_costs:
-        # Load production cost data from Excel (multi-level columns)
         df_costs = pd.read_excel(COST_DATA_EXCEL, header=[0, 1], index_col=0)
+        if 'costs_obj_interval' not in df_costs.index:
+            raise KeyError("Row 'costs_obj_interval' not found in cost Excel")
+        cost_values = df_costs.loc['costs_obj_interval']
+    else:
+        cost_values = None
 
-        # Extract cost values from the row 'costs_obj_interval' and flatten to list
-        if 'costs_obj_interval' in df_costs.index:
-            cost_values = df_costs.loc['costs_obj_interval']
-        else:
-            raise KeyError("Row 'costs_obj_interval' not found in COST_DATA_EXCEL")
-
-        # Add production costs to plot
-        fig = plt.gcf()
-        axes = fig.get_axes()[:2]  # Only the two main stacked bar subplots
-        add_production_costs(fig, axes, cost_data=cost_values, intervals=intervals, iterations=iterations,
-                             separate=False, total_cost=False)
+    plt_obj = plot_production_shares(production_sum_olefins=production_sum_olefins,
+                                     production_sum_ammonia=production_sum_ammonia,
+                                     categories=categories,
+                                     intervals=intervals,
+                                     iterations=iterations,
+                                     include_costs=include_prod_costs,
+                                     separate=separate,
+                                     cost_data=cost_values,
+                                     total_cost=False)
 
     #saving options
-    save = "both"
+    save = "no"
     if save == "pdf":
         plt.savefig(f"{plot_folder}.pdf", format='pdf', bbox_inches='tight')
     elif save == "svg":
