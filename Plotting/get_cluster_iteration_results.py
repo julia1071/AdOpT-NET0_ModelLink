@@ -8,12 +8,6 @@ from matplotlib import pyplot as plt, gridspec
 
 from adopt_net0 import extract_datasets_from_h5group
 
-#Add basepath
-DATAPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-DATA_TO_EXCEL_PATH1 = os.path.join(DATAPATH, "Plotting", "production_shares_olefins.xlsx")
-DATA_TO_EXCEL_PATH2 = os.path.join(DATAPATH, "Plotting", "production_shares_ammonia.xlsx")
-
-
 def fetch_and_process_data_production(result_folder, data_to_excel_path_olefins, data_to_excel_path_ammonia,
                                       tec_mapping, categories, nr_iterations, location, ambition):
     olefin_results = []
@@ -244,11 +238,14 @@ def main():
     intervals = ['2030', '2040', '2050']
     iterations = ['Standalone'] + [f'Iteration_{i}' for i in range(1, nr_iterations + 1)]
 
-    # Define paths
+    # Add basepath
+    datapath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    data_to_excel_path1 = os.path.join(datapath, "Plotting", f"production_shares_olefins_{flag_cluster_ambition}.xlsx")
+    data_to_excel_path2 = os.path.join(datapath, "Plotting", f"production_shares_ammonia_{flag_cluster_ambition}.xlsx")
     basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + flag_cluster_ambition
     result_folder = basepath_results + "/Results_model_linking_20250803_19_05"
     plot_folder = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/IterationBars_" + flag_cluster_ambition
-    cost_data_excel = os.path.join(DATAPATH, "Plotting", f"result_data_long_{flag_cluster_ambition}.xlsx")
+    cost_data_excel = os.path.join(datapath, "Plotting", f"result_data_long_{flag_cluster_ambition}.xlsx")
 
     tec_mapping = {
         "CrackerFurnace": ("Olefin", "Conventional", "olefins", 0.439),
@@ -284,12 +281,12 @@ def main():
     get_data = 0
 
     if get_data == 1:
-        fetch_and_process_data_production(result_folder, DATA_TO_EXCEL_PATH1, DATA_TO_EXCEL_PATH2,
+        fetch_and_process_data_production(result_folder, data_to_excel_path1, data_to_excel_path2,
                                           tec_mapping, categories, nr_iterations, 'Zeeland',
                                           flag_cluster_ambition)
 
-    production_sum_olefins = pd.read_excel(DATA_TO_EXCEL_PATH1, index_col=0, header=[0, 1])
-    production_sum_ammonia = pd.read_excel(DATA_TO_EXCEL_PATH2, index_col=0, header=[0, 1])
+    production_sum_olefins = pd.read_excel(data_to_excel_path1, index_col=0, header=[0, 1])
+    production_sum_ammonia = pd.read_excel(data_to_excel_path2, index_col=0, header=[0, 1])
 
     if include_prod_costs:
         df_costs = pd.read_excel(cost_data_excel, header=[0, 1], index_col=0)
