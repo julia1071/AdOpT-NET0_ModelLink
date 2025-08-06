@@ -3,10 +3,9 @@ import xlwings as xw
 
 import config_model_linking as cfg
 
+
 def update_input_file_IESA(sheet_name, tech_id_col, tech_id_row_start, merged_row, header_row, merged_name,
                            update_data, tech_to_id):
-
-
     print("📝 Updating the input file of IESA...")
 
     # First: Clean old values
@@ -106,7 +105,6 @@ def update_input_file_IESA(sheet_name, tech_id_col, tech_id_row_start, merged_ro
     return "✅ All values written successfully."
 
 
-
 def clear_input_file_IESA(sheet_name, tech_id_col, tech_id_row_start, merged_row, header_row, merged_name, tech_to_id):
     """
     Clears all input values in the specified Excel sheet related to the given Tech_IDs and years,
@@ -189,8 +187,8 @@ def clear_input_file_IESA(sheet_name, tech_id_col, tech_id_row_start, merged_row
                     ws.range((row, col)).clear_contents()
 
     clear_input_operations_IESA(sheet_name="HourlyProfiles",
-                               header_row=3,
-                               profile_row_start=5)
+                                header_row=3,
+                                profile_row_start=5)
 
     wb.save()
     wb.close()
@@ -278,6 +276,3 @@ def clear_input_operations_IESA(sheet_name, header_row, profile_row_start):
         )
         write_range.value = [[float(val)] for val in profile]
         # write_range.number_format = "0.00000000"
-
-
-
