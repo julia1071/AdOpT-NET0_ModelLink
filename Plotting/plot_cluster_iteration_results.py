@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt, gridspec
 from adopt_net0 import extract_datasets_from_h5group
 
 def fetch_and_process_data_production(result_folder, data_to_excel_path_olefins, data_to_excel_path_ammonia,
-                                      tec_mapping, categories, nr_iterations, location, ambition):
+                                      tec_mapping, categories, combined_categories, nr_iterations, location, ambition):
     olefin_results = []
     ammonia_results = []
 
@@ -249,11 +249,17 @@ def main():
 
     tec_mapping = {
         "CrackerFurnace": ("Olefin", "Conventional", "olefins", 0.439),
+        "CrackerFurnace_bio": ("Olefin", "Conventional + Bio-based", "olefins", 0.439),
         "CrackerFurnace_CC": ("Olefin", "Carbon Capture", "olefins", 0.439),
+        "CrackerFurnace_CC_bio": ("Olefin", "Conventional + Bio-based feedstock with CC", "olefins", 0.439),
         "CrackerFurnace_Electric": ("Olefin", "Electrification", "olefins", 0.439),
+        "CrackerFurnace_Electric_bio": ("Olefin", "Electrification + Bio-based", "olefins", 0.439),
         "SteamReformer": ("Ammonia", "Conventional", "HBfeed", 0.168),
+        "SteamReformer_bio": ("Ammonia", "Conventional", "HBfeed", 0.168),
         "SteamReformer_CC": ("Ammonia", "Carbon Capture", "HBfeed", 0.168),
+        "SteamReformer_CC_bio": ("Ammonia", "Conventional + Bio-based feedstock with CC", "HBfeed", 0.168),
         "WGS_m": ("Ammonia", "Electrification", "hydrogen", 0.168),
+        "WGS_m_bio": ("Ammonia", "Electrification + Bio-based", "hydrogen", 0.168),
         "AEC": ("Ammonia", "Water electrolysis", "hydrogen", 0.168),
         "RWGS": ("Olefin", r"CO$_2$ utilization", "syngas", 0.270),
         "DirectMeOHsynthesis": ("Olefins", r"CO$_2$ utilization", "methanol", 0.328),
@@ -278,11 +284,17 @@ def main():
         "Plastic waste recycling with CC": '#533A8C',
     }
 
+    combined_categories = {
+        "Electrification + Bio-based": ("Electrification", "Bio-based feedstock"),
+        "Conventional + Bio-based feedstock": ("Conventional", "Bio-based feedstock"),
+        "Conventional + Bio-based feedstock with CC": ("Conventional", "Bio-based feedstock with CC"),
+    }
+
     get_data = 0
 
     if get_data == 1:
         fetch_and_process_data_production(result_folder, data_to_excel_path1, data_to_excel_path2,
-                                          tec_mapping, categories, nr_iterations, 'Zeeland',
+                                          tec_mapping, categories, combined_categories, nr_iterations, 'Zeeland',
                                           flag_cluster_ambition)
 
     production_sum_olefins = pd.read_excel(data_to_excel_path1, index_col=0, header=[0, 1])

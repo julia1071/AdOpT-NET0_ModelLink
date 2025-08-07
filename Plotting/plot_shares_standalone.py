@@ -165,7 +165,7 @@ def save_separate_legend(categories, filename="legend.pdf"):
 
 
 def main():
-    flag_cluster_ambition = "Scope1-2"
+    flag_cluster_ambition = "Scope1-3"
     iterations = ['Standalone']
 
     # Add basepath
@@ -174,24 +174,6 @@ def main():
     data_to_excel_path2 = os.path.join(datapath, "Plotting", f"production_shares_ammonia_{flag_cluster_ambition}.xlsx")
     plot_folder = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/ProdShares_" + flag_cluster_ambition
 
-    tec_mapping = {
-        "CrackerFurnace": ("Olefin", "Conventional", "olefins", 0.439),
-        "CrackerFurnace_CC": ("Olefin", "Carbon Capture", "olefins", 0.439),
-        "CrackerFurnace_Electric": ("Olefin", "Electrification", "olefins", 0.439),
-        "SteamReformer": ("Ammonia", "Conventional", "HBfeed", 0.168),
-        "SteamReformer_CC": ("Ammonia", "Carbon Capture", "HBfeed", 0.168),
-        "WGS_m": ("Ammonia", "Electrification", "hydrogen", 0.168),
-        "AEC": ("Ammonia", "Water electrolysis", "hydrogen", 0.168),
-        "RWGS": ("Olefin", r"CO$_2$ utilization", "syngas", 0.270),
-        "DirectMeOHsynthesis": ("Olefins", r"CO$_2$ utilization", "methanol", 0.328),
-        "EDH": ("Olefin", "Bio-based feedstock", "ethylene", 1),
-        "PDH": ("Olefin", "Bio-based feedstock", "propylene", 1),
-        "MPW2methanol": ("Olefin", "Plastic waste recycling", "methanol", 0.328),
-        "MPW2methanol_CC": ("Olefin", "Plastic waste recycling with CC", "methanol", 0.328),
-        "CO2electrolysis": ("Olefin", r"CO$_2$ utilization", "ethylene", 1),
-        "Biomass2methanol": ("Olefin", "Bio-based feedstock", "methanol", 0.328),
-        "Biomass2methanol_CC": ("Olefin", "Bio-based feedstock with CC", "methanol", 0.328),
-    }
 
     categories = {
         "Conventional": '#8C8B8B',
@@ -203,6 +185,12 @@ def main():
         "Bio-based feedstock with CC": '#013220',
         "Plastic waste recycling": '#B475B2',
         "Plastic waste recycling with CC": '#533A8C',
+    }
+
+    combined_categories = {
+        "Electrification + Bio-based feedstock": ("Electrification", "Bio-based feedstock"),
+        "Conventional + Bio-based feedstock": ("Conventional", "Bio-based feedstock"),
+        "Conventional + Bio-based feedstock with CC": ("Conventional", "Bio-based feedstock with CC"),
     }
 
 
@@ -218,7 +206,7 @@ def main():
                                    separate=separate)
 
     # saving options
-    save = "pdf"
+    save = "no"
     if save == "pdf":
         plt.savefig(f"{plot_folder}.pdf", format='pdf', bbox_inches='tight')
     elif save == "svg":
