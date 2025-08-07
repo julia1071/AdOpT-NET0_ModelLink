@@ -46,7 +46,7 @@ def get_results_cluster_technology_output_dict(adopt_hub):
                 else:
                     annual_prod = sum(tech_block.var_output_tot[t, output_var_name].value for t in set_t)
 
-                if annual_prod > 0:
+                if annual_prod > 1e-5:
                     tech_output_dict["AnnualOutput"][(cfg.location, interval, alias)] = annual_prod * factor_fast_run
                     print(f"ℹ️ Output of {alias} in {interval} at {cfg.location}: {annual_prod * factor_fast_run}")
 
@@ -56,6 +56,8 @@ def get_results_cluster_technology_output_dict(adopt_hub):
                     if total_cons > 0:
 
                         capacity_factor = operation_tech / total_cons
+                        capacity_factor[capacity_factor < 1e-5] = 0
+
                         if cfg.fast_run:
                             repeats = 8760 // len(capacity_factor)
                             capacity_factor = np.tile(capacity_factor, repeats)
