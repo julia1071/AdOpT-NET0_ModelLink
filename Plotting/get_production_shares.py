@@ -184,8 +184,8 @@ def fetch_and_process_data_production(
 
 def main():
     #Define cluster ambition and number of iteration
-    nr_iterations = 1
-    flag_cluster_ambition = "Scope1-3"
+    nr_iterations = 0
+    flag_cluster_ambition = "Scope1-2"
 
     # Add basepath
     datapath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -193,7 +193,6 @@ def main():
     data_to_excel_path2 = os.path.join(datapath, "Plotting", f"production_shares_ammonia_{flag_cluster_ambition}.xlsx")
     basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + flag_cluster_ambition
     result_folder = basepath_results + "/Results_model_linking_20250803_19_05"
-
 
     tec_mapping = {
         "CrackerFurnace": ("Olefin", "Conventional", "olefins", 0.439),
@@ -227,7 +226,7 @@ def main():
         "Water electrolysis": '#EABF37',
         r"CO$_2$ utilization": '#E18826',
         "Bio-based feedstock": '#84AA6F',
-        "Bio-based feedstock with CC": '#013220',
+        "Bio-based feedstock with CC": '#088A01',
         "Plastic waste recycling": '#B475B2',
         "Plastic waste recycling with CC": '#533A8C',
     }

@@ -1,4 +1,5 @@
 import os
+from matplotlib.patches import Patch
 from pathlib import Path
 import h5py
 import matplotlib as mpl
@@ -8,126 +9,10 @@ from matplotlib import pyplot as plt, gridspec
 
 from adopt_net0 import extract_datasets_from_h5group
 
-def fetch_and_process_data_production(result_folder, data_to_excel_path_olefins, data_to_excel_path_ammonia,
-                                      tec_mapping, categories, combined_categories, nr_iterations, location, ambition):
-    olefin_results = []
-    ammonia_results = []
-
-    for i in range(nr_iterations+1):
-        if i == 0:
-            iteration = "Standalone"
-            iteration_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Standalone/") / ambition
-        else:
-            iteration = "Iteration_" + str(i)
-            iteration_folder = Path(result_folder) / iteration
-
-        columns = pd.MultiIndex.from_product(
-            [[iteration], ['2030', '2040', '2050']],
-            names=["Iteration", "Interval"]
-        )
-
-        result_data = pd.DataFrame(0.0, index=tec_mapping.keys(), columns=columns)
-        production_sum_olefins = pd.DataFrame(0.0, index=categories.keys(), columns=columns)
-        production_sum_ammonia = pd.DataFrame(0.0, index=categories.keys(), columns=columns)
-
-        # read summary data
-        summarypath = os.path.join(iteration_folder, "Summary.xlsx")
-
-        try:
-            summary_results = pd.read_excel(summarypath)
-        except FileNotFoundError:
-            print(f"Warning: Summary file not found for {iteration}")
-            continue
-
-        for interval in result_data.columns.levels[1]:
-            for case in summary_results['case']:
-                if pd.notna(case) and interval in case:
-                    h5_path = Path(summary_results[summary_results['case'] == case].iloc[0][
-                                       'time_stamp']) / "optimization_results.h5"
-                    if h5_path.exists():
-                        with h5py.File(h5_path, "r") as hdf_file:
-                            tec_operation = extract_datasets_from_h5group(
-                                hdf_file["operation/technology_operation"])
-                            tec_operation = {k: v for k, v in tec_operation.items() if len(v) >= 8670}
-                            df_tec_operation = pd.DataFrame(tec_operation)
-
-                            for tec in tec_mapping.keys():
-                                para = tec_mapping[tec][2] + "_output"
-                                if (interval, location, tec, para) in df_tec_operation:
-                                    output_car = df_tec_operation[interval, location, tec, para]
-
-                                    if tec in ['CrackerFurnace', 'MPW2methanol', 'SteamReformer',
-                                               'Biomass2methanol'] and (
-                                            interval, location, tec, 'CO2captured_output') in df_tec_operation:
-                                        numerator = df_tec_operation[
-                                            interval, location, tec, 'CO2captured_output'].sum()
-                                        denominator = (
-                                                df_tec_operation[
-                                                    interval, location, tec, 'CO2captured_output'].sum()
-                                                + df_tec_operation[interval, location, tec, 'emissions_pos'].sum()
-                                        )
-
-                                        frac_CC = numerator / denominator if (
-                                                denominator > 1 and numerator > 1) else 0
-
-                                        tec_CC = tec + "_CC"
-                                        result_data.loc[tec, (iteration, interval)] = sum(
-                                            output_car) * (1 - frac_CC)
-                                        result_data.loc[tec_CC, (iteration, interval)] = sum(
-                                            output_car) * frac_CC
-                                    else:
-                                        result_data.loc[tec, (iteration, interval)] = sum(output_car)
-
-                                tec_existing = tec + "_existing"
-                                if (interval, location, tec_existing, para) in df_tec_operation:
-                                    output_car = df_tec_operation[interval, location, tec_existing, para]
-
-                                    if tec in ['CrackerFurnace', 'MPW2methanol', 'SteamReformer'] and (
-                                            interval, location, tec_existing,
-                                            'CO2captured_output') in df_tec_operation:
-                                        numerator = df_tec_operation[
-                                            interval, location, tec_existing, 'CO2captured_output'].sum()
-                                        denominator = (
-                                                df_tec_operation[
-                                                    interval, location, tec_existing, 'CO2captured_output'].sum()
-                                                + df_tec_operation[
-                                                    interval, location, tec_existing, 'emissions_pos'].sum()
-                                        )
-
-                                        frac_CC = numerator / denominator if (
-                                                denominator > 1 and numerator > 1) else 0
-
-                                        tec_CC = tec + "_CC"
-                                        result_data.loc[tec, (iteration, interval)] += sum(
-                                            output_car) * (1 - frac_CC)
-                                        result_data.loc[tec_CC, (iteration, interval)] += sum(
-                                            output_car) * frac_CC
-                                    else:
-                                        result_data.loc[tec, (iteration, interval)] += sum(output_car)
-
-                        for tec in tec_mapping.keys():
-                            if tec_mapping[tec][0] == 'Olefin':
-                                olefin_production = result_data.loc[tec, (iteration, interval)] * \
-                                                    tec_mapping[tec][3]
-                                production_sum_olefins.loc[
-                                    tec_mapping[tec][1], (iteration, interval)] += olefin_production
-                            elif tec_mapping[tec][0] == 'Ammonia':
-                                ammonia_production = result_data.loc[tec, (iteration, interval)] * \
-                                                     tec_mapping[tec][3]
-                                production_sum_ammonia.loc[
-                                    tec_mapping[tec][1], (iteration, interval)] += ammonia_production
-
-        olefin_results.append(production_sum_olefins)
-        ammonia_results.append(production_sum_ammonia)
-
-    production_sum_olefins = pd.concat(olefin_results, axis=1)
-    production_sum_olefins.to_excel(data_to_excel_path_olefins)
-    production_sum_ammonia = pd.concat(ammonia_results, axis=1)
-    production_sum_ammonia.to_excel(data_to_excel_path_ammonia)
-
 
 def plot_production_shares(production_sum_olefins, production_sum_ammonia, categories, intervals, iterations,
-                           include_costs=False, separate=False, cost_data=None, total_cost=False):
+                           include_costs=False, separate=False, cost_data=None, total_cost=False,
+                           combined_categories=None):
     mpl.rcParams['font.family'] = 'serif'
 
     group_size = len(iterations)
@@ -136,7 +21,7 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
     bar_width = 0.6 / group_size
 
     def normalize(df):
-        df = df.sort_index(axis=1)  # Fix PerformanceWarning
+        df = df.sort_index(axis=1)
         df_norm = df.copy()
         for interval in intervals:
             for iteration in iterations:
@@ -163,9 +48,21 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
                 bottom = 0
                 for category, color in categories.items():
                     val = df.loc[category, (iteration, interval)] if (iteration, interval) in df.columns else 0
-                    ax.bar(x[bar_index], val, bar_width, bottom=bottom, color=color,
-                           label=category if bottom == 0 else "")
+                    ax.bar(x[bar_index], val, bar_width, bottom=bottom, color=color, label=category if bottom == 0 else "")
                     bottom += val
+
+                if combined_categories:
+                    for comb_cat, (cat1, cat2) in combined_categories.items():
+                        val = df.loc[comb_cat, (iteration, interval)] if (iteration, interval) in df.columns else 0
+                        if val > 0:
+                            hatch = '///'  # thicker pattern
+                            facecolor = categories.get(cat1, 'grey')  # base fill
+                            edgecolor = categories.get(cat2, 'black')  # second category defines hatch color
+                            bar = ax.bar(x[bar_index], val, bar_width, bottom=bottom,
+                                         color=facecolor, hatch=hatch, edgecolor=edgecolor,
+                                         label=comb_cat if bottom == 0 else "")
+                            bottom += val
+
         ax.set_ylabel(f"Share of total production\n{product}")
         ax.set_ylim(0, 1)
         ax.set_xlim(-0.5, total_bars - 0.5)
@@ -174,7 +71,6 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
     make_stacked_bars(axes[0], production_sum_olefins, "olefins")
     make_stacked_bars(axes[1], production_sum_ammonia, "ammonia")
 
-    # Common x-ticks and interval lines
     xtick_labels = []
     for interval in intervals:
         for i in range(group_size):
@@ -185,14 +81,13 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
 
     for i in range(1, len(intervals)):
         xpos = i * group_size - 0.5
-        for ax in axes[:2]:  # Don't add lines to cost axis
+        for ax in axes[:2]:
             ax.axvline(x=xpos, color='gray', linestyle='dashed', linewidth=1)
 
     for i, interval in enumerate(intervals):
         mid = (i * group_size + (i + 1) * group_size - 1) / 2
         axes[0].text(mid, 1.05, interval, ha='center', va='bottom', fontsize=14)
 
-    # Add costs if applicable
     if include_costs and cost_data is not None:
         if not total_cost:
             cost_data = cost_data / 2_901_310  # Convert to €/t
@@ -218,14 +113,22 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
             ax2.set_ylim(0, max(cost_data) * 1.2)
             ax2.legend(loc='upper right', fontsize=9)
 
-    # Legend & layout
-    handles, labels = axes[0].get_legend_handles_labels()
-    unique = dict(zip(labels, handles))
-    fig.legend(unique.values(), unique.keys(), loc='lower center', ncol=6, fontsize=10,
+    # Final legend (remove duplicates)
+    # handles, labels = axes[0].get_legend_handles_labels()
+    # unique = dict(zip(labels, handles))
+    # fig.legend(unique.values(), unique.keys(), loc='lower center', ncol=6, fontsize=10,
+    #            bbox_to_anchor=(0.5, 0.01))
+
+    #legend from categories
+    legend_elements = [Patch(facecolor=color, label=label) for label, color in categories.items()]
+
+    fig.legend(legend_elements, categories.keys(), loc='lower center', ncol=5, fontsize=10,
                bbox_to_anchor=(0.5, 0.01))
-    plt.subplots_adjust(hspace=0.3, bottom=0.2, left=0.08, right=0.92)
+
+    plt.subplots_adjust(hspace=0.3, bottom=0.25, left=0.08, right=0.92)
 
     return plt
+
 
 
 
@@ -242,35 +145,8 @@ def main():
     datapath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     data_to_excel_path1 = os.path.join(datapath, "Plotting", f"production_shares_olefins_{flag_cluster_ambition}.xlsx")
     data_to_excel_path2 = os.path.join(datapath, "Plotting", f"production_shares_ammonia_{flag_cluster_ambition}.xlsx")
-    basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + flag_cluster_ambition
-    result_folder = basepath_results + "/Results_model_linking_20250803_19_05"
     plot_folder = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/IterationBars_" + flag_cluster_ambition
     cost_data_excel = os.path.join(datapath, "Plotting", f"result_data_long_{flag_cluster_ambition}.xlsx")
-
-    tec_mapping = {
-        "CrackerFurnace": ("Olefin", "Conventional", "olefins", 0.439),
-        "CrackerFurnace_bio": ("Olefin", "Conventional + Bio-based", "olefins", 0.439),
-        "CrackerFurnace_CC": ("Olefin", "Carbon Capture", "olefins", 0.439),
-        "CrackerFurnace_CC_bio": ("Olefin", "Conventional + Bio-based feedstock with CC", "olefins", 0.439),
-        "CrackerFurnace_Electric": ("Olefin", "Electrification", "olefins", 0.439),
-        "CrackerFurnace_Electric_bio": ("Olefin", "Electrification + Bio-based", "olefins", 0.439),
-        "SteamReformer": ("Ammonia", "Conventional", "HBfeed", 0.168),
-        "SteamReformer_bio": ("Ammonia", "Conventional", "HBfeed", 0.168),
-        "SteamReformer_CC": ("Ammonia", "Carbon Capture", "HBfeed", 0.168),
-        "SteamReformer_CC_bio": ("Ammonia", "Conventional + Bio-based feedstock with CC", "HBfeed", 0.168),
-        "WGS_m": ("Ammonia", "Electrification", "hydrogen", 0.168),
-        "WGS_m_bio": ("Ammonia", "Electrification + Bio-based", "hydrogen", 0.168),
-        "AEC": ("Ammonia", "Water electrolysis", "hydrogen", 0.168),
-        "RWGS": ("Olefin", r"CO$_2$ utilization", "syngas", 0.270),
-        "DirectMeOHsynthesis": ("Olefins", r"CO$_2$ utilization", "methanol", 0.328),
-        "EDH": ("Olefin", "Bio-based feedstock", "ethylene", 1),
-        "PDH": ("Olefin", "Bio-based feedstock", "propylene", 1),
-        "MPW2methanol": ("Olefin", "Plastic waste recycling", "methanol", 0.328),
-        "MPW2methanol_CC": ("Olefin", "Plastic waste recycling with CC", "methanol", 0.328),
-        "CO2electrolysis": ("Olefin", r"CO$_2$ utilization", "ethylene", 1),
-        "Biomass2methanol": ("Olefin", "Bio-based feedstock", "methanol", 0.328),
-        "Biomass2methanol_CC": ("Olefin", "Bio-based feedstock with CC", "methanol", 0.328),
-    }
 
     categories = {
         "Conventional": '#8C8B8B',
@@ -279,23 +155,16 @@ def main():
         "Water electrolysis": '#EABF37',
         r"CO$_2$ utilization": '#E18826',
         "Bio-based feedstock": '#84AA6F',
-        "Bio-based feedstock with CC": '#013220',
+        "Bio-based feedstock with CC": '#088A01',
         "Plastic waste recycling": '#B475B2',
         "Plastic waste recycling with CC": '#533A8C',
     }
 
     combined_categories = {
-        "Electrification + Bio-based": ("Electrification", "Bio-based feedstock"),
+        "Electrification + Bio-based feedstock": ("Electrification", "Bio-based feedstock"),
         "Conventional + Bio-based feedstock": ("Conventional", "Bio-based feedstock"),
         "Conventional + Bio-based feedstock with CC": ("Conventional", "Bio-based feedstock with CC"),
     }
-
-    get_data = 0
-
-    if get_data == 1:
-        fetch_and_process_data_production(result_folder, data_to_excel_path1, data_to_excel_path2,
-                                          tec_mapping, categories, combined_categories, nr_iterations, 'Zeeland',
-                                          flag_cluster_ambition)
 
     production_sum_olefins = pd.read_excel(data_to_excel_path1, index_col=0, header=[0, 1])
     production_sum_ammonia = pd.read_excel(data_to_excel_path2, index_col=0, header=[0, 1])
@@ -316,10 +185,11 @@ def main():
                                      include_costs=include_prod_costs,
                                      separate=separate,
                                      cost_data=cost_values,
-                                     total_cost=False)
+                                     total_cost=False,
+                                     combined_categories=combined_categories)
 
     #saving options
-    save = "no"
+    save = "pdf"
     if save == "pdf":
         plt.savefig(f"{plot_folder}.pdf", format='pdf', bbox_inches='tight')
     elif save == "svg":
