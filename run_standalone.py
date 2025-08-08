@@ -70,6 +70,22 @@ if execute == 1:
         pyhub[interval] = ModelHub()
         pyhub[interval].read_data(casepath_interval)
 
+        # change emission factor to correct for scope 3
+        if not scope3:
+            if nr_DD_days != 0:
+                pyhub[interval].data.time_series['clustered'][
+                    interval, 'Zeeland' , 'CarrierData', 'CO2', 'Export emission factor'] = 0
+                pyhub[interval].data.time_series['clustered'][
+                    interval, 'Zeeland' , 'CarrierData', 'naphtha', 'Import emission factor'] = 0
+                pyhub[interval].data.time_series['clustered'][
+                    interval, 'Zeeland' , 'CarrierData', 'methane', 'Import emission factor'] = 0
+            pyhub[interval].data.time_series['full'][
+                interval, 'Zeeland' , 'CarrierData', 'CO2', 'Export emission factor'] = 0
+            pyhub[interval].data.time_series['full'][
+                interval, 'Zeeland' , 'CarrierData', 'naphtha', 'Import emission factor'] = 0
+            pyhub[interval].data.time_series['full'][
+                interval, 'Zeeland' , 'CarrierData', 'methane', 'Import emission factor'] = 0
+
         # Set case name
         if nr_DD_days > 0:
             pyhub[interval].data.model_config['reporting']['case_name'][
@@ -95,7 +111,7 @@ if execute == 1:
         pyhub[interval].solve()
 
 #Run Zeeland standalone scope 1-3
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the base path to your input data
@@ -181,7 +197,7 @@ if execute == 1:
         pyhub[interval].solve()
 
 #Run Zeeland standalone with storage
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the base path to your input data

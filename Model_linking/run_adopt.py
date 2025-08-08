@@ -90,6 +90,22 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
         else:
             adopt_hub[interval].read_data(casepath_interval)
 
+        # change emission factor to correct for scope 3
+        if not scope3:
+            if nr_DD_days != 0:
+                adopt_hub[interval].data.time_series['clustered'][
+                    interval, 'Zeeland', 'CarrierData', 'CO2', 'Export emission factor'] = 0
+                adopt_hub[interval].data.time_series['clustered'][
+                    interval, 'Zeeland', 'CarrierData', 'naphtha', 'Import emission factor'] = 0
+                adopt_hub[interval].data.time_series['clustered'][
+                    interval, 'Zeeland', 'CarrierData', 'methane', 'Import emission factor'] = 0
+            adopt_hub[interval].data.time_series['full'][
+                interval, 'Zeeland', 'CarrierData', 'CO2', 'Export emission factor'] = 0
+            adopt_hub[interval].data.time_series['full'][
+                interval, 'Zeeland', 'CarrierData', 'naphtha', 'Import emission factor'] = 0
+            adopt_hub[interval].data.time_series['full'][
+                interval, 'Zeeland', 'CarrierData', 'methane', 'Import emission factor'] = 0
+
         # Set case name
         if nr_DD_days > 0:
             adopt_hub[interval].data.model_config['reporting']['case_name'][
