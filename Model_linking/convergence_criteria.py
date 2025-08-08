@@ -29,7 +29,7 @@ def compare_cluster_outputs(epsilon, i, e):
 
     # Flatten all epsilon values into a list of floats
     epsilon_values = [
-        val
+        abs(val)
         for tech_eps in epsilon[iter_key].values()
         for val in tech_eps.values()
     ]
@@ -105,7 +105,7 @@ def get_cluster_epsilon(outputs_cluster, i):
                 else:
                     rel_change = float('inf')
             else:
-                rel_change = abs((val_curr - val_prev) / val_prev)
+                rel_change = (val_curr - val_prev) / val_prev
 
             epsilon[tech][year] = rel_change
 
