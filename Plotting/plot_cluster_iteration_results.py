@@ -18,7 +18,7 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
     group_size = len(iterations)
     total_bars = group_size * len(intervals)
     x = np.arange(total_bars)
-    bar_width = 0.6 / group_size
+    bar_width = 1.5 / group_size    #change bar width here
 
     def normalize(df):
         df = df.sort_index(axis=1)
@@ -55,7 +55,7 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
                     for comb_cat, (cat1, cat2) in combined_categories.items():
                         val = df.loc[comb_cat, (iteration, interval)] if (iteration, interval) in df.columns else 0
                         if val > 0:
-                            hatch = '///'  # thicker pattern
+                            hatch = '////'  # thicker pattern
                             facecolor = categories.get(cat1, 'grey')  # base fill
                             edgecolor = categories.get(cat2, 'black')  # second category defines hatch color
                             bar = ax.bar(x[bar_index], val, bar_width, bottom=bottom,
@@ -134,7 +134,7 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
 
 def main():
     #Define cluster ambition and number of iteration
-    nr_iterations = 1
+    nr_iterations = 2
     flag_cluster_ambition = "Scope1-3"
     include_prod_costs = False
     separate = False
