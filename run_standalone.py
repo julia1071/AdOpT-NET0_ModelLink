@@ -20,7 +20,7 @@ if execute == 1:
     scope3 = 0
     annual_demand = 1
     intervals = ['2030', '2040', '2050']
-    interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
+    interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0.05}
     nr_DD_days = 10
     pyhub = {}
 
@@ -198,7 +198,7 @@ if execute == 1:
 
 
 #Run Zeeland standalone scope 1-2, low ambition
-execute = 1
+execute = 0
 
 if execute == 1:
     # Specify the base path to your input data

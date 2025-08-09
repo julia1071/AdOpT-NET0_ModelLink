@@ -30,7 +30,10 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
     scope3 = cfg.scope3  # Do you want the scope 3 emissions to be accounted in the optimization?
     annual_demand = 1
 
-    interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
+    if scope3:
+        interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
+    else:
+        interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0.05}
 
     if cfg.fast_run:
         nr_DD_days = 0
