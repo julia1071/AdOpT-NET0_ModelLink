@@ -68,7 +68,7 @@ if execute == 1:
         # Read climate data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all_brownfield:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -108,7 +108,7 @@ if execute == 1:
                     shutil.copy(tec_json_file_path, output_folder)
 
                 spec_tec_size = {"AEC": 1900, "RWGS": 322, "MeOHsynthesis": 662, "MTO": 1143, "SteamReformer": 1269,
-                                 "ElectricSMR_m": 2114, "WGS_m": 398, "HaberBosch": 1609, "CrackerFurnace": 535,
+                                 "ElectricSMR_m": 9881, "WGS_m": 398, "HaberBosch": 1609, "CrackerFurnace": 535,
                                  "CrackerFurnace_Electric": 892, "OlefinSeparation": 892, "ASU": 112,
                                  "Boiler_Industrial_NG": 3310, "Boiler_El": 1900, "EDH": 662, "PDH": 456,
                                  "MPW2methanol": 407, "Biomass2methanol": 1856}
@@ -254,7 +254,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all_brownfield:
         set_tecs = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -297,7 +297,7 @@ if execute == 1:
                         shutil.copy(tec_json_file_path, output_folder)
 
                 spec_tec_size = {"AEC": 3250, "RWGS": 498, "MeOHsynthesis": 812, "MTO": 1195, "SteamReformer": 1269,
-                                 "ElectricSMR_m": 2114, "WGS_m": 389, "HaberBosch": 1609, "CrackerFurnace": 535,
+                                 "ElectricSMR_m": 9881, "WGS_m": 389, "HaberBosch": 1609, "CrackerFurnace": 535,
                                  "CrackerFurnace_Electric": 892, "OlefinSeparation": 892, "ASU": 112,
                                  "Boiler_Industrial_NG": 3392, "Boiler_El": 3250, "EDH": 662, "PDH": 456,
                                  "MPW2methanol": 407, "Biomass2methanol": 1856, "DirectMeOHsynthesis": 520,
@@ -448,7 +448,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all_brownfield:
         set_tecs =["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -492,7 +492,7 @@ if execute == 1:
                         shutil.copy(tec_json_file_path, output_folder)
 
                 spec_tec_size = {"AEC": 4600, "RWGS": 675, "MeOHsynthesis": 968, "MTO": 1195, "SteamReformer": 1269,
-                                 "ElectricSMR_m": 2114, "WGS_m": 389, "HaberBosch": 1609, "CrackerFurnace": 535,
+                                 "ElectricSMR_m": 9881, "WGS_m": 389, "HaberBosch": 1609, "CrackerFurnace": 535,
                                  "CrackerFurnace_Electric": 892, "OlefinSeparation": 892, "ASU": 112,
                                  "Boiler_Industrial_NG": 3392, "Boiler_El": 4600, "EDH": 662, "PDH": 456,
                                  "MPW2methanol": 407, "Biomass2methanol": 1856, "DirectMeOHsynthesis": 707, "CO2electrolysis": 401}

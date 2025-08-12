@@ -7,13 +7,14 @@ from pathlib import Path
 from adopt_net0 import extract_datasets_from_h5group
 
 #options
-nr_iterations = 2
+nr_iterations = 5
 ambition = "Scope1-3"
 location = "Zeeland"
 
 # Define paths
 basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + ambition
 result_folder = basepath_results + "/Results_model_linking_20250806_11_36"
+# result_folder = basepath_results + "/Results_model_linking_20250808_17_50"
 basepath_plots = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 data_to_excel_path = os.path.join(basepath_plots, "Plotting", f"result_data_long_{ambition}.xlsx")
 

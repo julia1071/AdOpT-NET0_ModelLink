@@ -18,7 +18,8 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
     group_size = len(iterations)
     total_bars = group_size * len(intervals)
     x = np.arange(total_bars)
-    bar_width = 1.5 / group_size    #change bar width here
+    # bar_width = 1.5 / group_size    #change bar width here
+    bar_width = 0.5
 
     def normalize(df):
         df = df.sort_index(axis=1)
@@ -89,16 +90,25 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
         axes[0].text(mid, 1.05, interval, ha='center', va='bottom', fontsize=14)
 
     if include_costs and cost_data is not None:
+        # Reorder so it's 2030*iterations, 2040*iterations, ...
+        cost_data = (
+            cost_data
+            .unstack(level=0)  # intervals x iterations
+            .loc[intervals, iterations]  # ensure exact order
+            .to_numpy()
+            .flatten()
+        )
+
         if not total_cost:
             cost_data = cost_data / 2_901_310  # Convert to €/t
 
         if separate:
             ax_cost = axes[2]
-            ax_cost.bar(x, cost_data, color='gray', width=0.8, label='Production cost')
+            ax_cost.bar(x, cost_data, color='navy', width=0.8, label='Production cost')
             ax_cost.set_ylabel("Total cluster cost [€/t]")
             ax_cost.set_ylim(0, max(cost_data) * 1.2)
             ax_cost.spines[['top', 'right']].set_visible(False)
-            ax_cost.spines['left'].set_color('navy')
+            ax_cost.spines['left'].set_color('black')
             ax_cost.spines['left'].set_linewidth(1)
             ax_cost.legend(loc='upper right', fontsize=9)
         else:
@@ -122,10 +132,16 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
     #legend from categories
     legend_elements = [Patch(facecolor=color, label=label) for label, color in categories.items()]
 
-    fig.legend(legend_elements, categories.keys(), loc='lower center', ncol=5, fontsize=10,
-               bbox_to_anchor=(0.5, 0.01))
+    if separate:
+        fig.legend(legend_elements, categories.keys(), loc='lower center', ncol=5, fontsize=10,
+                   bbox_to_anchor=(0.5, 0.1))
 
-    plt.subplots_adjust(hspace=0.3, bottom=0.25, left=0.08, right=0.92)
+        plt.subplots_adjust(hspace=0.3, bottom=0.25, left=0.08, right=0.92)
+    else:
+        fig.legend(legend_elements, categories.keys(), loc='lower center', ncol=5, fontsize=10,
+                   bbox_to_anchor=(0.5, 0.01))
+
+        plt.subplots_adjust(hspace=0.3, bottom=0.25, left=0.08, right=0.92)
 
     return plt
 
@@ -134,10 +150,10 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
 
 def main():
     #Define cluster ambition and number of iteration
-    nr_iterations = 2
+    nr_iterations = 5
     flag_cluster_ambition = "Scope1-3"
-    include_prod_costs = False
-    separate = False
+    include_prod_costs = True
+    separate = True
     intervals = ['2030', '2040', '2050']
     iterations = ['Standalone'] + [f'Iteration_{i}' for i in range(1, nr_iterations + 1)]
 
@@ -189,7 +205,7 @@ def main():
                                      combined_categories=combined_categories)
 
     #saving options
-    save = "pdf"
+    save = "svg"
     if save == "pdf":
         plt.savefig(f"{plot_folder}.pdf", format='pdf', bbox_inches='tight')
     elif save == "svg":

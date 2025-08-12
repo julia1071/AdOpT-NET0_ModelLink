@@ -184,7 +184,7 @@ def fetch_and_process_data_production(
 
 def main():
     #Define cluster ambition and number of iteration
-    nr_iterations = 2
+    nr_iterations = 5
     flag_cluster_ambition = "Scope1-3"
 
     # Add basepath
