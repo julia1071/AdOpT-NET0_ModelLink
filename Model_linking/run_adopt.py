@@ -33,7 +33,7 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
     if scope3:
         interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
     else:
-        interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0.05}
+        interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
 
     if cfg.fast_run:
         nr_DD_days = 0
@@ -71,6 +71,8 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
         model_config['solveroptions']['mipgap']['value'] = 0.01
         if cfg.threads:
             model_config['solveroptions']['threads']['value'] = cfg.threads
+        else:
+            model_config['solveroptions']['threads']['value'] = 0
         model_config['solveroptions']['nodefilestart']['value'] = 1e10
 
         # change save options
