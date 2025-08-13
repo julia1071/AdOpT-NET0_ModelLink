@@ -154,7 +154,7 @@ def plot_production_shares_stacked(df1, df2, categories, combined_categories=Non
 
 
 
-def save_separate_legend(categories, combined_categories, filename="legend.pdf"):
+def save_separate_legend(categories, combined_categories, filename="legend"):
     import matplotlib.pyplot as plt
     import matplotlib.patches as mpatches
 
@@ -179,14 +179,17 @@ def save_separate_legend(categories, combined_categories, filename="legend.pdf")
                         frameon=False)
 
     plt.tight_layout()
-    fig.savefig(os.path.join("C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python", f"{filename}"), format='pdf', bbox_inches='tight')
+    fig.savefig(os.path.join("C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python",
+                             f"{filename}.pdf"), format='pdf', bbox_inches='tight')
+    fig.savefig(os.path.join("C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python",
+                             f"{filename}.svg"), format='svg', bbox_inches='tight')
     plt.close(fig)
 
 
 
 
 def main():
-    flag_cluster_ambition = "Scope1-2"
+    flag_cluster_ambition = "LowAmbition"
     iterations = ['Standalone']
 
     # Add basepath
@@ -210,7 +213,7 @@ def main():
     combined_categories = {
         "Electrification + Bio-based feedstock": ("Electrification", "Bio-based feedstock"),
         "Conventional + Bio-based feedstock": ("Conventional", "Bio-based feedstock"),
-        "Conventional + Bio-based feedstock with CC": ("Conventional", "Bio-based feedstock with CC"),
+        "Conventional + Bio-based feedstock with CC": ("Carbon Capture", "Bio-based feedstock with CC"),
     }
 
 
@@ -230,7 +233,7 @@ def main():
                                    separate=separate)
 
     # saving options
-    save = "pdf"
+    save = "both"
     if save == "pdf":
         plt.savefig(f"{plot_folder}.pdf", format='pdf', bbox_inches='tight')
     elif save == "svg":

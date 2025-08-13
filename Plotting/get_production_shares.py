@@ -72,7 +72,12 @@ def fetch_and_process_data_production(
                             df_tec_operation = pd.DataFrame(tec_operation)
 
                             for tec in tec_mapping.keys():
-                                para = tec_mapping[tec][2] + "_output"
+                                alias = tec
+                                if tec == 'ElectricSMR_m_olefins':
+                                    tec = 'ElectricSMR_m'
+
+
+                                para = tec_mapping[alias][2] + "_output"
                                 if (interval, location, tec, para) in df_tec_operation:
                                     output_car = df_tec_operation[interval, location, tec, para]
 
@@ -97,6 +102,19 @@ def fetch_and_process_data_production(
                                             output_car) * (1 - frac_CC)
                                         result_data.loc[tec_CC, (iteration, interval)] = sum(
                                             output_car) * frac_CC
+
+                                    elif tec == 'ElectricSMR_m':
+                                        if (interval, location, 'WGS_m', 'syngas_r_input') in df_tec_operation:
+                                            input_WGS = sum(df_tec_operation[interval, location, 'WGS_m', 'syngas_r_input'])
+                                        else:
+                                            input_WGS = 0
+                                        if (interval, location, 'WGS_m_existing', 'syngas_r_input') in df_tec_operation:
+                                            input_WGS_existing = sum(df_tec_operation[interval, location, 'WGS_m_existing', 'syngas_r_input'])
+                                        else:
+                                            input_WGS_existing = 0
+                                        result_data.loc[alias, (iteration, interval)] = sum(output_car) - (input_WGS + input_WGS_existing)
+
+
                                     else:
                                         result_data.loc[tec, (iteration, interval)] = sum(output_car)
 
@@ -126,6 +144,10 @@ def fetch_and_process_data_production(
                                             output_car) * (1 - frac_CC)
                                         result_data.loc[tec_CC, (iteration, interval)] += sum(
                                             output_car) * frac_CC
+
+                                    elif tec == 'ElectricSMR_m':
+                                        result_data.loc[alias, (iteration, interval)] += sum(output_car)
+
                                     else:
                                         result_data.loc[tec, (iteration, interval)] += sum(output_car)
 
@@ -160,18 +182,21 @@ def fetch_and_process_data_production(
                                             result_data.loc[tech, (iteration, interval)] = prod * (1 - frac_bio)
                                             result_data.loc[bio_tech, (iteration, interval)] = prod * frac_bio
 
-                    for tech, (product, category, feedstock, emission_factor) in tec_mapping.items():
-                        if category not in production_sum_olefins.index and product == "Olefin":
-                            production_sum_olefins.loc[category] = 0.0
-                        if category not in production_sum_ammonia.index and product == "Ammonia":
-                            production_sum_ammonia.loc[category] = 0.0
+        for tech, (product, category, feedstock, conversion) in tec_mapping.items():
+            if tech == 'ElectricSMR_m_olefins':
+                print('eSMR')
 
-                        for interval in ['2030', '2040', '2050']:
-                            value = result_data.loc[tech, (iteration, interval)]
-                            if product == "Olefin":
-                                production_sum_olefins.loc[category, (iteration, interval)] += value
-                            elif product == "Ammonia":
-                                production_sum_ammonia.loc[category, (iteration, interval)] += value
+            if category not in production_sum_olefins.index and product == "Olefin":
+                production_sum_olefins.loc[category] = 0.0
+            if category not in production_sum_ammonia.index and product == "Ammonia":
+                production_sum_ammonia.loc[category] = 0.0
+
+            for interval in ['2030', '2040', '2050']:
+                value = result_data.loc[tech, (iteration, interval)]
+                if product == "Olefin":
+                    production_sum_olefins.loc[category, (iteration, interval)] += value * conversion
+                elif product == "Ammonia":
+                    production_sum_ammonia.loc[category, (iteration, interval)] += value * conversion
 
         olefin_results.append(production_sum_olefins)
         ammonia_results.append(production_sum_ammonia)
@@ -184,8 +209,8 @@ def fetch_and_process_data_production(
 
 def main():
     #Define cluster ambition and number of iteration
-    nr_iterations = 5
-    flag_cluster_ambition = "Scope1-3"
+    nr_iterations = 0
+    flag_cluster_ambition = "LowAmbition"
 
     # Add basepath
     datapath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -209,7 +234,8 @@ def main():
         "WGS_m_bio": ("Ammonia", "Electrification + Bio-based feedstock", "hydrogen", 0.168),
         "AEC": ("Ammonia", "Water electrolysis", "hydrogen", 0.168),
         "RWGS": ("Olefin", r"CO$_2$ utilization", "syngas", 0.270),
-        "DirectMeOHsynthesis": ("Olefins", r"CO$_2$ utilization", "methanol", 0.328),
+        "ElectricSMR_m_olefins": ("Olefin", "Electrification", "syngas_r", 0.270),
+        "DirectMeOHsynthesis": ("Olefin", r"CO$_2$ utilization", "methanol", 0.328),
         "EDH": ("Olefin", "Bio-based feedstock", "ethylene", 1),
         "PDH": ("Olefin", "Bio-based feedstock", "propylene", 1),
         "MPW2methanol": ("Olefin", "Plastic waste recycling", "methanol", 0.328),
