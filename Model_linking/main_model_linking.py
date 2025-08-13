@@ -17,14 +17,14 @@ from utils import convert_ndarrays_to_lists
 import config_model_linking as cfg
 
 
-def model_linking(max_iterations, e):
+def model_linking(max_iterations, e, scope3_on, save_extension_link):
     i = 1
     inputs_cluster = {}
     outputs_cluster = {}
     epsilon = {}
     timestamp = datetime.now().strftime("%Y%m%d_%H_%M")
-    map_name_cluster = cfg.cluster_result_folder / cfg.save_extension_link / f"Results_model_linking_{timestamp}"
-    map_name_IESA = cfg.IESA_result_folder / cfg.save_extension_link / f"Results_model_linking_{timestamp}"
+    map_name_cluster = cfg.cluster_result_folder / save_extension_link / f"Results_model_linking_{timestamp}"
+    map_name_IESA = cfg.IESA_result_folder / save_extension_link / f"Results_model_linking_{timestamp}"
     os.makedirs(map_name_cluster, exist_ok=True)
     os.makedirs(map_name_IESA, exist_ok=True)
     while True:
@@ -55,7 +55,8 @@ def model_linking(max_iterations, e):
         iteration_path = map_name_cluster / f"Iteration_{i}"
         solution_cluster = run_adopt(case_path=cfg.cluster_case_path,
                                      iteration_path=iteration_path,
-                                     cluster_input_dict=cluster_linked_input_dict)
+                                     cluster_input_dict=cluster_linked_input_dict,
+                                     scope3_on=scope3_on)
 
         #Extract technology sizes from cluster model and save in dict
         tech_output_dict = get_results_cluster_technology_output_dict(adopt_hub=solution_cluster)
@@ -134,4 +135,8 @@ def model_linking(max_iterations, e):
             print(f"The next iteration, iteration {i} is started")
 
 
-model_linking(max_iterations=cfg.max_iterations, e=cfg.e)
+# run for scope 1-3
+model_linking(max_iterations=cfg.max_iterations, e=cfg.e, scope3_on=1, save_extension_link='Scope1-3')
+
+# run for scope 1-2
+model_linking(max_iterations=cfg.max_iterations, e=cfg.e, scope3_on=0, save_extension_link='Scope1-2')
