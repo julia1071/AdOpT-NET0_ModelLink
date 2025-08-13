@@ -7,8 +7,8 @@ e = 0.01
 e_max = 0.1
 max_iterations = 5
 convergence_type = 'Average_Max'    #can be 'All', 'Average', 'Average_Max', 'Median' or 'Median_Max'
-fast_run = True  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
-threads = None
+fast_run = False  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
+threads = 36
 
 # Linking scenario choice
 linking_energy_prices = True
@@ -56,7 +56,7 @@ basename_new_input_IESA = "Input_Iteration_"
 
 
 # === AIMMS Paths ===
-run_from_server = 0
+run_from_server = 1
 if run_from_server:
     aimms_path = "C:/Program Files (x86)/AIMMS/IFA/Aimms/25.5.1.1-x64-VS2022/Bin/aimms.exe"
 else:

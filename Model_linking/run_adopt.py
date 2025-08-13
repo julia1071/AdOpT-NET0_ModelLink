@@ -9,7 +9,7 @@ from adopt_net0.modelhub import ModelHub
 from adopt_net0.utilities import installed_capacities_existing
 
 
-def run_adopt(case_path, iteration_path, cluster_input_dict):
+def run_adopt(case_path, iteration_path, cluster_input_dict, scope3_on):
     """
     Runs the optimization loop for the cluster model for a given location and multiple intervals,
     configuring the model, linking energy prices from IESA, and setting up emission constraints.
@@ -27,13 +27,13 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
     os.makedirs(iteration_path, exist_ok=True)
 
     # select simulation types
-    scope3 = cfg.scope3  # Do you want the scope 3 emissions to be accounted in the optimization?
+    scope3 = scope3_on  # Do you want the scope 3 emissions to be accounted in the optimization?
     annual_demand = 1
 
     if scope3:
         interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
     else:
-        interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0.05}
+        interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
 
     if cfg.fast_run:
         nr_DD_days = 0
@@ -71,6 +71,8 @@ def run_adopt(case_path, iteration_path, cluster_input_dict):
         model_config['solveroptions']['mipgap']['value'] = 0.01
         if cfg.threads:
             model_config['solveroptions']['threads']['value'] = cfg.threads
+        else:
+            model_config['solveroptions']['threads']['value'] = 0
         model_config['solveroptions']['nodefilestart']['value'] = 1e10
 
         # change save options
