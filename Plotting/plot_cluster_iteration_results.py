@@ -162,7 +162,7 @@ def main():
     data_to_excel_path1 = os.path.join(datapath, "Plotting", f"production_shares_olefins_{flag_cluster_ambition}.xlsx")
     data_to_excel_path2 = os.path.join(datapath, "Plotting", f"production_shares_ammonia_{flag_cluster_ambition}.xlsx")
     plot_folder = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/IterationBars_" + flag_cluster_ambition
-    cost_data_excel = os.path.join(datapath, "Plotting", f"result_data_long_{flag_cluster_ambition}.xlsx")
+
 
     categories = {
         "Conventional": '#8C8B8B',
