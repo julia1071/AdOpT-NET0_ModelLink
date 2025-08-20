@@ -18,13 +18,17 @@ linking_operation = True
 #General data case study
 intervals = ['2030', '2040', '2050']
 location = "Zeeland"
-scope3 = 1
+scope3 = 0
+lowAmb = 1
 
 #save link extension
 if scope3:
     save_extension_link = "Scope1-3"
 else:
-    save_extension_link = "Scope1-2"
+    if not lowAmb:
+        save_extension_link = "Scope1-2"
+    else:
+        save_extension_link = "LowAmbition"
 
 # === Paths ===
 #IESA paths

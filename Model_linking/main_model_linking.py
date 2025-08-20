@@ -2,6 +2,7 @@ import os
 import json
 from datetime import datetime
 
+from Model_linking.config_model_linking import lowAmb
 from run_IESA_from_python import run_IESA_change_name_files
 from get_results_IESA import get_results_IESA_dict, convert_IESA_to_cluster_dict
 from run_adopt import run_adopt
@@ -17,7 +18,7 @@ from utils import convert_ndarrays_to_lists
 import config_model_linking as cfg
 
 
-def model_linking(max_iterations, e, scope3_on, save_extension_link):
+def model_linking(max_iterations, e, scope3_on, save_extension_link, lowAmb=0):
     i = 1
     inputs_cluster = {}
     outputs_cluster = {}
@@ -56,7 +57,8 @@ def model_linking(max_iterations, e, scope3_on, save_extension_link):
         solution_cluster = run_adopt(case_path=cfg.cluster_case_path,
                                      iteration_path=iteration_path,
                                      cluster_input_dict=cluster_linked_input_dict,
-                                     scope3_on=scope3_on)
+                                     scope3_on=scope3_on,
+                                     lowAmb=lowAmb)
 
         #Extract technology sizes from cluster model and save in dict
         tech_output_dict = get_results_cluster_technology_output_dict(adopt_hub=solution_cluster)
@@ -140,3 +142,6 @@ model_linking(max_iterations=cfg.max_iterations, e=cfg.e, scope3_on=1, save_exte
 
 # run for scope 1-2
 model_linking(max_iterations=cfg.max_iterations, e=cfg.e, scope3_on=0, save_extension_link='Scope1-2')
+
+# run for LowAmbition
+model_linking(max_iterations=cfg.max_iterations, e=cfg.e, scope3_on=0, save_extension_link='LowAmbition', lowAmb=1)

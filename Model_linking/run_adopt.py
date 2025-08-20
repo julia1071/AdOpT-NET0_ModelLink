@@ -9,7 +9,7 @@ from adopt_net0.modelhub import ModelHub
 from adopt_net0.utilities import installed_capacities_existing
 
 
-def run_adopt(case_path, iteration_path, cluster_input_dict, scope3_on):
+def run_adopt(case_path, iteration_path, cluster_input_dict, scope3_on, lowAmb=0):
     """
     Runs the optimization loop for the cluster model for a given location and multiple intervals,
     configuring the model, linking energy prices from IESA, and setting up emission constraints.
@@ -30,10 +30,10 @@ def run_adopt(case_path, iteration_path, cluster_input_dict, scope3_on):
     scope3 = scope3_on  # Do you want the scope 3 emissions to be accounted in the optimization?
     annual_demand = 1
 
-    if scope3:
+    if not lowAmb:
         interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
     else:
-        interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
+        interval_emissionLim = {'2030': 1, '2040': 1, '2050': 1}
 
     if cfg.fast_run:
         nr_DD_days = 0
