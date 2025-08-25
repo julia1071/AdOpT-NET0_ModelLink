@@ -12,6 +12,21 @@ from scipy.interpolate import make_interp_spline
 def plot_production_shares_stacked(df1, df2, categories, combined_categories=None, interpolation="spline", separate=1):
     plt.rcParams.update({'font.family': 'serif', 'font.size': 14})
 
+    plotting_order = [
+        'Conventional',
+        'Carbon Capture',
+        'Electrification',
+        'Water electrolysis',
+        'Bio-based feedstock',
+        'Bio-based feedstock with CC',
+        r'CO$_2$ utilization',
+        'Plastic waste recycling',
+        'Plastic waste recycling with CC',
+        'Electrification + Bio-based feedstock',
+        'Conventional + Bio-based feedstock',
+        'Conventional + Bio-based feedstock with CC'
+    ]
+
     if combined_categories is None:
         combined_categories = {}
 
@@ -94,7 +109,7 @@ def plot_production_shares_stacked(df1, df2, categories, combined_categories=Non
             x, interpolated = interpolate(df, df['Year'].values)
             bottoms = np.zeros_like(x)
 
-            for cat in list(categories) + list(combined_categories):
+            for cat in plotting_order:
                 if cat not in interpolated:
                     continue
                 if cat in combined_categories:
@@ -128,7 +143,7 @@ def plot_production_shares_stacked(df1, df2, categories, combined_categories=Non
 
         fig, ax1 = plt.subplots(figsize=(7, 3))
         bottoms = np.zeros_like(x)
-        for cat in list(categories) + list(combined_categories):
+        for cat in plotting_order:
             if cat not in interpolated:
                 continue
             if cat in combined_categories:
@@ -189,7 +204,7 @@ def save_separate_legend(categories, combined_categories, filename="legend"):
 
 
 def main():
-    flag_cluster_ambition = "LowAmbition"
+    flag_cluster_ambition = "Scope1-3"
     iterations = ['Standalone']
 
     # Add basepath
