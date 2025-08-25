@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import pandas as pd
 import adopt_net0.data_preprocessing as dp
+from Model_linking.get_results_IESA import get_results_IESA_dict, convert_IESA_to_cluster_dict
 from adopt_net0.model_construction.extra_constraints import set_annual_export_demand, set_negative_CO2_limit
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
@@ -21,6 +22,7 @@ if execute == 1:
     annual_demand = 1
     intervals = ['2030', '2040', '2050']
     interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
+    IESA_file_path = "Z:/IESA-Opt/IESA-Opt-Dev_full/Output/ResultsModelLinking/Scope1-3/Results_model_linking_20250821_09_52/ResultsModelLinking_General_Iteration_1.xlsx"
     nr_DD_days = 10
     pyhub = {}
 
@@ -82,13 +84,49 @@ if execute == 1:
             pyhub[interval].data.model_config['reporting']['case_name'][
                 'value'] = interval + '_minC_fullres'
 
+        # get results from prev IESA
+        dict_IESA = get_results_IESA_dict(IESA_file_path)
+        cluster_linked_input_dict = convert_IESA_to_cluster_dict(results_IESA_dict=dict_IESA,
+                                                                 results_path_IESA=IESA_file_path)
+
         # change emission factor to correct for scope 3
-        if not scope3:
-            if nr_DD_days != 0:
-                pyhub[interval].data.time_series['clustered'][
-                    interval, 'Zeeland' , 'CarrierData', 'methane_bio', 'Import limit'] = 0
-            pyhub[interval].data.time_series['full'][
+        if nr_DD_days != 0:
+            pyhub[interval].data.time_series['clustered'][
                 interval, 'Zeeland' , 'CarrierData', 'methane_bio', 'Import limit'] = 0
+            pyhub[interval].data.time_series['clustered'][
+                interval, 'Zeeland', 'CarrierData', 'MPW', 'Import limit'] = cluster_linked_input_dict['Zeeland'][interval]['Import limit MPW']
+            pyhub[interval].data.time_series['clustered'][
+                interval, 'Zeeland', 'CarrierData', 'biomass', 'Import price'] = cluster_linked_input_dict['Zeeland'][interval]['biomass']
+            pyhub[interval].data.time_series['clustered'][
+                interval, 'Zeeland', 'CarrierData', 'methane', 'Import price'] = cluster_linked_input_dict['Zeeland'][interval]['methane']
+            pyhub[interval].data.time_series['clustered'][
+                interval, 'Zeeland', 'CarrierData', 'naphtha', 'Import price'] = cluster_linked_input_dict['Zeeland'][interval]['naphtha']
+            if interval == '2030':
+                pyhub[interval].data.time_series['clustered'][
+                    interval, 'Zeeland', 'CarrierData', 'ethanol', 'Import price'] = cluster_linked_input_dict['Zeeland'][interval]['ethanol']
+            if interval == '2040':
+                pyhub[interval].data.time_series['clustered'][
+                    interval, 'Zeeland', 'CarrierData', 'naphtha_bio', 'Import price'] = cluster_linked_input_dict['Zeeland'][interval]['naphtha_bio']
+        pyhub[interval].data.time_series['full'][
+            interval, 'Zeeland' , 'CarrierData', 'methane_bio', 'Import limit'] = 0
+        pyhub[interval].data.time_series['full'][
+            interval, 'Zeeland', 'CarrierData', 'MPW', 'Import limit'] = cluster_linked_input_dict['Zeeland'][interval][
+            'Import limit MPW']
+        pyhub[interval].data.time_series['full'][
+            interval, 'Zeeland', 'CarrierData', 'biomass', 'Import price'] = cluster_linked_input_dict['Zeeland'][interval]['biomass']
+        pyhub[interval].data.time_series['full'][
+            interval, 'Zeeland', 'CarrierData', 'methane', 'Import price'] = cluster_linked_input_dict['Zeeland'][interval]['methane']
+        pyhub[interval].data.time_series['full'][
+            interval, 'Zeeland', 'CarrierData', 'naphtha', 'Import price'] = cluster_linked_input_dict['Zeeland'][interval]['naphtha']
+        if interval == '2030':
+            pyhub[interval].data.time_series['full'][
+                interval, 'Zeeland', 'CarrierData', 'ethanol', 'Import price'] = \
+            cluster_linked_input_dict['Zeeland'][interval]['ethanol']
+        if interval == '2040':
+            pyhub[interval].data.time_series['full'][
+                interval, 'Zeeland', 'CarrierData', 'naphtha_bio', 'Import price'] = \
+            cluster_linked_input_dict['Zeeland'][interval]['naphtha_bio']
+
 
         # Start brownfield optimization
         pyhub[interval].construct_model()
