@@ -128,7 +128,7 @@ if linking_operation:
 
 
 #Carriers with import possible outside system boundaries
-car_import_international = ['naphtha', 'naphtha_bio', 'methane', 'biomass', 'MPW', 'propane', 'ethanol']
+car_import_international = ['naphtha', 'naphtha_bio', 'methane', 'methane_bio', 'biomass', 'MPW', 'propane', 'ethanol']
 
 # The alias name (can be anything), the name of the tech in the cluster model,
 # and the name of the type of value that you want to extract from cluster results.
