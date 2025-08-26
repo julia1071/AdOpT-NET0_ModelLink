@@ -83,6 +83,9 @@ baseyear_IESA = 2019
 # Partly stiff and flexible P/E ratio, base on maximum demand propylene in IESA-Opt.
 carrier_demand_dict = {'ethylene': 647310, 'PE_olefin': 1070000, 'ammonia': 1184000}
 
+# Partly stiff and flexible P/E ratio, base on maximum demand propylene in IESA-Opt.
+carrier_max_import_dict = {'methane_bio': 14.5e6}
+
 if linking_energy_prices and not linking_MPW:
     # Define simulation years cluster model and the excel sheets from which you want to extract data in IESA-Opt
     list_sheets = ['EnergyCosts']

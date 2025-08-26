@@ -2,7 +2,8 @@ import json
 from pathlib import Path
 import pandas as pd
 import adopt_net0.data_preprocessing as dp
-from adopt_net0.model_construction.extra_constraints import set_annual_export_demand, set_negative_CO2_limit
+from adopt_net0.model_construction.extra_constraints import set_annual_export_demand, set_negative_CO2_limit, \
+    set_max_import
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 from adopt_net0.utilities import fix_installed_capacities, installed_capacities_existing, \
@@ -19,6 +20,7 @@ if execute == 1:
     # select simulation types
     scope3 = 0
     annual_demand = 1
+    max_bio = 1
     intervals = ['2030', '2040', '2050']
     interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
     nr_DD_days = 10
@@ -103,6 +105,9 @@ if execute == 1:
         if annual_demand:
             set_annual_export_demand(pyhub[interval], interval,
                                      {'ethylene': 647310, 'PE_olefin': 1070000, 'ammonia': 1184000})
+
+        if max_bio:
+            set_max_import(pyhub[interval], interval, {'methane_bio': 14.5e6})
 
         # add DAC CO2 export limit constraint
         set_negative_CO2_limit(pyhub[interval], interval,
@@ -189,6 +194,9 @@ if execute == 1:
         if annual_demand:
             set_annual_export_demand(pyhub[interval], interval,
                                      {'ethylene': 647310, 'PE_olefin': 1070000, 'ammonia': 1184000})
+
+        if max_bio:
+            set_max_import(pyhub[interval], interval, {'methane_bio': 14.5e6})
 
         # add DAC CO2 export limit constraint
         set_negative_CO2_limit(pyhub[interval], interval,
@@ -284,6 +292,9 @@ if execute == 1:
             set_annual_export_demand(pyhub[interval], interval,
                                      {'ethylene': 647310, 'PE_olefin': 1070000, 'ammonia': 1184000})
 
+        if max_bio:
+            set_max_import(pyhub[interval], interval, {'methane_bio': 14.5e6})
+
         # add DAC CO2 export limit constraint
         set_negative_CO2_limit(pyhub[interval], interval,
                                ["SteamReformer", "WGS_m", "SteamReformer_existing", "WGS_m_existing"])
@@ -366,6 +377,10 @@ if execute == 1:
         # Start brownfield optimization
         pyhub[interval].construct_model()
         pyhub[interval].construct_balances()
+
+        #max bio
+        if max_bio:
+            set_max_import(pyhub[interval], interval, {'methane_bio': 14.5e6})
 
         # add DAC CO2 export limit constraint
         set_negative_CO2_limit(pyhub[interval], interval,

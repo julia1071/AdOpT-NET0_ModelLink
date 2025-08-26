@@ -4,7 +4,8 @@ from pathlib import Path
 
 import config_model_linking as cfg
 
-from adopt_net0.model_construction.extra_constraints import set_annual_export_demand, set_negative_CO2_limit
+from adopt_net0.model_construction.extra_constraints import set_annual_export_demand, set_negative_CO2_limit, \
+    set_max_import
 from adopt_net0.modelhub import ModelHub
 from adopt_net0.utilities import installed_capacities_existing
 
@@ -29,6 +30,7 @@ def run_adopt(case_path, iteration_path, cluster_input_dict, scope3_on, lowAmb=0
     # select simulation types
     scope3 = scope3_on  # Do you want the scope 3 emissions to be accounted in the optimization?
     annual_demand = 1
+    max_bio = 1
 
     if not lowAmb:
         interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
@@ -175,6 +177,9 @@ def run_adopt(case_path, iteration_path, cluster_input_dict, scope3_on, lowAmb=0
         # add annual constraint
         if annual_demand:
             set_annual_export_demand(adopt_hub[interval], interval, cfg.carrier_demand_dict)
+
+        if max_bio:
+            set_max_import(adopt_hub[interval], interval, cfg.carrier_max_import_dict)
 
         # add DAC CO2 export limit constraint
         set_negative_CO2_limit(adopt_hub[interval], interval,
