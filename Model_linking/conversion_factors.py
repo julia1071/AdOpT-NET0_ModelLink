@@ -47,6 +47,10 @@ def conversion_factor_cluster_to_IESA(tech_id):
         # Cluster: MWh feedgas → IESA: PJ/y (Ammonia)
         return (4.966 * 0.168 * 18.6) / 10**6
 
+    elif tech_id in ['Gas04_01', 'Gas04_05']:
+        # Cluster: MWh gas/y → IESA: PJ/y (Gas)
+        return 3.6 / 10**6
+
     else:
         raise ValueError(f"❌ Conversion factor for tech_id '{tech_id}' is not defined.")
 

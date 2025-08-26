@@ -67,6 +67,18 @@ def get_results_cluster_technology_output_dict(adopt_hub):
                     else:
                         tech_output_dict["Operation"][(cfg.location, interval, alias)] = None
 
+            elif actual_tech_name == "biogas_import":
+                interval_block = adopt_hub[interval].model[resolution].periods[interval]
+                set_t = get_set_t(adopt_hub[interval].data.model_config, interval_block)
+                node_block = interval_block.node_blocks[cfg.location]
+
+                biogas_val = sum(node_block.var_import_flow[t, output_var_name].value for t in set_t) if any(
+                    car == output_var_name for (_, car) in node_block.var_import_flow.index_set()) else 0
+
+                if biogas_val > 1e-5:
+                    tech_output_dict["AnnualOutput"][(cfg.location, interval, alias)] = biogas_val * factor_fast_run
+                    print(f"ℹ️ Output of {alias} in {interval} at {cfg.location}: {biogas_val * factor_fast_run}")
+
 
     return tech_output_dict
 

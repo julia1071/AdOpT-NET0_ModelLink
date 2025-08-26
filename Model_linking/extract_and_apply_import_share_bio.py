@@ -28,7 +28,7 @@ def extract_and_apply_import_bio_ratios(adopt_hub, tech_output_dict):
 
         total_bio = total_fossil = 0.0
 
-        for carrier in cfg.bio_carriers:
+        for carrier in cfg.bio_carrier_tech_names.keys():
             bio_carrier = f"{carrier}_bio"
 
             # Sum bio and fossil import flows across all timesteps
@@ -48,20 +48,21 @@ def extract_and_apply_import_bio_ratios(adopt_hub, tech_output_dict):
 
     for category, subdict in tech_output_dict.items():
         for (loc, interval, tech) in list(subdict):
-            if tech not in cfg.bio_tech_names:
-                continue
-
             original_size = subdict[(loc, interval, tech)]
 
-            for carrier in cfg.bio_carriers:
-                bio_ratio = bio_ratios.get((loc, interval, carrier), 0.0)
+            for carrier in cfg.bio_carrier_tech_names.keys():
+                if carrier == "naphtha":
+                    if tech not in cfg.bio_carrier_tech_names[carrier]:
+                        continue
 
-                if bio_ratio > 0:
-                    bio_size = original_size * bio_ratio
-                    non_bio_size = original_size * (1 - bio_ratio)
+                    bio_ratio = bio_ratios.get((loc, interval, carrier), 0.0)
 
-                    updated_dict[category][(loc, interval, f"{tech}_bio")] = bio_size
-                    updated_dict[category][(loc, interval, tech)] = non_bio_size
+                    if bio_ratio > 0:
+                        bio_size = original_size * bio_ratio
+                        non_bio_size = original_size * (1 - bio_ratio)
+
+                        updated_dict[category][(loc, interval, f"{tech}_bio")] = bio_size
+                        updated_dict[category][(loc, interval, tech)] = non_bio_size
 
     return updated_dict
 

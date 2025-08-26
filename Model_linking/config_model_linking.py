@@ -41,7 +41,7 @@ else:
     IESA_modellink_path = IESA_path / "20250730_IESA_full.aimms"
     cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full")
 
-IESA_input_data_path = IESA_path / "data/20250805_detailed_linked.xlsx"
+IESA_input_data_path = IESA_path / "data/20250826_detailed_linked.xlsx"
 IESA_result_folder = IESA_path / "Output" / "ResultsModelLinking"
 
 #Cluster paths
@@ -51,7 +51,7 @@ cluster_case_path = "Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Full/ML_Zeela
 ppi_file_path = "Z:/IESA-Opt/Producer_Price_Index_CBS.xlsx"
 
 # Original and new filenames for IESA input and output folders
-original_filename_input_IESA = IESA_result_folder / "20250805_detailed_linked.xlsx"
+original_filename_input_IESA = IESA_result_folder / "20250826_detailed_linked.xlsx"
 original_filename_output_IESA = IESA_result_folder / "ResultsModelLinking_General.xlsx"
 
 # Define the new name of the input and output file
@@ -146,6 +146,8 @@ base_tech_output_map = {
     "Biomass2methanol_output": ("Biomass2methanol", "methanol"),
     "DirectMeOHsynthesis": ("DirectMeOHsynthesis", "methanol"),
     "CO2electrolysis": ("CO2electrolysis", "ethylene"),
+    "biogas_import": ("biogas_import", "methane_bio")
+
 }
 
 cluster_carrier_names = {'Naphtha': 'naphtha', 'Bio Naphtha': 'naphtha_bio', 'Natural Gas HD': 'methane',
@@ -172,8 +174,9 @@ cc_technologies = {
 }
 
 # Create a dictionary stating which technologies are splitted in bio and non bio
-bio_tech_names = ["CrackerFurnace", "CrackerFurnace_CC", "CrackerFurnace_Electric"]
-bio_carriers = ['naphtha']
+# bio_tech_names = ["CrackerFurnace", "CrackerFurnace_CC", "CrackerFurnace_Electric"]
+bio_carrier_tech_names = {"naphtha": ["CrackerFurnace", "CrackerFurnace_CC", "CrackerFurnace_Electric"], "methane": None}
+# bio_carriers = ['naphtha']
 
 # Create the dictionary where is stated which technology belongs to which Tech_ID.
 # More Tech_IDs can be coupled to one name "PDH" : [Tech_ID1, Tech_ID2]
@@ -197,5 +200,6 @@ tech_to_id = {"CrackerFurnace": "ICH01_01",
               "Biomass2methanol_input": "RFS03_01",
               "Biomass2methanol_input_CC": "RFS03_05",
               "DirectMeOHsynthesis": "RFS04_02",
-              "CO2electrolysis": "ICH01_40"
+              "CO2electrolysis": "ICH01_40",
+              "biogas_import": "Gas04_01"
               }
