@@ -174,7 +174,7 @@ def set_max_import(modelhub, period, carrier_import_dict):
     def max_import_rule(b, carrier):
         import_sum = sum(sum(b_period.node_blocks[node].var_import_flow[t, carrier] for node in model.set_nodes if
                              carrier in b_period.node_blocks[node].set_carriers) for t in set_t)
-        return import_sum == carrier_import_dict[carrier] * fraction_of_year_modelled
+        return import_sum <= carrier_import_dict[carrier] * fraction_of_year_modelled
 
     model.const_export_demand_dynamic = pyo.Constraint(
         model.carrier_demand_set, rule=max_import_rule
