@@ -214,8 +214,8 @@ def update_operations_IESA(sheet_name, header_row, profile_row_start, update_dat
     wb = xw.Book(cfg.IESA_input_data_path)
     ws = wb.sheets[sheet_name]
 
-    # Get header row values (tech names from columns 22–26)
-    headers = ws.range((header_row, 22), (header_row, 26)).value
+    # Get header row values (tech names from columns 22–27)
+    headers = ws.range((header_row, 22), (header_row, 27)).value
     start_col = 22  # Excel column V
 
     # Build average profiles: {tech: avg_array}
@@ -224,6 +224,8 @@ def update_operations_IESA(sheet_name, header_row, profile_row_start, update_dat
         valid_profiles = [np.array(profile) for profile in year_data.values() if profile is not None]
         if valid_profiles:
             avg_profiles[tech] = np.mean(valid_profiles, axis=0)
+            if tech == 'RFS03_04':
+                avg_profiles['Amm01_08'] = np.mean(valid_profiles, axis=0)
 
     # Write to sheet using correct column indices
     for col_offset, header in enumerate(headers):
@@ -260,8 +262,8 @@ def clear_input_operations_IESA(sheet_name, header_row, profile_row_start):
     wb = xw.Book(cfg.IESA_input_data_path)
     ws = wb.sheets[sheet_name]
 
-    # Read headers from columns 22–26 (Excel columns V to Z)
-    headers = ws.range((header_row, 22), (header_row, 26)).value
+    # Read headers from columns 22–27 (Excel columns V to Z)
+    headers = ws.range((header_row, 22), (header_row, 27)).value
     start_col = 22  # Starting at Excel column V
 
     # Default profile: 1/8760 for each hour

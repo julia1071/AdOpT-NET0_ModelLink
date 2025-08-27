@@ -41,7 +41,7 @@ else:
     IESA_modellink_path = IESA_path / "20250730_IESA_full.aimms"
     cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full")
 
-IESA_input_data_path = IESA_path / "data/20250826_detailed_linked.xlsx"
+IESA_input_data_path = IESA_path / "data/20250827_detailed_linked.xlsx"
 IESA_result_folder = IESA_path / "Output" / "ResultsModelLinking"
 
 #Cluster paths
@@ -51,7 +51,7 @@ cluster_case_path = "Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Full/ML_Zeela
 ppi_file_path = "Z:/IESA-Opt/Producer_Price_Index_CBS.xlsx"
 
 # Original and new filenames for IESA input and output folders
-original_filename_input_IESA = IESA_result_folder / "20250826_detailed_linked.xlsx"
+original_filename_input_IESA = IESA_result_folder / "20250827_detailed_linked.xlsx"
 original_filename_output_IESA = IESA_result_folder / "ResultsModelLinking_General.xlsx"
 
 # Define the new name of the input and output file
@@ -136,7 +136,8 @@ base_tech_output_map = {
     "CrackerFurnace": ("CrackerFurnace", "olefins"),
     "CrackerFurnace_Electric": ("CrackerFurnace_Electric", "olefins"),
     "SteamReformer": ("SteamReformer", "HBfeed"),
-    "ElectricSMR_m": ("ElectricSMR_m", "syngas_r"),
+    "ElectricSMR_ammonia": ("WGS_m", "hydrogen"),
+    "ElectricSMR_olefin": ("ElectricSMR_m", "syngas_r"),
     "AEC": ("AEC", "hydrogen"),
     "RWGS": ("RWGS", "syngas"),
     "MeOHsynthesis": ("MeOHsynthesis", "methanol"),
@@ -163,7 +164,8 @@ group_map = {
     "methanol_from_syngas": [
         "MPW2methanol_output",
         "MeOHsynthesis",
-        "Biomass2methanol_output"
+        "Biomass2methanol_output",
+        "ElectricSMR_olefin"
     ]
 }
 
@@ -191,7 +193,8 @@ tech_to_id = {"CrackerFurnace": "ICH01_01",
               "CrackerFurnace_Electric_bio": "ICH01_06",
               "SteamReformer": "Amm01_01",
               "SteamReformer_CC": "Amm01_02",
-              "ElectricSMR_m": "Amm01_08",
+              "ElectricSMR_ammonia": "Amm01_08",
+              "ElectricSMR_olefin": "RFS03_04",
               "AEC": "Amm01_05",
               "RWGS": "RFS03_02",
               "methanol_from_syngas": "RFS04_01",

@@ -31,7 +31,7 @@ def conversion_factor_cluster_to_IESA(tech_id):
         # Cluster: t biomass/y → IESA: PJ/y (Syngas)
         return 15.1 / (2.46 * 10 ** 6)
 
-    elif tech_id == 'RFS03_02':
+    elif tech_id in ['RFS03_02', 'RFS03_04']:
         # Cluster: t syngas/y → IESA: PJ/y (Syngas)
         return 14.4 / 10**6
 
@@ -44,8 +44,8 @@ def conversion_factor_cluster_to_IESA(tech_id):
         return (0.168 * 18.6) / 10**6
 
     elif tech_id == 'Amm01_08':
-        # Cluster: MWh feedgas → IESA: PJ/y (Ammonia)
-        return (4.966 * 0.168 * 18.6) / 10**6
+        # Cluster: MWh hydrogen → IESA: PJ/y (Ammonia)
+        return (0.168 * 18.6) / 10**6
 
     elif tech_id in ['Gas04_01', 'Gas04_05']:
         # Cluster: MWh gas/y → IESA: PJ/y (Gas)
