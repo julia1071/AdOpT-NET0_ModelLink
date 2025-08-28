@@ -207,5 +207,5 @@ tech_to_id = {"CrackerFurnace": "ICH01_01",
               "Biomass2methanol_input_CC": "RFS03_05",
               "DirectMeOHsynthesis": "RFS04_02",
               "CO2electrolysis": "ICH01_40",
-              "biogas_import": "Gas04_01"
+              "biogas_import": "Gas04_05"
               }

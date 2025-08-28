@@ -68,7 +68,7 @@ if execute == 1:
         # Read climate data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all_brownfield:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -121,7 +121,7 @@ if execute == 1:
                     with open(tech_data_file, "w") as json_tecdata_file:
                         json.dump(tech_data, json_tecdata_file, indent=4)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all_brownfield:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -157,7 +157,7 @@ if execute == 1:
         # Constant import prices
         dp.fill_carrier_data(casepath, value_or_data=25, columns=['Import price'], carriers=['methane'])
         dp.fill_carrier_data(casepath, value_or_data=313, columns=['Import price'], carriers=['naphtha'])
-        dp.fill_carrier_data(casepath, value_or_data=74, columns=['Import price'], carriers=['methane_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=103, columns=['Import price'], carriers=['methane_bio'])
         dp.fill_carrier_data(casepath, value_or_data=1322, columns=['Import price'], carriers=['naphtha_bio'])
         dp.fill_carrier_data(casepath, value_or_data=618, columns=['Import price'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=916, columns=['Import price'], carriers=['ethanol'])
@@ -254,7 +254,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all_brownfield:
         set_tecs = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -311,7 +311,7 @@ if execute == 1:
                     with open(tech_data_file, "w") as json_tecdata_file:
                         json.dump(tech_data, json_tecdata_file, indent=4)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all_brownfield:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -347,7 +347,7 @@ if execute == 1:
         # Constant import prices
         dp.fill_carrier_data(casepath, value_or_data=18, columns=['Import price'], carriers=['methane'])
         dp.fill_carrier_data(casepath, value_or_data=480, columns=['Import price'], carriers=['naphtha'])
-        dp.fill_carrier_data(casepath, value_or_data=54, columns=['Import price'], carriers=['methane_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=103, columns=['Import price'], carriers=['methane_bio'])
         dp.fill_carrier_data(casepath, value_or_data=1109, columns=['Import price'], carriers=['naphtha_bio'])
         dp.fill_carrier_data(casepath, value_or_data=475, columns=['Import price'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=916, columns=['Import price'], carriers=['ethanol'])
@@ -448,7 +448,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 1
+    read_techs = 0
     if read_techs or read_all_brownfield:
         set_tecs =["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -505,7 +505,7 @@ if execute == 1:
                     with open(tech_data_file, "w") as json_tecdata_file:
                         json.dump(tech_data, json_tecdata_file, indent=4)
 
-    read_car = 0
+    read_car = 1
     if read_car or read_all_brownfield:
         # Fill carrier data
         dp.fill_carrier_data(casepath, value_or_data=0)
@@ -541,7 +541,7 @@ if execute == 1:
         # Constant import prices
         dp.fill_carrier_data(casepath, value_or_data=18, columns=['Import price'], carriers=['methane'])
         dp.fill_carrier_data(casepath, value_or_data=442, columns=['Import price'], carriers=['naphtha'])
-        dp.fill_carrier_data(casepath, value_or_data=54, columns=['Import price'], carriers=['methane_bio'])
+        dp.fill_carrier_data(casepath, value_or_data=103, columns=['Import price'], carriers=['methane_bio'])
         dp.fill_carrier_data(casepath, value_or_data=895, columns=['Import price'], carriers=['naphtha_bio'])
         dp.fill_carrier_data(casepath, value_or_data=355, columns=['Import price'], carriers=['CO2_DAC'])
         dp.fill_carrier_data(casepath, value_or_data=916, columns=['Import price'], carriers=['ethanol'])
