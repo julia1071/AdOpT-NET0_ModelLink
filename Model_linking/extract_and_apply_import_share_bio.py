@@ -47,6 +47,9 @@ def extract_and_apply_import_bio_ratios(adopt_hub, tech_output_dict):
     print("🔀 Splitting technologies in cfg.bio_tech_names into bio and non-bio")
 
     for category, subdict in tech_output_dict.items():
+        if category != "AnnualOutput":
+            continue  # only split AnnualOutput, skip Operation
+
         for (loc, interval, tech) in list(subdict):
             original_size = subdict[(loc, interval, tech)]
 
