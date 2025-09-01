@@ -8,6 +8,7 @@ e_max = 0.1
 max_iterations = 5
 convergence_type = 'Average_Max'    #can be 'All', 'Average', 'Average_Max', 'Median' or 'Median_Max'
 fast_run = False  # fast optimization of the cluster model for a shorter period (default 10h) to test the model
+IESA_scope3 = False
 threads = 36
 
 # Linking scenario choice
@@ -37,22 +38,27 @@ if fast_run:
     IESA_modellink_path = IESA_path / "20250730_IESA_testing.aimms"
     cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Testing")
 else:
-    IESA_path = Path("Z:/IESA-Opt/IESA-Opt-Dev_full")
-    IESA_modellink_path = IESA_path / "20250730_IESA_full.aimms"
-    cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full")
+    if IESA_scope3:
+        IESA_path = Path("Z:/IESA-Opt/IESA-Opt-Dev_scope3")
+        IESA_modellink_path = IESA_path / "20250730_IESA_scope3.aimms"
+        cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/IESA_Scope3")
+    else:
+        IESA_path = Path("Z:/IESA-Opt/IESA-Opt-Dev_full")
+        IESA_modellink_path = IESA_path / "20250730_IESA_full.aimms"
+        cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full")
 
-IESA_input_data_path = IESA_path / "data/20250827_detailed_linked.xlsx"
+IESA_input_data_path = IESA_path / "data/20250901_detailed_linked.xlsx"
 IESA_result_folder = IESA_path / "Output" / "ResultsModelLinking"
+
+# Original and new filenames for IESA input and output folders
+original_filename_input_IESA = IESA_result_folder / "20250901_detailed_linked.xlsx"
+original_filename_output_IESA = IESA_result_folder / "ResultsModelLinking_General.xlsx"
 
 #Cluster paths
 cluster_case_path = "Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Full/ML_Zeeland_bf_"
 
 #Other
 ppi_file_path = "Z:/IESA-Opt/Producer_Price_Index_CBS.xlsx"
-
-# Original and new filenames for IESA input and output folders
-original_filename_input_IESA = IESA_result_folder / "20250827_detailed_linked.xlsx"
-original_filename_output_IESA = IESA_result_folder / "ResultsModelLinking_General.xlsx"
 
 # Define the new name of the input and output file
 basename_new_output_IESA = "ResultsModelLinking_General_Iteration_"
@@ -83,7 +89,7 @@ baseyear_IESA = 2019
 # Partly stiff and flexible P/E ratio, base on maximum demand propylene in IESA-Opt.
 carrier_demand_dict = {'ethylene': 647310, 'PE_olefin': 1070000, 'ammonia': 1184000}
 
-# Partly stiff and flexible P/E ratio, base on maximum demand propylene in IESA-Opt.
+# maximum import limit for bio methane based on domestic potential
 carrier_max_import_dict = {'methane_bio': 14.5e6}
 
 if linking_energy_prices and not linking_MPW:
@@ -127,7 +133,7 @@ if linking_operation:
 
 
 
-#Carriers with import possible outside system boundaries
+#Carriers with import possible outside cluster system boundaries
 car_import_international = ['naphtha', 'naphtha_bio', 'methane', 'methane_bio', 'biomass', 'MPW', 'propane', 'ethanol']
 
 # The alias name (can be anything), the name of the tech in the cluster model,
@@ -207,5 +213,5 @@ tech_to_id = {"CrackerFurnace": "ICH01_01",
               "Biomass2methanol_input_CC": "RFS03_05",
               "DirectMeOHsynthesis": "RFS04_02",
               "CO2electrolysis": "ICH01_40",
-              "biogas_import": "Gas04_05"
+              "biogas_import": "Gas04_01"
               }
