@@ -21,7 +21,7 @@ if execute == 1:
     casepath = basepath_case / "ML_Zeeland_bf_2030"
     datapath = basepath_data / "250619_ML_Data_Zeeland_bf"
 
-    firsttime = 0
+    firsttime = 1
     if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -68,7 +68,7 @@ if execute == 1:
         # Read climate data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all_brownfield:
         set_tecs_new = ["SteamReformer", "ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                         "CrackerFurnace", "CrackerFurnace_Electric", "OlefinSeparation",
@@ -207,7 +207,7 @@ if execute == 1:
     casepath = basepath_case / "ML_Zeeland_bf_2040"
     datapath = basepath_data / "250619_ML_Data_Zeeland_bf"
 
-    firsttime = 0
+    firsttime = 1
     if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -254,7 +254,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all_brownfield:
         set_tecs = ["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
@@ -401,7 +401,7 @@ if execute == 1:
     casepath = basepath_case / "ML_Zeeland_bf_2050"
     datapath = basepath_data / "250619_ML_Data_Zeeland_bf"
 
-    firsttime = 0
+    firsttime = 1
     if firsttime:
         # Create template files
         dp.create_optimization_templates(casepath)
@@ -448,7 +448,7 @@ if execute == 1:
         # Read climate data and fill carried data
         dp.load_climate_data_from_api(casepath)
 
-    read_techs = 0
+    read_techs = 1
     if read_techs or read_all_brownfield:
         set_tecs =["ElectricSMR_m", "WGS_m", "AEC", "HaberBosch",
                     "CrackerFurnace_Electric",
