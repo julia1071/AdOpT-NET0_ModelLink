@@ -70,7 +70,7 @@ def merge_and_group_technologies(tech_dict):
                     combined_dict[group_key] = group_sum
 
                 elif category == "Operation":
-                    arrays = [merged_dict[k] for k in present_techs]
+                    arrays = [merged_dict[k] for k in present_techs if merged_dict[k] is not None]
                     if arrays:
                         combined_dict[group_key] = np.mean(arrays, axis=0)
                         print("Taking average value for operation for grouped outputs")
