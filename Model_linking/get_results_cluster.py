@@ -51,17 +51,20 @@ def get_results_cluster_technology_output_dict(adopt_hub):
                         annual_cons_WGS = sum(tech_block_WGS.var_input_tot[t, "syngas_r"].value for t in set_t)
 
                         if "ElectricSMR_m_existing" in interval_block.node_blocks[cfg.location].tech_blocks_active:
-                            tech_block_eSMR_ex = interval_block.node_blocks[cfg.location].tech_blocks_active["ElectricSMR_m_existing"]
-                            annual_prod_eSMR_ex = sum(tech_block_eSMR_ex.var_output_tot[t, "syngas_r"].value for t in set_t)
+                            tech_block_eSMR_ex = interval_block.node_blocks[cfg.location].tech_blocks_active[
+                                "ElectricSMR_m_existing"]
+                            annual_prod_eSMR_ex = sum(
+                                tech_block_eSMR_ex.var_output_tot[t, "syngas_r"].value for t in set_t)
                         else:
                             annual_prod_eSMR_ex = 0
 
                         if "WGS_m_existing" in interval_block.node_blocks[cfg.location].tech_blocks_active:
-                            tech_block_WGS_ex = interval_block.node_blocks[cfg.location].tech_blocks_active["WGS_m_existing"]
-                            annual_cons_WGS_ex = sum(tech_block_WGS_ex.var_input_tot[t, "syngas_r"].value for t in set_t)
+                            tech_block_WGS_ex = interval_block.node_blocks[cfg.location].tech_blocks_active[
+                                "WGS_m_existing"]
+                            annual_cons_WGS_ex = sum(
+                                tech_block_WGS_ex.var_input_tot[t, "syngas_r"].value for t in set_t)
                         else:
                             annual_cons_WGS_ex = 0
-
 
                         annual_prod = (annual_prod_eSMR + annual_prod_eSMR_ex) - (annual_cons_WGS + annual_cons_WGS_ex)
 
@@ -104,6 +107,4 @@ def get_results_cluster_technology_output_dict(adopt_hub):
                     tech_output_dict["AnnualOutput"][(cfg.location, interval, alias)] = biogas_val * factor_fast_run
                     print(f"ℹ️ Output of {alias} in {interval} at {cfg.location}: {biogas_val * factor_fast_run}")
 
-
     return tech_output_dict
-

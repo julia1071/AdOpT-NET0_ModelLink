@@ -1,6 +1,7 @@
 from conversion_factors import conversion_factor_cluster_to_IESA
 import numpy as np
 
+
 def map_techs_to_ID(tech_output_dict, tech_to_id):
     """
     Maps technology names to technology IDs, supports one-to-many mappings,
@@ -64,7 +65,3 @@ def map_techs_to_ID(tech_output_dict, tech_to_id):
                 updates[category][tech_id][int(year)] = scaled_value
 
     return updates
-
-
-
-

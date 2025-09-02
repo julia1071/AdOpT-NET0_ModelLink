@@ -11,7 +11,7 @@ def conversion_factor_cluster_to_IESA(tech_id):
     Fails explicitly if the tech_id is unknown.
     """
 
-    if tech_id in ['ICH01_01', 'ICH01_02', 'ICH01_03', 'ICH01_05', 'ICH01_06']:
+    if tech_id in ['ICH01_01', 'ICH01_02', 'ICH01_03', 'ICH01_05', 'ICH01_06', 'ICH01_42']:
         # Cluster: t olefins/y → IESA: Mton Ey/y
         return 0.303 / 10**6
 
