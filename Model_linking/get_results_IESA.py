@@ -222,7 +222,8 @@ def calculate_avg_bio_methane_cost(file_path, year):
         row = df_sd[mask]
         try:
             output = float(row[year].values[0])
-            found_outputs.append(tech)
+            if output > 0:
+                found_outputs.append(tech)
         except (IndexError, KeyError, ValueError):
             output = 0
         outputs.append((tech, output))
@@ -230,9 +231,9 @@ def calculate_avg_bio_methane_cost(file_path, year):
     # === Summary: what was found ===
     print("\n📦 Bio-methane output summary:")
     if found_outputs:
-        print(f"Found outputs for: {', '.join(found_outputs)}")
+        print(f"Found outputs for: {', '.join(found_outputs)} in {year}")
     else:
-        print("⚠️ No outputs found for any bio-methane technologies.")
+        print(f"⚠️ No outputs found for any bio-methane technologies in {year}.")
 
     # === Weighted average cost calculation ===
     weighted_sum = sum(c * o for (t1, c), (t2, o) in zip(costs, outputs) if o)

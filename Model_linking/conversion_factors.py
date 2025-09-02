@@ -109,7 +109,7 @@ def conversion_factor_IESA_to_cluster(sheet, filter):
             sheet_name = 'World Development Indicators'
             ppi_cf = get_ppi_conversion_factor(sheet_name)
             return ppi_cf * 44.9  # Meuro/PJ to euro/t
-        elif filter in ['Natural Gas HD']:
+        elif filter in ['Natural Gas HD', 'Biomethane']:
             sheet_name = 'World Development Indicators'
             ppi_cf = get_ppi_conversion_factor(sheet_name)
             return ppi_cf * 3.6 # Meuro/PJ to euro/MWh
