@@ -89,13 +89,10 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
         axes[0].text(mid, 1.05, interval, ha='center', va='bottom', fontsize=14)
 
     if include_costs and cost_data is not None:
-        # desired order of iterations
-        iteration_order = ['Standalone', 'Iteration_1', 'Iteration_2']
-
         # build new column order: for each interval, all iterations in order
         new_cols = []
         for interval in intervals:
-            for iteration in iteration_order:
+            for iteration in iterations:
                 if (iteration, interval) in cost_data.columns:
                     new_cols.append((iteration, interval))
 
