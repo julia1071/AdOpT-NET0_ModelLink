@@ -10,8 +10,8 @@ plt.rcParams.update({
 })
 
 # Options
-nr_iterations = 5
-ambition = "Scope1-3"
+nr_iterations = 2
+ambition = "Scope1-2"
 location = "Zeeland"
 save = "both"  # options: "pdf", "svg", "both", "no"
 
@@ -19,7 +19,7 @@ save = "both"  # options: "pdf", "svg", "both", "no"
 basepath_results = f"Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/{ambition}"
 result_file = os.path.join(
     basepath_results,
-    "Results_model_linking_20250806_11_36",
+    "Results_model_linking_20250903_09_58",
     "epsilons.json"
 )
 plot_folder = os.path.join(
@@ -37,7 +37,8 @@ tech_to_id = {
     "Electric Cracker with bio": "ICH01_06",
     "Steam Reformer": "Amm01_01",
     "Steam Reformer with CC": "Amm01_02",
-    "Electric SMR": "Amm01_08",
+    "Electric SMR ammonia": "Amm01_08",
+    "Electric SMR ethylene": "RFS03_04",
     "AEC": "Amm01_05",
     "reverse WGS": "RFS03_02",
     "MeOH from syngas": "RFS04_01",

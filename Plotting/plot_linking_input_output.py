@@ -6,10 +6,34 @@ import Model_linking.config_model_linking as cfg
 
 # Settings
 inputs = 1  # 1 for inputs_cluster.json, 0 for outputs_cluster.json
-ambition = "Scope1-3"
+ambition = "Scope1-2"
 
 # Tech ID to name mapping (reverse of your dict)
-tech_to_id = cfg.tech_to_id
+# Technology name to ID mapping
+tech_to_id = {
+    "CrackerFurnace": "ICH01_01",
+    "CrackerFurnace_bio": "ICH01_42",
+    "CrackerFurnace with CC": "ICH01_02",
+    "CrackerFurnace with CC and bio": "ICH01_03",
+    "Electric Cracker": "ICH01_05",
+    "Electric Cracker with bio": "ICH01_06",
+    "Steam Reformer": "Amm01_01",
+    "Steam Reformer with CC": "Amm01_02",
+    "Electric SMR ammonia": "Amm01_08",
+    "Electric SMR ethylene": "RFS03_04",
+    "AEC": "Amm01_05",
+    "reverse WGS": "RFS03_02",
+    "MeOH from syngas": "RFS04_01",
+    "MTO": "ICH01_12",
+    "EDH": "ICH01_11",
+    "PDH": "ICH01_41",
+    "MPW gasification": "WAI01_10",
+    "MPW gasification with CC": "WAI01_11",
+    "Biomass gasification input": "RFS03_01",
+    "Biomass gasification with CC": "RFS03_05",
+    "Direct MeOH synthesis": "RFS04_02",
+    "CO$_2$ electrolysis": "ICH01_40"
+}
 
 # Reverse mapping: tech_id → tech_name
 id_to_tech = {v: k for k, v in tech_to_id.items()}
@@ -17,9 +41,9 @@ id_to_tech = {v: k for k, v in tech_to_id.items()}
 # Define the path to the JSON file
 basepath = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + ambition
 if inputs:
-    results_path = basepath + "/Results_model_linking_20250803_19_05/inputs_cluster.json"
+    results_path = basepath + "/Results_model_linking_20250903_09_58/inputs_cluster.json"
 else:
-    results_path = basepath + "/Results_model_linking_20250803_19_05/outputs_cluster.json"
+    results_path = basepath + "/Results_model_linking_20250903_09_58/outputs_cluster.json"
 
 # Load JSON data
 with open(results_path, "r") as f:

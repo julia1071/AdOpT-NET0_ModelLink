@@ -7,14 +7,15 @@ from pathlib import Path
 from adopt_net0 import extract_datasets_from_h5group
 
 #options
-nr_iterations = 5
-ambition = "Scope1-3"
+nr_iterations = 3
+ambition = "Scope1-2"
 location = "Zeeland"
 
 # Define paths
 basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + ambition
-result_folder = basepath_results + "/Results_model_linking_20250806_11_36"
-# result_folder = basepath_results + "/Results_model_linking_20250808_17_50"
+# result_folder = basepath_results + "/Results_model_linking_20250905_09_38"  #scope 1-3
+result_folder = basepath_results + "/Results_model_linking_20250906_11_16"    #scope 1-2
+# result_folder = basepath_results + "/Results_model_linking_20250907_05_27"    #low ambitions
 basepath_plots = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 data_to_excel_path = os.path.join(basepath_plots, "Plotting", f"result_data_long_{ambition}.xlsx")
 
@@ -36,7 +37,8 @@ for iteration in range(nr_iterations + 1):
     )
 
     # Define the index rows
-    index = ["path", "costs_obj_interval", "sunk_costs", "costs_tot_interval", "costs_tot_cumulative", "emissions_net"]
+    index = ["path", "costs_obj_interval", "sunk_costs", "costs_tot_interval", "costs_tot_cumulative", "emissions_net",
+             "CAPEX", "OPEX_fix", "OPEX_var", "OPEX_emis"]
 
     # Create the DataFrame for this result type with NaN values
     result_data = pd.DataFrame(np.nan, index=index, columns=columns)
@@ -65,6 +67,15 @@ for iteration in range(nr_iterations + 1):
                 tec_costs[interval] = summary_results.loc[summary_results['case'] == case, 'cost_capex_tecs'].iloc[0]
                 total_costs[interval] = summary_results.loc[summary_results['case'] == case, 'total_npv'].iloc[
                     0]
+                result_data.loc["CAPEX", (iteration_name, interval)] = tec_costs[interval]
+                result_data.loc["OPEX_fix", (iteration_name, interval)] = \
+                    summary_results.loc[summary_results['case'] == case, 'cost_opex_tecs'].iloc[0]
+                result_data.loc["OPEX_var", (iteration_name, interval)] = \
+                    (summary_results.loc[summary_results['case'] == case, 'cost_imports'].iloc[0] +
+                     summary_results.loc[summary_results['case'] == case, 'cost_exports'].iloc[0])
+                result_data.loc["OPEX_emis", (iteration_name, interval)] = \
+                    (summary_results.loc[summary_results['case'] == case, 'carbon_cost'].iloc[0] -
+                     summary_results.loc[summary_results['case'] == case, 'carbon_revenue'].iloc[0])
 
                 #Calculate sunk costs and cumulative costs for brownfield
                 prev_interval = result_data.columns.levels[1][i - 1]

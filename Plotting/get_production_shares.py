@@ -122,7 +122,7 @@ def fetch_and_process_data_production(
                                 if (interval, location, tec_existing, para) in df_tec_operation:
                                     output_car = df_tec_operation[interval, location, tec_existing, para]
 
-                                    if tec in ['CrackerFurnace', 'MPW2methanol', 'SteamReformer'] and (
+                                    if tec in ['CrackerFurnace', 'MPW2methanol', 'SteamReformer', 'Biomass2methanol'] and (
                                             interval, location, tec_existing,
                                             'CO2captured_output') in df_tec_operation:
                                         numerator = df_tec_operation[
@@ -183,9 +183,6 @@ def fetch_and_process_data_production(
                                             result_data.loc[bio_tech, (iteration, interval)] = prod * frac_bio
 
         for tech, (product, category, feedstock, conversion) in tec_mapping.items():
-            if tech == 'ElectricSMR_m_olefins':
-                print('eSMR')
-
             if category not in production_sum_olefins.index and product == "Olefin":
                 production_sum_olefins.loc[category] = 0.0
             if category not in production_sum_ammonia.index and product == "Ammonia":
@@ -209,15 +206,17 @@ def fetch_and_process_data_production(
 
 def main():
     #Define cluster ambition and number of iteration
-    nr_iterations = 0
-    flag_cluster_ambition = "LowAmbition"
+    nr_iterations = 3
+    flag_cluster_ambition = "Scope1-2"
 
     # Add basepath
     datapath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     data_to_excel_path1 = os.path.join(datapath, "Plotting", f"production_shares_olefins_{flag_cluster_ambition}.xlsx")
     data_to_excel_path2 = os.path.join(datapath, "Plotting", f"production_shares_ammonia_{flag_cluster_ambition}.xlsx")
     basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + flag_cluster_ambition
-    result_folder = basepath_results + "/Results_model_linking_20250806_11_36"
+    # result_folder = basepath_results + "/Results_model_linking_20250905_09_38"  #scope 1-3
+    result_folder = basepath_results + "/Results_model_linking_20250906_11_16"    #scope 1-2
+    # result_folder = basepath_results + "/Results_model_linking_20250907_05_27"  # low ambitions
 
     tec_mapping = {
         "CrackerFurnace": ("Olefin", "Conventional", "olefins", 0.439),

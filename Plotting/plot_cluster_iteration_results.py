@@ -11,8 +11,7 @@ from adopt_net0 import extract_datasets_from_h5group
 
 
 def plot_production_shares(production_sum_olefins, production_sum_ammonia, categories, intervals, iterations,
-                           include_costs=False, separate=False, cost_data=None, total_cost=False,
-                           combined_categories=None):
+                           include_costs=False, cost_data=None, total_cost=False, combined_categories=None):
     mpl.rcParams['font.family'] = 'serif'
 
     group_size = len(iterations)
@@ -38,7 +37,7 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
     production_sum_olefins = normalize(production_sum_olefins)
     production_sum_ammonia = normalize(production_sum_ammonia)
 
-    n_rows = 3 if (include_costs and separate) else 2
+    n_rows = 3 if include_costs else 2
     fig, axes = plt.subplots(n_rows, 1, figsize=(12, 9 if n_rows == 3 else 6), sharex=True)
     axes = axes if isinstance(axes, np.ndarray) else [axes]
 
@@ -90,38 +89,62 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
         axes[0].text(mid, 1.05, interval, ha='center', va='bottom', fontsize=14)
 
     if include_costs and cost_data is not None:
-        # Reorder so it's 2030*iterations, 2040*iterations, ...
-        cost_data = (
-            cost_data
-            .unstack(level=0)  # intervals x iterations
-            .loc[intervals, iterations]  # ensure exact order
-            .to_numpy()
-            .flatten()
-        )
+        # desired order of iterations
+        iteration_order = ['Standalone', 'Iteration_1', 'Iteration_2']
 
+        # build new column order: for each interval, all iterations in order
+        new_cols = []
+        for interval in intervals:
+            for iteration in iteration_order:
+                if (iteration, interval) in cost_data.columns:
+                    new_cols.append((iteration, interval))
+
+        # reindex columns
+        cost_data_ordered = cost_data.reindex(columns=pd.MultiIndex.from_tuples(new_cols))
+
+        # Convert to €/t if not total_cost
         if not total_cost:
-            cost_data = cost_data / 2_901_310  # Convert to €/t
+            cost_data_ordered = cost_data_ordered / 2_901_310
 
-        if separate:
-            ax_cost = axes[2]
-            ax_cost.bar(x, cost_data, color='navy', width=0.8, label='Production cost')
-            ax_cost.set_ylabel("Total cluster cost [€/t]")
-            ax_cost.set_ylim(0, max(cost_data) * 1.2)
-            ax_cost.spines[['top', 'right']].set_visible(False)
-            ax_cost.spines['left'].set_color('black')
-            ax_cost.spines['left'].set_linewidth(1)
-            ax_cost.legend(loc='upper right', fontsize=9)
-        else:
-            ax2 = axes[1].twinx()
-            ax2.plot(x, cost_data, 'o', color='black', markersize=4, label='Production cost')
-            ax2.set_ylabel("Total cluster cost [€/t]", color='black', loc='center')
-            ax2.yaxis.set_label_position("right")
-            ax2.yaxis.tick_right()
-            ax2.spines['top'].set_visible(False)
-            ax2.spines['right'].set_color('navy')
-            ax2.spines['right'].set_linewidth(1)
-            ax2.set_ylim(0, max(cost_data) * 1.2)
-            ax2.legend(loc='upper right', fontsize=9)
+        # Labels and colors
+        cost_labels = {
+            "CAPEX": "CAPEX",
+            "OPEX_fix": "Fixed OPEX",
+            "OPEX_var": "Variable OPEX",
+            "OPEX_emis": "Emission costs",
+        }
+        cost_colors = {
+            "CAPEX": "#111F4A",  # darkest
+            "OPEX_fix": "#355C7D",
+            "OPEX_var": "#6C9BCF",
+            "OPEX_emis": "#A9CFF7",  # lightest
+        }
+
+        # Flatten each row into a 1D array matching x positions
+        cost_arrays = {
+            row: pd.to_numeric(cost_data_ordered.loc[row].to_numpy().flatten(), errors="coerce")
+            for row in ["CAPEX", "OPEX_fix", "OPEX_var", "OPEX_emis"]
+            if row in cost_data_ordered.index
+        }
+
+        # Plot stacked bar chart
+        ax_cost = axes[2]
+        bottom = np.zeros_like(x, dtype=float)
+        for key in ["CAPEX", "OPEX_fix", "OPEX_var", "OPEX_emis"]:
+            if key not in cost_arrays:
+                continue
+            values = cost_arrays[key]
+            ax_cost.bar(
+                x, values, bottom=bottom,
+                color=cost_colors[key], width=0.8,
+                label=cost_labels[key]
+            )
+            bottom += values
+
+        ax_cost.set_ylabel("Cluster production cost [€/t]")
+        ax_cost.set_ylim(0, bottom.max() * 1.2)
+        ax_cost.spines[['top', 'right']].set_visible(False)
+        ax_cost.legend(loc='upper right', fontsize=9)
 
     # Final legend (remove duplicates)
     # handles, labels = axes[0].get_legend_handles_labels()
@@ -132,16 +155,10 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
     #legend from categories
     legend_elements = [Patch(facecolor=color, label=label) for label, color in categories.items()]
 
-    if separate:
-        fig.legend(legend_elements, categories.keys(), loc='lower center', ncol=5, fontsize=10,
-                   bbox_to_anchor=(0.5, 0.1))
+    fig.legend(legend_elements, categories.keys(), loc='lower center', ncol=5, fontsize=10,
+               bbox_to_anchor=(0.5, 0.01))
 
-        plt.subplots_adjust(hspace=0.3, bottom=0.25, left=0.08, right=0.92)
-    else:
-        fig.legend(legend_elements, categories.keys(), loc='lower center', ncol=5, fontsize=10,
-                   bbox_to_anchor=(0.5, 0.01))
-
-        plt.subplots_adjust(hspace=0.3, bottom=0.25, left=0.08, right=0.92)
+    plt.subplots_adjust(hspace=0.2, bottom=0.16, left=0.08, right=0.92)
 
     return plt
 
@@ -150,8 +167,8 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
 
 def main():
     #Define cluster ambition and number of iteration
-    nr_iterations = 5
-    flag_cluster_ambition = "Scope1-3"
+    nr_iterations = 3
+    flag_cluster_ambition = "Scope1-2"
     include_prod_costs = True
     separate = True
     intervals = ['2030', '2040', '2050']
@@ -162,7 +179,7 @@ def main():
     data_to_excel_path1 = os.path.join(datapath, "Plotting", f"production_shares_olefins_{flag_cluster_ambition}.xlsx")
     data_to_excel_path2 = os.path.join(datapath, "Plotting", f"production_shares_ammonia_{flag_cluster_ambition}.xlsx")
     plot_folder = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/IterationBars_" + flag_cluster_ambition
-
+    cost_data_excel = os.path.join(datapath, "Plotting", f"result_data_long_{flag_cluster_ambition}.xlsx")
 
     categories = {
         "Conventional": '#8C8B8B',
@@ -189,7 +206,7 @@ def main():
         df_costs = pd.read_excel(cost_data_excel, header=[0, 1], index_col=0)
         if 'costs_obj_interval' not in df_costs.index:
             raise KeyError("Row 'costs_obj_interval' not found in cost Excel")
-        cost_values = df_costs.loc['costs_obj_interval']
+        cost_values = df_costs.loc[['CAPEX', 'OPEX_fix', 'OPEX_var', 'OPEX_emis']]
     else:
         cost_values = None
 
@@ -199,13 +216,12 @@ def main():
                                      intervals=intervals,
                                      iterations=iterations,
                                      include_costs=include_prod_costs,
-                                     separate=separate,
                                      cost_data=cost_values,
                                      total_cost=False,
                                      combined_categories=combined_categories)
 
     #saving options
-    save = "svg"
+    save = "both"
     if save == "pdf":
         plt.savefig(f"{plot_folder}.pdf", format='pdf', bbox_inches='tight')
     elif save == "svg":

@@ -204,7 +204,7 @@ def save_separate_legend(categories, combined_categories, filename="legend"):
 
 
 def main():
-    flag_cluster_ambition = "Scope1-3"
+    flag_cluster_ambition = "LowAmbition"
     iterations = ['Standalone']
 
     # Add basepath
