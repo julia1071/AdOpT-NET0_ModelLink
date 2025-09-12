@@ -3,7 +3,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # ================= SETTINGS =================
-file = r"C:\Users\5637635\OneDrive - Universiteit Utrecht\Model Linking - shared\Results\Final\250902_standalone_BaU\ResultsModelLinking_General_standalone.xlsx"
+scope3 = 1
+if scope3:
+    file = r"C:\Users\5637635\OneDrive - Universiteit Utrecht\Model Linking - shared\Results\Final\250911_standalone_scope1-3\ResultsModelLinking_General_standalone.xlsx"
+    ext = "_scope3"
+else:
+    file = r"C:\Users\5637635\OneDrive - Universiteit Utrecht\Model Linking - shared\Results\Final\250902_standalone_BaU\ResultsModelLinking_General_standalone.xlsx"
+    ext = ""
+
 sheet = "SupplyDemand"
 years_discrete = ["2022", "2030", "2040", "2050"]
 years_cont = np.arange(2022, 2056)
@@ -205,8 +212,8 @@ fig, axes = plot_shares(ammonia_cat, olefins_cat, categories, combined_categorie
 
 # =============== SAVE =================
 if save in ["pdf", "both"]:
-    fig.savefig(f"{plot_folder}/national_production_shares.pdf", bbox_inches='tight', format='pdf')
+    fig.savefig(f"{plot_folder}/national_production_shares{ext}.pdf", bbox_inches='tight', format='pdf')
 if save in ["svg", "both"]:
-    fig.savefig(f"{plot_folder}/national_production_shares.svg", bbox_inches='tight', format='svg')
+    fig.savefig(f"{plot_folder}/national_production_shares{ext}.svg", bbox_inches='tight', format='svg')
 
 plt.show()
