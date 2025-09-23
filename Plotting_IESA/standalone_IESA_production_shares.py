@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # ================= SETTINGS =================
-scope3 = 1
+scope3 = 0
 if scope3:
     file = r"C:\Users\5637635\OneDrive - Universiteit Utrecht\Model Linking - shared\Results\Final\250911_standalone_scope1-3\ResultsModelLinking_General_standalone.xlsx"
     ext = "_scope3"
@@ -19,6 +19,7 @@ save = "both"  # options: "no", "pdf", "svg", "both"
 
 # =============== CATEGORIES =================
 categories = {
+    "Imports": "black",
     "Conventional": '#8C8B8B',
     "Carbon Capture": '#3E7EB0',
     "Electrification": '#E9E46D',
@@ -27,8 +28,7 @@ categories = {
     "Bio-based feedstock": '#84AA6F',
     "Bio-based feedstock with CC": '#088A01',
     "Plastic waste recycling": '#B475B2',
-    "Plastic waste recycling with CC": '#533A8C',
-    "Imports": "#4682B4"
+    "Plastic waste recycling with CC": '#533A8C'
 }
 
 combined_categories = {
@@ -46,6 +46,7 @@ ammonia_mapping = {
 }
 
 olefins_mapping = {
+    'ICH01_16': 'Imports',  # include in plot, no legend
     'ICH01_01': 'Conventional',
     'ICH01_14': 'Conventional',
     'ICH01_02': 'Carbon Capture',
@@ -56,8 +57,6 @@ olefins_mapping = {
     'ICH01_11': 'Bio-based feedstock',
     'ICH01_41': 'Bio-based feedstock',
     'ICH01_40': r"CO$_2$ utilization",
-    'ICH01_16': 'Imports',  # include in plot, no legend
-    'Ethylene imports': 'Imports',
 }
 
 # ================= HELPER FUNCTIONS =================
@@ -124,9 +123,9 @@ def aggregate_categories(df_interp, mapping, categories, combined_categories):
         cat = mapping.get(tech, None)
         if cat is None:
             continue
-        if cat in combined_categories:
-            # Skip for now, combined will be plotted with hatch
-            continue
+        # if cat in combined_categories:
+        #     # Skip for now, combined will be plotted with hatch
+        #     continue
         df_cat.loc[cat] += df_interp.loc[tech]
     return df_cat
 
