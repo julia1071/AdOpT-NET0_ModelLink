@@ -105,7 +105,7 @@ def plot_production_shares_stacked(df1, df2, categories, combined_categories=Non
         fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(7, 5.5), sharex=True,
                                        gridspec_kw={'hspace': 0.2})
 
-        for ax, df, label in zip((ax1, ax2), (df1, df2), ('ammonia', 'ethylene')):
+        for ax, df, label in zip((ax1, ax2), (df1, df2), ('ammonia', 'olefins')):
             x, interpolated = interpolate(df, df['Year'].values)
             bottoms = np.zeros_like(x)
 
@@ -204,13 +204,13 @@ def save_separate_legend(categories, combined_categories, filename="legend"):
 
 
 def main():
-    flag_cluster_ambition = "LowAmbition"
+    flag_cluster_ambition = "Scope1-3"
     iterations = ['Standalone']
 
     # Add basepath
     datapath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    data_to_excel_path1 = os.path.join(datapath, "Plotting", f"production_shares_olefins_{flag_cluster_ambition}.xlsx")
-    data_to_excel_path2 = os.path.join(datapath, "Plotting", f"production_shares_ammonia_{flag_cluster_ambition}.xlsx")
+    data_to_excel_path1 = os.path.join(datapath, "Plotting", "Results_excels", f"production_shares_olefins_{flag_cluster_ambition}.xlsx")
+    data_to_excel_path2 = os.path.join(datapath, "Plotting", "Results_excels", f"production_shares_ammonia_{flag_cluster_ambition}.xlsx")
     plot_folder = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/ProdShares_" + flag_cluster_ambition
 
     categories = {

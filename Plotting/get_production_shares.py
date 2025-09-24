@@ -206,17 +206,30 @@ def fetch_and_process_data_production(
 
 def main():
     #Define cluster ambition and number of iteration
-    nr_iterations = 3
-    flag_cluster_ambition = "Scope1-2"
+    IESA_fossilphaseout = 1
+    nr_iterations = 2
+    flag_cluster_ambition = "LowAmbition"
 
     # Add basepath
     datapath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    data_to_excel_path1 = os.path.join(datapath, "Plotting", f"production_shares_olefins_{flag_cluster_ambition}.xlsx")
-    data_to_excel_path2 = os.path.join(datapath, "Plotting", f"production_shares_ammonia_{flag_cluster_ambition}.xlsx")
-    basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + flag_cluster_ambition
-    # result_folder = basepath_results + "/Results_model_linking_20250905_09_38"  #scope 1-3
-    result_folder = basepath_results + "/Results_model_linking_20250906_11_16"    #scope 1-2
-    # result_folder = basepath_results + "/Results_model_linking_20250907_05_27"  # low ambitions
+    if IESA_fossilphaseout:
+        basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/IESA_Scope3/" + flag_cluster_ambition
+        # result_folder = basepath_results + "/Results_model_linking_20250910_15_09"  #scope 1-3
+        # result_folder = basepath_results + "/Results_model_linking_20250912_04_01"  # scope 1-2
+        result_folder = basepath_results + "/Results_model_linking_20250912_22_04"  # low ambitions
+        data_to_excel_path1 = os.path.join(datapath, "Plotting", "Results_excels",
+                                           f"production_shares_olefins_{flag_cluster_ambition}_FPO.xlsx")
+        data_to_excel_path2 = os.path.join(datapath, "Plotting", "Results_excels",
+                                           f"production_shares_ammonia_{flag_cluster_ambition}_FPO.xlsx")
+    else:
+        basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + flag_cluster_ambition
+        # result_folder = basepath_results + "/Results_model_linking_20250905_09_38"  #scope 1-3
+        result_folder = basepath_results + "/Results_model_linking_20250906_11_16"  # scope 1-2
+        # result_folder = basepath_results + "/Results_model_linking_20250907_05_27"    #low ambitions
+        data_to_excel_path1 = os.path.join(datapath, "Plotting", "Results_excels",
+                                           f"production_shares_olefins_{flag_cluster_ambition}.xlsx")
+        data_to_excel_path2 = os.path.join(datapath, "Plotting", "Results_excels",
+                                           f"production_shares_ammonia_{flag_cluster_ambition}.xlsx")
 
     tec_mapping = {
         "CrackerFurnace": ("Olefin", "Conventional", "olefins", 0.439),

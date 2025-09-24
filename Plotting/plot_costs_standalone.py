@@ -21,7 +21,7 @@ def plot_costs_bar(ambitions, datapath, total_cost=False, include_emissions=True
     emissions_dict = {}
 
     for ambition in ambitions:
-        fpath = os.path.join(datapath, "Plotting", f"result_data_long_{ambition}.xlsx")
+        fpath = os.path.join(datapath, "Plotting", "Results_excels", f"result_data_long_{ambition}.xlsx")
         df = pd.read_excel(fpath, header=[0, 1], index_col=0)
 
         # Costs

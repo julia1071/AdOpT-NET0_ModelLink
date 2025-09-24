@@ -34,8 +34,8 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
                         df_norm.loc[:, col] = 0
         return df_norm
 
-    production_sum_olefins = normalize(production_sum_olefins)
     production_sum_ammonia = normalize(production_sum_ammonia)
+    production_sum_olefins = normalize(production_sum_olefins)
 
     n_rows = 3 if include_costs else 2
     fig, axes = plt.subplots(n_rows, 1, figsize=(12, 9 if n_rows == 3 else 6), sharex=True)
@@ -68,8 +68,8 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
         ax.set_xlim(-0.5, total_bars - 0.5)
         ax.spines[['top', 'right']].set_visible(False)
 
-    make_stacked_bars(axes[0], production_sum_olefins, "olefins")
-    make_stacked_bars(axes[1], production_sum_ammonia, "ammonia")
+    make_stacked_bars(axes[0], production_sum_ammonia, "ammonia")
+    make_stacked_bars(axes[1], production_sum_olefins, "olefins")
 
     xtick_labels = []
     for interval in intervals:
@@ -164,6 +164,7 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
 
 def main():
     #Define cluster ambition and number of iteration
+    IESA_fossilphaseout = 0
     nr_iterations = 3
     flag_cluster_ambition = "Scope1-2"
     include_prod_costs = True
@@ -173,10 +174,23 @@ def main():
 
     # Add basepath
     datapath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    data_to_excel_path1 = os.path.join(datapath, "Plotting", f"production_shares_olefins_{flag_cluster_ambition}.xlsx")
-    data_to_excel_path2 = os.path.join(datapath, "Plotting", f"production_shares_ammonia_{flag_cluster_ambition}.xlsx")
-    plot_folder = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/IterationBars_" + flag_cluster_ambition
-    cost_data_excel = os.path.join(datapath, "Plotting", f"result_data_long_{flag_cluster_ambition}.xlsx")
+    if IESA_fossilphaseout:
+        data_to_excel_path1 = os.path.join(datapath, "Plotting", "Results_excels",
+                                           f"production_shares_olefins_{flag_cluster_ambition}_FPO.xlsx")
+        data_to_excel_path2 = os.path.join(datapath, "Plotting", "Results_excels",
+                                           f"production_shares_ammonia_{flag_cluster_ambition}_FPO.xlsx")
+        plot_folder = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/IterationBars_FPO_" + flag_cluster_ambition
+        cost_data_excel = os.path.join(datapath, "Plotting", "Results_excels",
+                                       f"result_data_long_{flag_cluster_ambition}_FPO.xlsx")
+    else:
+        data_to_excel_path1 = os.path.join(datapath, "Plotting", "Results_excels",
+                                           f"production_shares_olefins_{flag_cluster_ambition}.xlsx")
+        data_to_excel_path2 = os.path.join(datapath, "Plotting", "Results_excels",
+                                           f"production_shares_ammonia_{flag_cluster_ambition}.xlsx")
+        plot_folder = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/IterationBars_" + flag_cluster_ambition
+        cost_data_excel = os.path.join(datapath, "Plotting", "Results_excels",
+                                       f"result_data_long_{flag_cluster_ambition}.xlsx")
+
 
     categories = {
         "Conventional": '#8C8B8B',

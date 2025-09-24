@@ -7,17 +7,26 @@ from pathlib import Path
 from adopt_net0 import extract_datasets_from_h5group
 
 #options
-nr_iterations = 3
-ambition = "Scope1-2"
+IESA_fossilphaseout = 1
+nr_iterations = 2
+ambition = "LowAmbition"
 location = "Zeeland"
 
 # Define paths
-basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + ambition
-# result_folder = basepath_results + "/Results_model_linking_20250905_09_38"  #scope 1-3
-result_folder = basepath_results + "/Results_model_linking_20250906_11_16"    #scope 1-2
-# result_folder = basepath_results + "/Results_model_linking_20250907_05_27"    #low ambitions
-basepath_plots = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-data_to_excel_path = os.path.join(basepath_plots, "Plotting", f"result_data_long_{ambition}.xlsx")
+if IESA_fossilphaseout:
+    basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/IESA_Scope3/" + ambition
+    # result_folder = basepath_results + "/Results_model_linking_20250910_15_09"  #scope 1-3
+    # result_folder = basepath_results + "/Results_model_linking_20250912_04_01"  # scope 1-2
+    result_folder = basepath_results + "/Results_model_linking_20250912_22_04"    #low ambitions
+    basepath_plots = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    data_to_excel_path = os.path.join(basepath_plots, "Plotting", "Results_excels", f"result_data_long_{ambition}_FPO.xlsx")
+else:
+    basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + ambition
+    # result_folder = basepath_results + "/Results_model_linking_20250905_09_38"  #scope 1-3
+    result_folder = basepath_results + "/Results_model_linking_20250906_11_16"    #scope 1-2
+    # result_folder = basepath_results + "/Results_model_linking_20250907_05_27"    #low ambitions
+    basepath_plots = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    data_to_excel_path = os.path.join(basepath_plots, "Plotting", "Results_excels", f"result_data_long_{ambition}.xlsx")
 
 
 # Initialize an empty dictionary to collect DataFrame results
