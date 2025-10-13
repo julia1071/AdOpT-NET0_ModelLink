@@ -49,12 +49,8 @@ if execute == 1:
         "ytick.labelsize": 10,
     })
 
-    # === FIGURE 1: HOURLY PROFILES ===
-    fig1, axes1 = plt.subplots(2, 1, figsize=(6, 5), sharex=True)
-    fig1.subplots_adjust(hspace=0.4, top=0.95, bottom=0.1, left=0.1, right=0.98)
-
-    # Top panel: Zeeland Price
-    ax_price = axes1[0]
+    # === FIGURE 1a: HOURLY ELECTRICITY PRICES (ZEELAND) ===
+    fig_price, ax_price = plt.subplots(figsize=(6, 2.5))
     for i, year in enumerate(years):
         ax_price.plot(
             data['Zeeland'][year]['price'],
@@ -62,14 +58,18 @@ if execute == 1:
             label=f"{labels[year]} ({data['Zeeland'][year]['price'].mean():.1f} EUR/MWh)",
             linewidth=0.5
         )
-    ax_price.set_title('Electricity Prices: Zeeland')
+    # ax_price.set_title('Electricity Prices: Zeeland')
     ax_price.set_ylabel('Electricity Price [EUR/MWh]')
     ax_price.set_xlim(0, 8759)
     ax_price.set_ylim(0, 550)
     ax_price.legend(loc='upper right')
 
-    # Bottom panel: Emission Rate
-    ax_emiss = axes1[1]
+    if save:
+        fig_price.savefig(f"{savepath}eprice_hourly_Zeeland.pdf", format='pdf')
+    plt.show()
+
+    # === FIGURE 1b: HOURLY EMISSION RATES ===
+    fig_emiss, ax_emiss = plt.subplots(figsize=(6, 2.5))
     for i, year in enumerate(years):
         ax_emiss.plot(
             data['Zeeland'][year]['emission'],
@@ -77,7 +77,7 @@ if execute == 1:
             label=f"{labels[year]} ({data['Zeeland'][year]['emission'].mean():.0f} kg CO$_2$/MWh)",
             linewidth=0.5
         )
-    ax_emiss.set_title('Emission Rates')
+    # ax_emiss.set_title('Emission Rates')
     ax_emiss.set_xlabel('Time (hours)')
     ax_emiss.set_ylabel('Emission Rate [kg CO$_2$/MWh]')
     ax_emiss.set_xlim(0, 8759)
@@ -85,35 +85,36 @@ if execute == 1:
     ax_emiss.legend(loc='upper right')
 
     if save:
-        fig1.savefig(f"{savepath}eprice_hourly_Zeeland.pdf", format='pdf')
+        fig_emiss.savefig(f"{savepath}emission_hourly_Zeeland.pdf", format='pdf')
     plt.show()
 
-    # === FIGURE 2: ECDF PLOTS WITH SWAPPED AXES ===
-    fig2, axes2 = plt.subplots(1, 2, figsize=(6, 2.5), sharey=True)
-    fig2.subplots_adjust(wspace=0.3, top=0.9, bottom=0.1, left=0.1, right=0.95)
-
-    # ECDF Price
-    ax_price_ecdf = axes2[0]
+    # === FIGURE 2a: ECDF PLOT — ELECTRICITY PRICE ===
+    fig_price, ax_price_ecdf = plt.subplots(figsize=(3, 2.5))  # smaller single plot
     for node, colors in zip(nodes, [colors_zeeland]):
         for i, year in enumerate(years):
             prices = data[node][year]['price'].sort_values()
             prob = np.linspace(0, 1, len(prices))
-            ax_price_ecdf.plot(prob, prices, color=colors[i], label=f'{node} {labels[year]}', linewidth=0.8)
-    ax_price_ecdf.set_title('Electricity Price')
+            ax_price_ecdf.plot(prob, prices, color=colors[i],
+                               label=f'{node} {labels[year]}', linewidth=0.8)
+    # ax_price_ecdf.set_title('Electricity Price')
     ax_price_ecdf.set_xlabel('Cumulative Probability')
     ax_price_ecdf.set_ylabel('Electricity Price [EUR/MWh]')
     ax_price_ecdf.set_xlim(0, 1)
     ax_price_ecdf.set_ylim(0, 200)
     ax_price_ecdf.legend(loc='upper left')
 
-    # ECDF Emission
-    ax_emiss_ecdf = axes2[1]
+    if save:
+        fig_price.savefig(f"{savepath}eprice_cumulative_dist.pdf", format='pdf')
+    plt.show()
+
+    # === FIGURE 2b: ECDF PLOT — EMISSION RATE ===
+    fig_emiss, ax_emiss_ecdf = plt.subplots(figsize=(3, 2.5))
     for i, year in enumerate(years):
         emissions = data['Zeeland'][year]['emission'].sort_values()
         prob = np.linspace(0, 1, len(emissions))
         ax_emiss_ecdf.plot(prob, emissions, color=colors_emission[i],
                            linestyle='--', label=f'{labels[year]}', linewidth=0.8)
-    ax_emiss_ecdf.set_title('Emission Rate')
+    # ax_emiss_ecdf.set_title('Emission Rate')
     ax_emiss_ecdf.set_xlabel('Cumulative Probability')
     ax_emiss_ecdf.set_ylabel('Emission Rate [kg CO$_2$/MWh]')
     ax_emiss_ecdf.set_xlim(0, 1)
@@ -121,9 +122,8 @@ if execute == 1:
     ax_emiss_ecdf.legend(loc='upper left')
 
     if save:
-        fig2.savefig(f"{savepath}eprice_cumulative_dist.pdf", format='pdf')
+        fig_emiss.savefig(f"{savepath}emission_cumulative_dist.pdf", format='pdf')
     plt.show()
-
 
 execute = 1
 
@@ -163,7 +163,7 @@ if execute == 1:
 
     # === FIGURE 1: HOURLY PROFILES ===
     fig1, axes1 = plt.subplots(1, 1, figsize=(6, 2.5), sharex=True)
-    fig1.subplots_adjust(hspace=0.4, top=0.85, bottom=0.1, left=0.1, right=0.98)
+    # fig1.subplots_adjust(hspace=0.4, top=0.85, bottom=0.1, left=0.1, right=0.98)
 
     # Top panel: Zeeland Price
     ax_price = axes1
@@ -174,7 +174,7 @@ if execute == 1:
             label=f"{labels[year]} ({data[node][year]['price'].mean():.1f} EUR/MWh)",
             linewidth=0.5
         )
-    ax_price.set_title('Electricity Prices: EU')
+    # ax_price.set_title('Electricity Prices: EU')
     ax_price.set_ylabel('Electricity Price [EUR/MWh]')
     ax_price.set_xlim(0, 8759)
     ax_price.set_ylim(0, 550)
@@ -185,8 +185,8 @@ if execute == 1:
     plt.show()
 
     # === FIGURE 2: ECDF PLOTS WITH SWAPPED AXES ===
-    fig2, axes2 = plt.subplots(1, 1, figsize=(2.5, 2.5), sharey=True)
-    fig2.subplots_adjust(wspace=0.3, top=0.85, bottom=0.2, left=0.20, right=0.95)
+    fig2, axes2 = plt.subplots(1, 1, figsize=(3, 2.5), sharey=True)
+    # fig2.subplots_adjust(wspace=0.3, top=0.85, bottom=0.2, left=0.20, right=0.95)
 
     # ECDF Price
     ax_price_ecdf = axes2
@@ -194,9 +194,9 @@ if execute == 1:
         prices = data[node][year]['price'].sort_values()
         prob = np.linspace(0, 1, len(prices))
         ax_price_ecdf.plot(prob, prices, color=colors_zeeland[i], label=f'{node} {labels[year]}', linewidth=0.8)
-    ax_price_ecdf.set_title('Electricity Price')
+    # ax_price_ecdf.set_title('Electricity Price')
     ax_price_ecdf.set_xlabel('Cumulative Probability')
-    ax_price_ecdf.set_ylabel('Electricity Price [EUR/MWh]')
+    ax_price_ecdf.set_ylabel(f'Electricity Price\n[EUR/MWh]')
     ax_price_ecdf.set_xlim(0, 1)
     ax_price_ecdf.set_ylim(0, 550)
     ax_price_ecdf.legend(loc='upper left')

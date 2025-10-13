@@ -6,19 +6,21 @@ import matplotlib as mpl
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt, gridspec
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 
 from adopt_net0 import extract_datasets_from_h5group
 
 
 def plot_production_shares(production_sum_olefins, production_sum_ammonia, categories, intervals, iterations,
                            include_costs=False, cost_data=None, total_cost=False, combined_categories=None):
-    mpl.rcParams['font.family'] = 'serif'
+    plt.rcParams.update({'font.family': 'serif', 'font.size': 12})
 
     group_size = len(iterations)
     total_bars = group_size * len(intervals)
     x = np.arange(total_bars)
     # bar_width = 1.5 / group_size    #change bar width here
-    bar_width = 0.5
+    bar_width = 0.7
 
     def normalize(df):
         df = df.sort_index(axis=1)
@@ -40,6 +42,10 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
     n_rows = 3 if include_costs else 2
     fig, axes = plt.subplots(n_rows, 1, figsize=(12, 9 if n_rows == 3 else 6), sharex=True)
     axes = axes if isinstance(axes, np.ndarray) else [axes]
+
+    for ax in axes:
+        ax.tick_params(axis='y', labelsize=12)
+        ax.yaxis.label.set_size(16)
 
     def make_stacked_bars(ax, df, product):
         for idx_interval, interval in enumerate(intervals):
@@ -63,7 +69,7 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
                                          label=comb_cat if bottom == 0 else "")
                             bottom += val
 
-        ax.set_ylabel(f"Share of total production\n{product}")
+        ax.set_ylabel(f"Share of {product}\nproduction")
         ax.set_ylim(0, 1)
         ax.set_xlim(-0.5, total_bars - 0.5)
         ax.spines[['top', 'right']].set_visible(False)
@@ -77,7 +83,7 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
             xtick_labels.append("Standalone" if i == 0 else f"Iteration {i}")
 
     axes[-1].set_xticks(x)
-    axes[-1].set_xticklabels(xtick_labels, rotation=45, ha='right')
+    axes[-1].set_xticklabels(xtick_labels, rotation=45, ha='right', fontsize=16)
 
     for i in range(1, len(intervals)):
         xpos = i * group_size - 0.5
@@ -86,7 +92,7 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
 
     for i, interval in enumerate(intervals):
         mid = (i * group_size + (i + 1) * group_size - 1) / 2
-        axes[0].text(mid, 1.05, interval, ha='center', va='bottom', fontsize=14)
+        axes[0].text(mid, 1.05, interval, ha='center', va='bottom', fontsize=18)
 
     if include_costs and cost_data is not None:
         # build new column order: for each interval, all iterations in order
@@ -138,10 +144,10 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
             )
             bottom += values
 
-        ax_cost.set_ylabel("Cluster production cost [€/t]")
+        ax_cost.set_ylabel("Cluster production\ncost [€/t]")
         ax_cost.set_ylim(0, bottom.max() * 1.2)
         ax_cost.spines[['top', 'right']].set_visible(False)
-        ax_cost.legend(loc='upper right', fontsize=9)
+        ax_cost.legend(loc='upper right', ncol=2, fontsize=12, bbox_to_anchor=(1, 1.1))
 
     # Final legend (remove duplicates)
     # handles, labels = axes[0].get_legend_handles_labels()
@@ -149,23 +155,46 @@ def plot_production_shares(production_sum_olefins, production_sum_ammonia, categ
     # fig.legend(unique.values(), unique.keys(), loc='lower center', ncol=6, fontsize=10,
     #            bbox_to_anchor=(0.5, 0.01))
 
-    #legend from categories
-    legend_elements = [Patch(facecolor=color, label=label) for label, color in categories.items()]
-
-    fig.legend(legend_elements, categories.keys(), loc='lower center', ncol=5, fontsize=10,
-               bbox_to_anchor=(0.5, 0.01))
-
-    plt.subplots_adjust(hspace=0.2, bottom=0.16, left=0.08, right=0.92)
+    # #legend from categories
+    # legend_elements = [Patch(facecolor=color, label=label) for label, color in categories.items()]
+    #
+    # fig.legend(legend_elements, categories.keys(), loc='lower center', ncol=5, fontsize=10,
+    #            bbox_to_anchor=(0.5, 0.01))
+    #
+    plt.subplots_adjust(hspace=0.2, bottom=0.16, left=0.10, right=0.92)
 
     return plt
 
+def save_separate_legend(categories, filename="legend_short"):
+
+
+        plt.rcParams.update({'font.family': 'serif', 'font.size': 16})
+        fig, ax = plt.subplots(figsize=(7.5, 1))  # Adjust as needed
+
+        handles = [mpatches.Patch(color=color, label=label)
+                   for label, color in categories.items()]
+
+        ax.axis('off')
+        legend = fig.legend(handles=handles,
+                            loc='center',
+                            ncol=5,
+                            frameon=False)
+
+        plt.tight_layout()
+        fig.savefig(
+            os.path.join("C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python",
+                         f"{filename}.pdf"), format='pdf', bbox_inches='tight')
+        fig.savefig(
+            os.path.join("C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python",
+                         f"{filename}.svg"), format='svg', bbox_inches='tight')
+        plt.close(fig)
 
 
 
 def main():
     #Define cluster ambition and number of iteration
-    IESA_fossilphaseout = 0
-    nr_iterations = 3
+    IESA_fossilphaseout = 1
+    nr_iterations = 2
     flag_cluster_ambition = "Scope1-2"
     include_prod_costs = True
     separate = True
@@ -241,8 +270,10 @@ def main():
         plt.savefig(f"{plot_folder}.pdf", format='pdf', bbox_inches='tight')
         plt.savefig(f"{plot_folder}.svg", format='svg', bbox_inches='tight')
 
-
     plt.show()
+
+    # After all plots:
+    # save_separate_legend(categories)
 
 
 

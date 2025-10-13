@@ -125,10 +125,11 @@ def plot_production_shares_stacked(df1, df2, categories, combined_categories=Non
                                         color=categories[cat])
 
             ax.set_ylim(0, 1)
-            ax.set_ylabel(f"Share of {label}")
+            ax.set_ylabel(f"Share of {label} \n production", fontsize=16)
+            ax.tick_params(axis='y', labelsize=14)
 
         ax2.set_xticks([2025, 2030, 2040, 2050, 2055])
-        ax2.set_xticklabels([r"Current", 2030, 2040, 2050, r"Post 2050"])
+        ax2.set_xticklabels([r"Current", 2030, 2040, 2050, r"Post 2050"], fontsize=16)
         ax2.set_xlim(x.min(), x.max())
 
     else:
@@ -173,7 +174,7 @@ def save_separate_legend(categories, combined_categories, filename="legend"):
     import matplotlib.pyplot as plt
     import matplotlib.patches as mpatches
 
-    plt.rcParams.update({'font.family': 'serif', 'font.size': 12})
+    plt.rcParams.update({'font.family': 'serif', 'font.size': 16})
     fig, ax = plt.subplots(figsize=(7.5, 1))  # Adjust as needed
 
     handles = [mpatches.Patch(color=color, label=label)

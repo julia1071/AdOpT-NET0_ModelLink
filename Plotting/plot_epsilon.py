@@ -10,7 +10,7 @@ plt.rcParams.update({
 })
 
 # Options
-nr_iterations = 2
+nr_iterations = 3
 ambition = "Scope1-2"
 location = "Zeeland"
 save = "both"  # options: "pdf", "svg", "both", "no"
@@ -19,7 +19,7 @@ save = "both"  # options: "pdf", "svg", "both", "no"
 basepath_results = f"Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/{ambition}"
 result_file = os.path.join(
     basepath_results,
-    "Results_model_linking_20250903_09_58",
+    "Results_model_linking_20250906_11_16",
     "epsilons.json"
 )
 plot_folder = os.path.join(

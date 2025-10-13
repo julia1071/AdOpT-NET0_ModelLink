@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # ================= SETTINGS =================
-scope3 = 0
+scope3 = 1
 if scope3:
     file = r"C:\Users\5637635\OneDrive - Universiteit Utrecht\Model Linking - shared\Results\Final\250911_standalone_scope1-3\ResultsModelLinking_General_standalone.xlsx"
     ext = "_scope3"
@@ -161,6 +161,7 @@ def plot_area(ax, x, interpolated, label, bottom, color=None, hatch=None, edgeco
     return top
 
 def plot_shares(ammonia_cat, olefins_cat, categories, combined_categories, plotting_order, years_cont):
+    plt.rcParams.update({'font.family': 'serif', 'font.size': 14})
     # Compute shares per year
     ammonia_share = ammonia_cat.div(ammonia_cat.sum(axis=0), axis=1)
     olefins_share = olefins_cat.div(olefins_cat.sum(axis=0), axis=1)
@@ -172,7 +173,7 @@ def plot_shares(ammonia_cat, olefins_cat, categories, combined_categories, plott
     fig, (ax1, ax2) = plt.subplots(nrows=2, figsize=(8, 6), sharex=True,
                                    gridspec_kw={'hspace':0.2})
 
-    for ax, df_interp, label in zip([ax1, ax2], [ammonia_interp, olefins_interp], ['Ammonia', 'Olefins']):
+    for ax, df_interp, label in zip([ax1, ax2], [ammonia_interp, olefins_interp], ['ammonia', 'olefins']):
         bottoms = np.zeros(len(years_cont))
         x = years_cont
 
@@ -191,10 +192,11 @@ def plot_shares(ammonia_cat, olefins_cat, categories, combined_categories, plott
                                     color=categories[cat])
 
         ax.set_ylim(0,1)
-        ax.set_ylabel(f"Share of {label}")
+        ax.set_ylabel(f"Share of {label} \n production", fontsize=16)
         ax.set_xticks([2022, 2030, 2040, 2050, 2055])
-        ax.set_xticklabels([2022, 2030, 2040, 2050, r"Post 2050"])
+        ax.set_xticklabels([2022, 2030, 2040, 2050, r"Post 2050"], fontsize=16)
         ax.set_xlim(x.min(), x.max())
+        ax.tick_params(axis='y', labelsize=14)
 
     # Legend
     # handles, labels = ax1.get_legend_handles_labels()

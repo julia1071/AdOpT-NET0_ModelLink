@@ -41,9 +41,9 @@ id_to_tech = {v: k for k, v in tech_to_id.items()}
 # Define the path to the JSON file
 basepath = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + ambition
 if inputs:
-    results_path = basepath + "/Results_model_linking_20250903_09_58/inputs_cluster.json"
+    results_path = basepath + "/Results_model_linking_20250906_11_16/inputs_cluster.json" #scope1-2
 else:
-    results_path = basepath + "/Results_model_linking_20250903_09_58/outputs_cluster.json"
+    results_path = basepath + "/Results_model_linking_20250906_11_16/outputs_cluster.json" #scope1-2
 
 # Load JSON data
 with open(results_path, "r") as f:
