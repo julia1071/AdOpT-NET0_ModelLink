@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 import pandas as pd
 import adopt_net0.data_preprocessing as dp
@@ -9,20 +10,24 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 from adopt_net0.utilities import fix_installed_capacities, installed_capacities_existing, \
     installed_capacities_existing_from_file
 
+#Add basepath
+basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
 #Run Zeeland standalone scope 1-3
 execute = 1
 
 if execute == 1:
     # Specify the base path to your input data
-    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Full/ML_Zeeland_bf_"
-    resultpath = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Testing/Scope1-3"
+    casepath = os.path.join(basepath, "Case_studies", "ML_Zeeland_bf_")
+    resultpath = os.path.join(basepath, "Raw_results", "Testing/Scope1-3")
 
     # select simulation types
     scope3 = 1
     annual_demand = 1
     intervals = ['2030', '2040', '2050']
     interval_emissionLim = {'2030': 1, '2040': 0.5, '2050': 0}
-    IESA_file_path = "Z:/IESA-Opt/IESA-Opt-Dev_full/Output/ResultsModelLinking/Scope1-3/Results_model_linking_20250821_09_52/ResultsModelLinking_General_Iteration_1.xlsx"
+    IESA_file_path = (os.path.join(basepath, "IESA-Opt", "IESA-Opt-Dev_full") +
+                      "/Output/ResultsModelLinking/Scope1-3/Results_model_linking_20250821_09_52/ResultsModelLinking_General_Iteration_1.xlsx")
     nr_DD_days = 10
     pyhub = {}
 

@@ -1,0 +1,80 @@
+{
+    "electricity": {
+        "curtailment_possible": 0
+    },
+    "methane": {
+        "curtailment_possible": 0
+    },
+    "methane_bio": {
+        "curtailment_possible": 0
+    },
+    "naphtha": {
+        "curtailment_possible": 0
+    },
+    "naphtha_bio": {
+        "curtailment_possible": 0
+    },
+    "CO2": {
+        "curtailment_possible": 0
+    },
+    "CO2_DAC": {
+        "curtailment_possible": 0
+    },
+    "CO2captured": {
+        "curtailment_possible": 0
+    },
+    "hydrogen": {
+        "curtailment_possible": 0
+    },
+    "nitrogen": {
+        "curtailment_possible": 0
+    },
+    "ammonia": {
+        "curtailment_possible": 0
+    },
+    "ethylene": {
+        "curtailment_possible": 0
+    },
+    "propylene": {
+        "curtailment_possible": 0
+    },
+    "olefins": {
+        "curtailment_possible": 0
+    },
+    "PE_olefin": {
+        "curtailment_possible": 0
+    },
+    "crackergas": {
+        "curtailment_possible": 0
+    },
+    "feedgas": {
+        "curtailment_possible": 0
+    },
+    "steam": {
+        "curtailment_possible": 0
+    },
+    "HBfeed": {
+        "curtailment_possible": 0
+    },
+    "syngas": {
+        "curtailment_possible": 0
+    },
+    "syngas_r": {
+        "curtailment_possible": 0
+    },
+    "methanol": {
+        "curtailment_possible": 0
+    },
+    "ethanol": {
+        "curtailment_possible": 0
+    },
+    "propane": {
+        "curtailment_possible": 0
+    },
+    "MPW": {
+        "curtailment_possible": 0
+    },
+    "biomass": {
+        "curtailment_possible": 0
+    }
+}

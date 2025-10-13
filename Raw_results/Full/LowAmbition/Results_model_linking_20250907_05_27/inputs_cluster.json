@@ -1,0 +1,70 @@
+{
+    "iteration_1": {
+        "Zeeland": {
+            "2030": {
+                "naphtha": 653.3874656771799,
+                "naphtha_bio": 1349.866435992579,
+                "methane": 26.073183673469394,
+                "biomass": 164.8020723562152,
+                "propane": null,
+                "ethanol": 2852.074185528757,
+                "methane_bio": null,
+                "Import limit MPW": 147.26027397260273
+            },
+            "2040": {
+                "naphtha": 490.04059925788494,
+                "naphtha_bio": 807.2141159554731,
+                "methane": 18.841792207792214,
+                "biomass": 169.6888413729128,
+                "propane": null,
+                "ethanol": null,
+                "methane_bio": null,
+                "Import limit MPW": 146.11872146118722
+            },
+            "2050": {
+                "naphtha": 450.9576066790353,
+                "naphtha_bio": 914.4418135435992,
+                "methane": 18.48022263450835,
+                "biomass": 170.53138775510203,
+                "propane": null,
+                "ethanol": null,
+                "methane_bio": null,
+                "Import limit MPW": 114.15525114155251
+            }
+        }
+    },
+    "iteration_2": {
+        "Zeeland": {
+            "2030": {
+                "naphtha": 653.3874656771799,
+                "naphtha_bio": 1349.866435992579,
+                "methane": 26.233881261595553,
+                "biomass": 165.13909090909092,
+                "propane": null,
+                "ethanol": 2852.3721456400745,
+                "methane_bio": null,
+                "Import limit MPW": 147.26027397260273
+            },
+            "2040": {
+                "naphtha": 490.04059925788494,
+                "naphtha_bio": 545.6587040816327,
+                "methane": 18.841792207792214,
+                "biomass": 169.3518228200371,
+                "propane": null,
+                "ethanol": null,
+                "methane_bio": null,
+                "Import limit MPW": 102.73972602739727
+            },
+            "2050": {
+                "naphtha": 450.9576066790353,
+                "naphtha_bio": 914.4418135435992,
+                "methane": 18.48022263450835,
+                "biomass": 170.3628784786642,
+                "propane": null,
+                "ethanol": null,
+                "methane_bio": null,
+                "Import limit MPW": 114.15525114155251
+            }
+        }
+    }
+}

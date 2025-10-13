@@ -11,6 +11,8 @@ import matplotlib.patches as mpatches
 
 from adopt_net0 import extract_datasets_from_h5group
 
+#Add basepath
+basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 def plot_production_shares(production_sum_olefins, production_sum_ammonia, categories, intervals, iterations,
                            include_costs=False, cost_data=None, total_cost=False, combined_categories=None):
@@ -182,10 +184,10 @@ def save_separate_legend(categories, filename="legend_short"):
 
         plt.tight_layout()
         fig.savefig(
-            os.path.join("C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python",
+            os.path.join(basepath, "Plotting", "Plots_final",
                          f"{filename}.pdf"), format='pdf', bbox_inches='tight')
         fig.savefig(
-            os.path.join("C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python",
+            os.path.join(basepath, "Plotting", "Plots_final",
                          f"{filename}.svg"), format='svg', bbox_inches='tight')
         plt.close(fig)
 

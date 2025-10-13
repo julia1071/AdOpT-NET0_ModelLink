@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cmcrameri.cm as cmc
 
+#Add basepath
+basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 # Global style settings
 plt.rcParams.update({
@@ -97,7 +99,7 @@ def main():
     include_emissions = False
 
     datapath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    plot_folder = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/ProdCosts_Standalone"
+    plot_folder = os.path.join(basepath, "Plotting", "Plots_final") + "ProdCosts_Standalone"
 
     fig, ax = plot_costs_bar(flag_cluster_ambition, datapath, total_cost=total_cost, include_emissions=include_emissions)
 

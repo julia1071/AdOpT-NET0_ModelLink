@@ -1,0 +1,43 @@
+{
+    "existing": {
+        "SteamReformer": 1068.0,
+        "ElectricSMR_m": 4012.3206292687887,
+        "HaberBosch": 1248.0,
+        "Boiler_Industrial_NG": 653.930847227766,
+        "Boiler_El": 628.7238300900339,
+        "MeOHsynthesis": 750.3039576732484,
+        "MTO": 617.5001571651344,
+        "feedgas_mixer": 5734.2514764968055,
+        "syngas_mixer": 750.3039576732484,
+        "PE_mixer": 123.47816390248643
+    },
+    "new": [
+        "ElectricSMR_m",
+        "WGS_m",
+        "AEC",
+        "HaberBosch",
+        "CrackerFurnace_Electric",
+        "ASU",
+        "Boiler_Industrial_NG",
+        "Boiler_El",
+        "RWGS",
+        "MeOHsynthesis",
+        "MTO",
+        "EDH",
+        "PDH",
+        "MPW2methanol",
+        "Biomass2methanol",
+        "DirectMeOHsynthesis",
+        "CO2electrolysis",
+        "Storage_CO2",
+        "Storage_H2",
+        "Storage_Battery",
+        "CO2toEmission",
+        "feedgas_mixer",
+        "naphtha_mixer",
+        "CO2_mixer",
+        "HBfeed_mixer",
+        "syngas_mixer",
+        "PE_mixer"
+    ]
+}

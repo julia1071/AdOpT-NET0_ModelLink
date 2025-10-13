@@ -8,6 +8,9 @@ from matplotlib import pyplot as plt, gridspec
 
 from adopt_net0 import extract_datasets_from_h5group
 
+#Add basepath
+basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
 def fetch_and_process_data_production(
     result_folder,
     data_to_excel_path_olefins,
@@ -33,7 +36,7 @@ def fetch_and_process_data_production(
     for i in range(nr_iterations + 1):
         if i == 0:
             iteration = "Standalone"
-            iteration_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Standalone/") / ambition
+            iteration_folder = os.path.join(basepath, "Raw_results", "Standalone") + ambition
         else:
             iteration = f"Iteration_{i}"
             iteration_folder = Path(result_folder) / iteration
@@ -213,7 +216,7 @@ def main():
     # Add basepath
     datapath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     if IESA_fossilphaseout:
-        basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/IESA_Scope3/" + flag_cluster_ambition
+        basepath_results = os.path.join(datapath, "Raw_results", "IESA_Scope3") + flag_cluster_ambition
         # result_folder = basepath_results + "/Results_model_linking_20250910_15_09"  #scope 1-3
         # result_folder = basepath_results + "/Results_model_linking_20250912_04_01"  # scope 1-2
         result_folder = basepath_results + "/Results_model_linking_20250912_22_04"  # low ambitions
@@ -222,7 +225,7 @@ def main():
         data_to_excel_path2 = os.path.join(datapath, "Plotting", "Results_excels",
                                            f"production_shares_ammonia_{flag_cluster_ambition}_FPO.xlsx")
     else:
-        basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + flag_cluster_ambition
+        basepath_results = os.path.join(basepath, "Raw_results", "Full") + flag_cluster_ambition
         # result_folder = basepath_results + "/Results_model_linking_20250905_09_38"  #scope 1-3
         result_folder = basepath_results + "/Results_model_linking_20250906_11_16"  # scope 1-2
         # result_folder = basepath_results + "/Results_model_linking_20250907_05_27"    #low ambitions

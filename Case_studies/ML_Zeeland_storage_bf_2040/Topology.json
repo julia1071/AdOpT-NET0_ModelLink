@@ -1,0 +1,40 @@
+{
+    "nodes": [
+        "Zeeland"
+    ],
+    "carriers": [
+        "electricity",
+        "methane",
+        "methane_bio",
+        "naphtha",
+        "naphtha_bio",
+        "CO2",
+        "CO2_DAC",
+        "CO2captured",
+        "hydrogen",
+        "nitrogen",
+        "ammonia",
+        "ethylene",
+        "propylene",
+        "olefins",
+        "PE_olefin",
+        "crackergas",
+        "feedgas",
+        "steam",
+        "HBfeed",
+        "syngas",
+        "syngas_r",
+        "methanol",
+        "ethanol",
+        "propane",
+        "MPW",
+        "biomass"
+    ],
+    "investment_periods": [
+        "2040"
+    ],
+    "start_date": "2022-01-01 00:00",
+    "end_date": "2022-12-31 23:00",
+    "resolution": "1h",
+    "investment_period_length": 1
+}

@@ -1,0 +1,104 @@
+{
+    "iteration_1": {
+        "Zeeland": {
+            "2030": {
+                "naphtha": 653.3874656771799,
+                "naphtha_bio": null,
+                "methane": 26.073183673469394,
+                "biomass": 164.12803525046382,
+                "propane": null,
+                "ethanol": 2852.3721456400745,
+                "methane_bio": null,
+                "Import limit MPW": 147.26027397260273
+            },
+            "2040": {
+                "naphtha": 490.04059925788494,
+                "naphtha_bio": 545.6587040816327,
+                "methane": 18.761443413729133,
+                "biomass": 169.3518228200371,
+                "propane": null,
+                "ethanol": null,
+                "methane_bio": null,
+                "Import limit MPW": 147.26027397260273
+            },
+            "2050": {
+                "naphtha": 0.0,
+                "naphtha_bio": 914.4418135435992,
+                "methane": 33.14387755102042,
+                "biomass": 174.9126289424861,
+                "propane": 1710.0071398886828,
+                "ethanol": null,
+                "methane_bio": 218.7897662337663,
+                "Import limit MPW": 228.31050228310502
+            }
+        }
+    },
+    "iteration_2": {
+        "Zeeland": {
+            "2030": {
+                "naphtha": 653.3874656771799,
+                "naphtha_bio": null,
+                "methane": 26.233881261595553,
+                "biomass": 164.29654452690167,
+                "propane": null,
+                "ethanol": 2852.3721456400745,
+                "methane_bio": null,
+                "Import limit MPW": 147.26027397260273
+            },
+            "2040": {
+                "naphtha": 490.04059925788494,
+                "naphtha_bio": 490.04059925788494,
+                "methane": 18.841792207792214,
+                "biomass": 169.3518228200371,
+                "propane": null,
+                "ethanol": null,
+                "methane_bio": null,
+                "Import limit MPW": 114.15525114155251
+            },
+            "2050": {
+                "naphtha": 0.0,
+                "naphtha_bio": 914.4418135435992,
+                "methane": 32.70195918367348,
+                "biomass": 174.9126289424861,
+                "propane": null,
+                "ethanol": null,
+                "methane_bio": 277.24351391465683,
+                "Import limit MPW": 228.31050228310502
+            }
+        }
+    },
+    "iteration_3": {
+        "Zeeland": {
+            "2030": {
+                "naphtha": 653.3874656771799,
+                "naphtha_bio": null,
+                "methane": 26.233881261595553,
+                "biomass": 164.29654452690167,
+                "propane": null,
+                "ethanol": 2852.3721456400745,
+                "methane_bio": null,
+                "Import limit MPW": 147.26027397260273
+            },
+            "2040": {
+                "naphtha": 490.04059925788494,
+                "naphtha_bio": 490.04059925788494,
+                "methane": 18.841792207792214,
+                "biomass": 169.3518228200371,
+                "propane": null,
+                "ethanol": null,
+                "methane_bio": null,
+                "Import limit MPW": 114.15525114155251
+            },
+            "2050": {
+                "naphtha": 0.0,
+                "naphtha_bio": 914.4418135435992,
+                "methane": 32.82248237476809,
+                "biomass": 174.9126289424861,
+                "propane": null,
+                "ethanol": null,
+                "methane_bio": 277.48456029684604,
+                "Import limit MPW": 228.31050228310502
+            }
+        }
+    }
+}

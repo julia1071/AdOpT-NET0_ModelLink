@@ -7,10 +7,13 @@ from adopt_net0.modelhub import ModelHub
 from adopt_net0.result_management.read_results import add_values_to_summary
 import pandas as pd
 
+#Set basepath
+basepath = Path(__file__).resolve().parent
+
 #global functions
 read_all_brownfield = 1
-basepath_case = Path("Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Full")
-basepath_data = Path("Z:/AdOpt_NET0/AdOpt_data/Model_Linking")
+basepath_case = basepath / "Case_studies"
+basepath_data = basepath / "Input_data"
 
 
 #Create data Zeeland cluster short term

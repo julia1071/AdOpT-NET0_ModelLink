@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 import pandas as pd
 import adopt_net0.data_preprocessing as dp
@@ -9,13 +10,16 @@ from adopt_net0.result_management.read_results import add_values_to_summary
 from adopt_net0.utilities import fix_installed_capacities, installed_capacities_existing, \
     installed_capacities_existing_from_file
 
+#Define basepath
+basepath = os.path.dirname(os.path.abspath(__file__))
+
 #Run Zeeland standalone scope 1-2
 execute = 1
 
 if execute == 1:
     # Specify the base path to your input data
-    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Full/ML_Zeeland_bf_"
-    resultpath = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Standalone/Scope1-2"
+    casepath = os.path.join(basepath, "Case_studies", "ML_Zeeland_bf_")
+    resultpath = os.path.join(basepath, "Raw_results", "Standalone", "Scope1-2")
 
     # select simulation types
     scope3 = 0
@@ -120,8 +124,8 @@ execute = 1
 
 if execute == 1:
     # Specify the base path to your input data
-    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Full/ML_Zeeland_bf_"
-    resultpath = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Standalone/Scope1-3"
+    casepath = os.path.join(basepath, "Case_studies", "ML_Zeeland_bf_")
+    resultpath = os.path.join(basepath, "Raw_results", "Standalone", "Scope1-3")
 
     # select simulation types
     scope3 = 1
@@ -210,8 +214,8 @@ execute = 1
 
 if execute == 1:
     # Specify the base path to your input data
-    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Full/ML_Zeeland_bf_"
-    resultpath = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Standalone/LowAmbition"
+    casepath = os.path.join(basepath, "Case_studies", "ML_Zeeland_bf_")
+    resultpath = os.path.join(basepath, "Raw_results", "Standalone" , "LowAmbition")
 
     # select simulation types
     scope3 = 0
@@ -308,8 +312,8 @@ execute = 1
 
 if execute == 1:
     # Specify the base path to your input data
-    casepath = "Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Storage/ML_Zeeland_storage_bf_"
-    resultpath = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Standalone/Storage"
+    casepath = os.path.join(basepath, "Case_studies", "ML_Zeeland_storage_bf_")
+    resultpath = os.path.join(basepath, "Raw_results", "Standalone", "Storage")
 
     # select simulation types
     scope3 = 1

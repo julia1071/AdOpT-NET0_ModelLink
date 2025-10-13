@@ -1,5 +1,9 @@
+import os
 import sys
 from pathlib import Path
+
+#Add basepath
+basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 # === Model settings ==
 # # Convergence Criteria; the relative change in output for each technology in the cluster model must be lower than e
@@ -35,31 +39,31 @@ else:
 # === Paths ===
 #IESA paths
 if fast_run:
-    IESA_path = Path("Z:/IESA-Opt/IESA-Opt-Dev_testing")
-    IESA_modellink_path = IESA_path / "20250730_IESA_testing.aimms"
-    cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Testing")
+    IESA_path = os.path.join(basepath, "IESA-Opt", "IESA-Opt-Dev_testing")
+    IESA_modellink_path = IESA_path + "/20250730_IESA_testing.aimms"
+    cluster_result_folder = os.path.join(basepath, "Raw_results", "Testing")
 else:
     if IESA_scope3:
-        IESA_path = Path("Z:/IESA-Opt/IESA-Opt-Dev_scope3")
-        IESA_modellink_path = IESA_path / "20250730_IESA_scope3.aimms"
-        cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/IESA_Scope3")
+        IESA_path = os.path.join(basepath, "IESA-Opt", "IESA-Opt-Dev_scope3")
+        IESA_modellink_path = IESA_path + "/20250730_IESA_scope3.aimms"
+        cluster_result_folder = os.path.join(basepath, "Raw_results", "IESA_Scope3")
     else:
-        IESA_path = Path("Z:/IESA-Opt/IESA-Opt-Dev_full")
-        IESA_modellink_path = IESA_path / "20250730_IESA_full.aimms"
-        cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full")
+        IESA_path = os.path.join(basepath, "IESA-Opt", "IESA-Opt-Dev_full")
+        IESA_modellink_path = IESA_path + "/20250730_IESA_full.aimms"
+        cluster_result_folder = os.path.join(basepath, "Raw_results", "Full")
 
-IESA_input_data_path = IESA_path / "data/20250901_detailed_linked.xlsx"
-IESA_result_folder = IESA_path / "Output" / "ResultsModelLinking"
+IESA_input_data_path = IESA_path + "/data/20250901_detailed_linked.xlsx"
+IESA_result_folder = IESA_path + "/Output/ResultsModelLinking"
 
 # Original and new filenames for IESA input and output folders
-original_filename_input_IESA = IESA_result_folder / "20250901_detailed_linked.xlsx"
-original_filename_output_IESA = IESA_result_folder / "ResultsModelLinking_General.xlsx"
+original_filename_input_IESA = IESA_result_folder + "/20250901_detailed_linked.xlsx"
+original_filename_output_IESA = IESA_result_folder + "/ResultsModelLinking_General.xlsx"
 
 #Cluster paths
-cluster_case_path = "Z:/AdOpt_NET0/AdOpt_casestudies/Model_Linking/Full/ML_Zeeland_bf_"
+cluster_case_path = os.path.join(basepath, "Case_studies", "ML_Zeeland_bf_")
 
 #Other
-ppi_file_path = "Z:/IESA-Opt/Producer_Price_Index_CBS.xlsx"
+ppi_file_path = os.path.join(basepath, "IESA-Opt") + "/Producer_Price_Index_CBS.xlsx"
 
 # Define the new name of the input and output file
 basename_new_output_IESA = "ResultsModelLinking_General_Iteration_"
@@ -67,6 +71,7 @@ basename_new_input_IESA = "Input_Iteration_"
 
 
 # === AIMMS Paths ===
+# These need to be updated to the AIMMS paths
 if run_from_server:
     aimms_path = "C:/Program Files (x86)/AIMMS/IFA/Aimms/25.5.1.1-x64-VS2022/Bin/aimms.exe"
 else:
