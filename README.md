@@ -6,17 +6,27 @@
 [![status](https://joss.theoj.org/papers/12578885161d419241e50c5e745b7a11/status.svg)](https://joss.theoj.org/papers/12578885161d419241e50c5e745b7a11)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13384688.svg)](https://doi.org/10.5281/zenodo.13384688)
 
-# AdOpT-NET0 - Advanced Optimization Tool for Networks and Energy
+# AdOpT-NET0: Coupling National and Cluster-Level Models
 
-This is a python package to simulate and optimize multi energy systems. It can 
-model conversion technologies and networks for any carrier and optimize the 
-design and operation of a multi energy system.
+This repository contains the code, data, and results used in the paper:
+
+Tiggeloven, J. L., West, K., Mulder, A.J., Faaij, A. P. C., Kramer, G. J., Koning, V., & Gazzani, M.  
+*Supporting the transition to a net-zero chemical industry by coupling national and cluster-level models.*  
+
+This repository is **based on the original AdOpT-NET0 tool**, but includes adaptations specific to this work. It 
+contains all input datasets, case studies, and raw results required to reproduce the analyses in the paper. Users can 
+regenerate the results by running the corresponding scripts, e.g., `run_standalone.py` for the standalone scenario, and 
+`main_model_linking.py` for the linked models. The linked model requires also the installation of AIMMS.
 
 ## Installation
-You can use the standard utility for installing Python packages by executing the
-following in a shell:
 
-```pip install adopt_net0```
+Clone this repository and install the required dependencies:
+
+```bash
+git clone https://github.com/julia1071/AdOpT-NET0_AmmEth_EmisRed.git
+cd AdOpT-NET0_AmmEth_EmisRed
+pip install -r requirements.txt
+```
 
 Additionally, you need a [solver installed, that is supported by pyomo](https://pyomo.readthedocs.io/en/stable/solving_pyomo_models.html#supported-solvers)
 (we recommend gurobi, which has a free academic licence).
