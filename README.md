@@ -23,8 +23,8 @@ regenerate the results by running the corresponding scripts, e.g., `run_standalo
 Clone this repository and install the required dependencies:
 
 ```bash
-git clone https://github.com/julia1071/AdOpT-NET0_AmmEth_EmisRed.git
-cd AdOpT-NET0_AmmEth_EmisRed
+git clone https://github.com/julia1071/AdOpT-NET0_ModelLink.git
+cd AdOpT-NET0_ModelLink
 pip install -r requirements.txt
 ```
 
