@@ -1,8 +1,13 @@
 import json
+import os
+
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
 import Model_linking.config_model_linking as cfg
+
+#Add basepath
+basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 # Settings
 inputs = 1  # 1 for inputs_cluster.json, 0 for outputs_cluster.json
@@ -39,7 +44,7 @@ tech_to_id = {
 id_to_tech = {v: k for k, v in tech_to_id.items()}
 
 # Define the path to the JSON file
-basepath = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full/" + ambition
+basepath = os.path.join(basepath, "Raw_results", "Full") + ambition
 if inputs:
     results_path = basepath + "/Results_model_linking_20250906_11_16/inputs_cluster.json" #scope1-2
 else:

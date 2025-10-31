@@ -1,16 +1,20 @@
+import os
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 from cmcrameri import cm
 
+#Add basepath
+basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 execute = 0
 
 if execute == 1:
     # === PATHS & SETTINGS ===
-    datapath = "Z:/AdOpt_NET0/AdOpt_data/Model_Linking/250619_ML_Data_Zeeland_bf"
-    savepath = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/"
+    datapath = os.path.join(basepath, "Input_data", "250619_ML_Data_Zeeland_bf")
+    savepath = os.path.join(basepath, "Plotting", "Plots_final")
     el_load_path = Path(datapath) / 'import_data' / 'Electricity_data_ML.xlsx'
     save = 1
 
@@ -129,7 +133,7 @@ execute = 1
 
 if execute == 1:
     # === PATHS & SETTINGS ===
-    savepath = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/"
+    savepath = os.path.join(basepath, "Plotting", "Plots_final")
     el_load_path = Path("C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Case study data/IESA-Opt") / 'EU_electricity_prices.xlsx'
     save = 1
 

@@ -9,6 +9,9 @@ import matplotlib.patches as mpatches
 import numpy as np
 from scipy.interpolate import make_interp_spline
 
+#Add basepath
+basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
 def plot_production_shares_stacked(df1, df2, categories, combined_categories=None, interpolation="spline", separate=1):
     plt.rcParams.update({'font.family': 'serif', 'font.size': 14})
 
@@ -195,9 +198,9 @@ def save_separate_legend(categories, combined_categories, filename="legend"):
                         frameon=False)
 
     plt.tight_layout()
-    fig.savefig(os.path.join("C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python",
+    fig.savefig(os.path.join(basepath, "Plotting", "Plots_final",
                              f"{filename}.pdf"), format='pdf', bbox_inches='tight')
-    fig.savefig(os.path.join("C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python",
+    fig.savefig(os.path.join(basepath, "Plotting", "Plots_final",
                              f"{filename}.svg"), format='svg', bbox_inches='tight')
     plt.close(fig)
 
