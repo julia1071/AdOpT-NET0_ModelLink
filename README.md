@@ -16,7 +16,11 @@ Tiggeloven, J. L., West, K., Mulder, A.J., Faaij, A. P. C., Kramer, G. J., Konin
 This repository is **based on the original AdOpT-NET0 tool**, but includes adaptations specific to this work. It 
 contains all input datasets, case studies, and raw results required to reproduce the analyses in the paper. Users can 
 regenerate the results by running the corresponding scripts, e.g., `run_standalone.py` for the standalone scenario, and 
-`main_model_linking.py` for the linked models. The linked model requires also the installation of AIMMS.
+`main_model_linking.py` for the linked models. 
+
+The linked model additionally requires the installation of the IESA-Opt repository (the national model: 
+https://github.com/kirawest/IESA-Opt_ModelLinking) and AIMMS. After installation, the user should open
+`config_model_linking.py` add the paths to the repository and the AIMMS executable (AIMMS.exe).
 
 ## Installation
 

@@ -37,26 +37,28 @@ else:
         save_extension_link = "LowAmbition"
 
 # === Paths ===
-#IESA paths
+#IESA paths (example, change path to location of IESA opt repository)
+IESA_repository_path = os.path.join("define path to IESA-opt repository on your computer", "IESA-Opt_ModelLinking")
+
 if fast_run:
-    IESA_path = os.path.join(basepath, "IESA-Opt", "IESA-Opt-Dev_testing")
+    IESA_path = os.path.join(IESA_repository_path, "IESA-Opt-Dev_testing")
     IESA_modellink_path = IESA_path + "/20250730_IESA_testing.aimms"
     cluster_result_folder = os.path.join(basepath, "Raw_results", "Testing")
 else:
     if IESA_scope3:
-        IESA_path = os.path.join(basepath, "IESA-Opt", "IESA-Opt-Dev_scope3")
-        IESA_modellink_path = IESA_path + "/20250730_IESA_scope3.aimms"
+        IESA_path = os.path.join(IESA_repository_path, "IESA-Opt-N_FossilPhaseout")
+        IESA_modellink_path = IESA_path + "/IESA-Opt-N_FossilPhaseout.aimms"
         cluster_result_folder = os.path.join(basepath, "Raw_results", "IESA_Scope3")
     else:
-        IESA_path = os.path.join(basepath, "IESA-Opt", "IESA-Opt-Dev_full")
-        IESA_modellink_path = IESA_path + "/20250730_IESA_full.aimms"
+        IESA_path = os.path.join(IESA_repository_path, "IESA-Opt-Dev_full")
+        IESA_modellink_path = IESA_path + "/IESA-Opt-N_PolicyPath.aimms"
         cluster_result_folder = os.path.join(basepath, "Raw_results", "Full")
 
-IESA_input_data_path = IESA_path + "/data/20250901_detailed_linked.xlsx"
+IESA_input_data_path = IESA_path + "/data/Input_data_linked.xlsx"
 IESA_result_folder = IESA_path + "/Output/ResultsModelLinking"
 
 # Original and new filenames for IESA input and output folders
-original_filename_input_IESA = IESA_result_folder + "/20250901_detailed_linked.xlsx"
+original_filename_input_IESA = IESA_result_folder + "/Input_data_linked.xlsx"
 original_filename_output_IESA = IESA_result_folder + "/ResultsModelLinking_General.xlsx"
 
 #Cluster paths
@@ -72,11 +74,7 @@ basename_new_input_IESA = "Input_Iteration_"
 
 # === AIMMS Paths ===
 # These need to be updated to the AIMMS paths
-if run_from_server:
-    aimms_path = "C:/Program Files (x86)/AIMMS/IFA/Aimms/25.5.1.1-x64-VS2022/Bin/aimms.exe"
-else:
-    aimms_path = "C:/Users/5637635/AppData/Local/AIMMS/IFA/Aimms/25.4.4.5-x64-VS2022/Bin/aimms.exe"  # Path on your local computer
-
+aimms_path = "path on your local computer to" + "aimms.exe"
 
 # Define the file path to the model and the procedures that you want to run.
 command = [
