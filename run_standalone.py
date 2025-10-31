@@ -215,7 +215,7 @@ execute = 1
 if execute == 1:
     # Specify the base path to your input data
     casepath = os.path.join(basepath, "Case_studies", "ML_Zeeland_bf_")
-    resultpath = os.path.join(basepath, "Raw_results", "Standalone" , "LowAmbition")
+    resultpath = os.path.join(basepath, "Raw_results", "Standalone", "LowAmbition")
 
     # select simulation types
     scope3 = 0
