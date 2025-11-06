@@ -170,8 +170,7 @@ group_map = {
     "methanol_from_syngas": [
         "MPW2methanol_output",
         "MeOHsynthesis",
-        "Biomass2methanol_output",
-        "ElectricSMR_olefin"
+        "Biomass2methanol_output"
     ]
 }
 
