@@ -48,11 +48,11 @@ else:
         IESA_modellink_path = IESA_path / "20250730_IESA_full.aimms"
         cluster_result_folder = Path("Z:/AdOpt_NET0/AdOpt_results/Model_Linking/Full")
 
-IESA_input_data_path = IESA_path / "data/20250901_detailed_linked.xlsx"
+IESA_input_data_path = IESA_path / "data/20251104_detailed_linked.xlsx"
 IESA_result_folder = IESA_path / "Output" / "ResultsModelLinking"
 
 # Original and new filenames for IESA input and output folders
-original_filename_input_IESA = IESA_result_folder / "20250901_detailed_linked.xlsx"
+original_filename_input_IESA = IESA_result_folder / "20251104_detailed_linked.xlsx"
 original_filename_output_IESA = IESA_result_folder / "ResultsModelLinking_General.xlsx"
 
 #Cluster paths
