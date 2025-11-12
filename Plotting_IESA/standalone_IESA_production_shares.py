@@ -1,20 +1,27 @@
+import os
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+#Add basepath
+basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
 # ================= SETTINGS =================
 scope3 = 1
 if scope3:
-    file = r"C:\Users\5637635\OneDrive - Universiteit Utrecht\Model Linking - shared\Results\Final\250911_standalone_scope1-3\ResultsModelLinking_General_standalone.xlsx"
+    folder_result = os.path.join(basepath, "Raw_results", "National_results", "250911_standalone_scope1-3")
     ext = "_scope3"
 else:
-    file = r"C:\Users\5637635\OneDrive - Universiteit Utrecht\Model Linking - shared\Results\Final\250902_standalone_BaU\ResultsModelLinking_General_standalone.xlsx"
+    folder_result = os.path.join(basepath, "Raw_results", "National_results", "251112_standalone_PP")
     ext = ""
+
+file = os.path.join(folder_result, "ResultsModelLinking_General_standalone.xlsx")
 
 sheet = "SupplyDemand"
 years_discrete = ["2022", "2030", "2040", "2050"]
 years_cont = np.arange(2022, 2056)
-plot_folder = r"C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures_IESA/"
+plot_folder = os.path.join(basepath, "Plotting", "Plots_final")
 save = "both"  # options: "no", "pdf", "svg", "both"
 
 # =============== CATEGORIES =================
@@ -213,8 +220,8 @@ fig, axes = plot_shares(ammonia_cat, olefins_cat, categories, combined_categorie
 
 # =============== SAVE =================
 if save in ["pdf", "both"]:
-    fig.savefig(f"{plot_folder}/national_production_shares{ext}.pdf", bbox_inches='tight', format='pdf')
+    fig.savefig(os.path.join(plot_folder, f"national_production_shares{ext}.pdf"), bbox_inches='tight', format='pdf')
 if save in ["svg", "both"]:
-    fig.savefig(f"{plot_folder}/national_production_shares{ext}.svg", bbox_inches='tight', format='svg')
+    fig.savefig(os.path.join(plot_folder, f"national_production_shares{ext}.svg"), bbox_inches='tight', format='svg')
 
 plt.show()

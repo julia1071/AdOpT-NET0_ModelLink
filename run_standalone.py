@@ -19,7 +19,7 @@ execute = 1
 if execute == 1:
     # Specify the base path to your input data
     casepath = os.path.join(basepath, "Case_studies", "ML_Zeeland_bf_")
-    resultpath = os.path.join(basepath, "Raw_results", "Standalone", "Scope1-2")
+    resultpath = os.path.join(basepath, "Raw_results", "Cluster_results", "Standalone", "Scope1-2")
 
     # select simulation types
     scope3 = 0
@@ -125,7 +125,7 @@ execute = 1
 if execute == 1:
     # Specify the base path to your input data
     casepath = os.path.join(basepath, "Case_studies", "ML_Zeeland_bf_")
-    resultpath = os.path.join(basepath, "Raw_results", "Standalone", "Scope1-3")
+    resultpath = os.path.join(basepath, "Raw_results", "Cluster_results", "Standalone", "Scope1-3")
 
     # select simulation types
     scope3 = 1
@@ -215,7 +215,7 @@ execute = 1
 if execute == 1:
     # Specify the base path to your input data
     casepath = os.path.join(basepath, "Case_studies", "ML_Zeeland_bf_")
-    resultpath = os.path.join(basepath, "Raw_results", "Standalone", "LowAmbition")
+    resultpath = os.path.join(basepath, "Raw_results", "Cluster_results", "Standalone", "LowAmbition")
 
     # select simulation types
     scope3 = 0
@@ -313,7 +313,7 @@ execute = 1
 if execute == 1:
     # Specify the base path to your input data
     casepath = os.path.join(basepath, "Case_studies", "ML_Zeeland_storage_bf_")
-    resultpath = os.path.join(basepath, "Raw_results", "Standalone", "Storage")
+    resultpath = os.path.join(basepath, "Raw_results", "Cluster_results", "Standalone", "Storage")
 
     # select simulation types
     scope3 = 1

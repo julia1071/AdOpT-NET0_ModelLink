@@ -48,11 +48,11 @@ else:
     if IESA_scope3:
         IESA_path = os.path.join(IESA_repository_path, "IESA-Opt-N_FossilPhaseout")
         IESA_modellink_path = IESA_path + "/IESA-Opt-N_FossilPhaseout.aimms"
-        cluster_result_folder = os.path.join(basepath, "Raw_results", "IESA_Scope3")
+        cluster_result_folder = os.path.join(basepath, "Raw_results", "Cluster_results", "N-FossilPhaseout")
     else:
         IESA_path = os.path.join(IESA_repository_path, "IESA-Opt-Dev_full")
         IESA_modellink_path = IESA_path + "/IESA-Opt-N_PolicyPath.aimms"
-        cluster_result_folder = os.path.join(basepath, "Raw_results", "Full")
+        cluster_result_folder = os.path.join(basepath, "Raw_results", "Cluster_results", "N-PolicyPath")
 
 IESA_input_data_path = IESA_path + "/data/Input_data_linked.xlsx"
 IESA_result_folder = IESA_path + "/Output/ResultsModelLinking"

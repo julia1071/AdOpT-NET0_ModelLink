@@ -17,13 +17,13 @@ location = "Zeeland"
 
 # Define paths
 if IESA_fossilphaseout:
-    basepath_results = os.path.join(basepath_plots, "Raw_results", "IESA_Scope3") + ambition
+    basepath_results = os.path.join(basepath_plots, "Raw_results", "Cluster_results", "N-FossilPhaseout") + ambition
     # result_folder = basepath_results + "/Results_model_linking_20250910_15_09"  #scope 1-3
     # result_folder = basepath_results + "/Results_model_linking_20250912_04_01"  # scope 1-2
     result_folder = basepath_results + "/Results_model_linking_20250912_22_04"    #low ambitions
     data_to_excel_path = os.path.join(basepath_plots, "Plotting", "Results_excels", f"result_data_long_{ambition}_FPO.xlsx")
 else:
-    basepath_results = os.path.join(basepath_plots, "Raw_results", "Full") + ambition
+    basepath_results = os.path.join(basepath_plots, "Raw_results", "Cluster_results", "N-PolicyPath") + ambition
     # result_folder = basepath_results + "/Results_model_linking_20250905_09_38"  #scope 1-3
     result_folder = basepath_results + "/Results_model_linking_20250906_11_16"    #scope 1-2
     # result_folder = basepath_results + "/Results_model_linking_20250907_05_27"    #low ambitions
@@ -36,7 +36,7 @@ all_results = []
 for iteration in range(nr_iterations + 1):
     if iteration == 0:
         iteration_name = "Standalone"
-        iteration_folder = os.path.join(basepath_plots, "Raw_results", "Standalone") + ambition
+        iteration_folder = os.path.join(basepath_plots, "Raw_results", "Cluster_results", "Standalone") + ambition
     else:
         iteration_name = "Iteration_" + str(iteration)
         iteration_folder = Path(result_folder) / iteration_name

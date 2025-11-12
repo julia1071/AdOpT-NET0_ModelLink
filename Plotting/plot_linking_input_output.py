@@ -44,7 +44,7 @@ tech_to_id = {
 id_to_tech = {v: k for k, v in tech_to_id.items()}
 
 # Define the path to the JSON file
-basepath = os.path.join(basepath, "Raw_results", "Full") + ambition
+basepath = os.path.join(basepath, "Raw_results", "Cluster_results", "N-PolicyPath") + ambition
 if inputs:
     results_path = basepath + "/Results_model_linking_20250906_11_16/inputs_cluster.json" #scope1-2
 else:
