@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # ================= SETTINGS =================
-scope3 = 1
+scope3 = 0
 if scope3:
     file = r"C:\Users\5637635\OneDrive - Universiteit Utrecht\Model Linking - shared\Results\Final\250911_standalone_scope1-3\ResultsModelLinking_General_standalone.xlsx"
     ext = "_scope3"
 else:
-    file = r"C:\Users\5637635\OneDrive - Universiteit Utrecht\Model Linking - shared\Results\Final\250902_standalone_BaU\ResultsModelLinking_General_standalone.xlsx"
+    file = r"C:\Users\5637635\OneDrive - Universiteit Utrecht\Model Linking - shared\Results\Final\251112_standalone_BaU\ResultsModelLinking_General_standalone.xlsx"
     ext = ""
 
 sheet = "SupplyDemand"
