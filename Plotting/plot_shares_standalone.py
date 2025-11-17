@@ -13,8 +13,8 @@ def plot_production_shares_stacked(df1, df2, categories, combined_categories=Non
     plt.rcParams.update({'font.family': 'serif', 'font.size': 14})
 
     plotting_order = [
-        'Conventional',
-        'Carbon Capture',
+        'Conventional (fossil)',
+        'Conventional (fossil) with CC',
         'Electrification',
         'Water electrolysis',
         'Bio-based feedstock',
@@ -47,7 +47,7 @@ def plot_production_shares_stacked(df1, df2, categories, combined_categories=Non
             if y not in df['Year'].values:
                 row = {cat: 0 for cat in categories}
                 row.update({cat: 0 for cat in combined_categories})
-                row['Conventional'] = 1  # default fallback
+                row['Conventional (fossil)'] = 1  # default fallback
                 row['Year'] = y
                 df = pd.concat([df, pd.DataFrame([row])], ignore_index=True)
         return df.sort_values('Year')
@@ -175,6 +175,25 @@ def save_separate_legend(categories, combined_categories, filename="legend"):
     import matplotlib.patches as mpatches
 
     plt.rcParams.update({'font.family': 'serif', 'font.size': 16})
+
+    # categories = {
+    #     "Conventional (fossil)": '#8C8B8B',
+    #     "Conventional (fossil) with CC": '#3E7EB0',
+    #     "Electrification (eSMR)": '#E9E46D',
+    #     "Water electrolysis": '#EABF37',
+    #     r"CO$_2$ utilization": '#E18826',
+    #     "Bio-based feedstock": '#84AA6F',
+    #     "Bio-based feedstock with CC": '#088A01',
+    #     "Plastic waste recycling": '#B475B2',
+    #     "Plastic waste recycling with CC": '#533A8C',
+    # }
+    #
+    # combined_categories = {
+    #     "Electrification + Bio-based feedstock": ("Electrification (eSMR)", "Bio-based feedstock"),
+    #     "Conventional + Bio-based feedstock": ("Conventional (fossil)", "Bio-based feedstock"),
+    #     "Conventional + Bio-based feedstock with CC": ("Conventional (fossil) with CC", "Bio-based feedstock with CC"),
+    # }
+
     fig, ax = plt.subplots(figsize=(7.5, 1))  # Adjust as needed
 
     handles = [mpatches.Patch(color=color, label=label)
@@ -215,8 +234,8 @@ def main():
     plot_folder = "C:/Users/5637635/OneDrive - Universiteit Utrecht/Model Linking - shared/Figures/Python/ProdShares_" + flag_cluster_ambition
 
     categories = {
-        "Conventional": '#8C8B8B',
-        "Carbon Capture": '#3E7EB0',
+        "Conventional (fossil)": '#8C8B8B',
+        "Conventional (fossil) with CC": '#3E7EB0',
         "Electrification": '#E9E46D',
         "Water electrolysis": '#EABF37',
         r"CO$_2$ utilization": '#E18826',
@@ -228,8 +247,8 @@ def main():
 
     combined_categories = {
         "Electrification + Bio-based feedstock": ("Electrification", "Bio-based feedstock"),
-        "Conventional + Bio-based feedstock": ("Conventional", "Bio-based feedstock"),
-        "Conventional + Bio-based feedstock with CC": ("Carbon Capture", "Bio-based feedstock with CC"),
+        "Conventional + Bio-based feedstock": ("Conventional (fossil)", "Bio-based feedstock"),
+        "Conventional + Bio-based feedstock with CC": ("Conventional (fossil) with CC", "Bio-based feedstock with CC"),
     }
 
 

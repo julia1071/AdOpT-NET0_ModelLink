@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # ================= SETTINGS =================
-scope3 = 0
+scope3 = 1
 if scope3:
-    file = r"C:\Users\5637635\OneDrive - Universiteit Utrecht\Model Linking - shared\Results\Final\250911_standalone_scope1-3\ResultsModelLinking_General_standalone.xlsx"
+    file = r"C:\Users\5637635\OneDrive - Universiteit Utrecht\Model Linking - shared\Results\Final\251117_standalone_scope1-3\ResultsModelLinking_General_standalone.xlsx"
     ext = "_scope3"
 else:
     file = r"C:\Users\5637635\OneDrive - Universiteit Utrecht\Model Linking - shared\Results\Final\251112_standalone_BaU\ResultsModelLinking_General_standalone.xlsx"
@@ -20,8 +20,8 @@ save = "both"  # options: "no", "pdf", "svg", "both"
 # =============== CATEGORIES =================
 categories = {
     "Imports": "black",
-    "Conventional": '#8C8B8B',
-    "Carbon Capture": '#3E7EB0',
+    "Conventional (fossil)": '#8C8B8B',
+    "Conventional (fossil) with CC": '#3E7EB0',
     "Electrification": '#E9E46D',
     "Water electrolysis": '#EABF37',
     r"CO$_2$ utilization": '#E18826',
@@ -33,23 +33,23 @@ categories = {
 
 combined_categories = {
     "Electrification + Bio-based feedstock": ("Electrification", "Bio-based feedstock"),
-    "Conventional + Bio-based feedstock": ("Conventional", "Bio-based feedstock"),
-    "Conventional + Bio-based feedstock with CC": ("Carbon Capture", "Bio-based feedstock with CC"),
+    "Conventional + Bio-based feedstock": ("Conventional (fossil)", "Bio-based feedstock"),
+    "Conventional + Bio-based feedstock with CC": ("Conventional (fossil) with CC", "Bio-based feedstock with CC"),
 }
 
 # ================= TECHNOLOGY MAPPINGS =================
 ammonia_mapping = {
-    'Amm01_01': 'Conventional',
-    'Amm01_02': 'Carbon Capture',
+    'Amm01_01': 'Conventional (fossil)',
+    'Amm01_02': 'Conventional (fossil) with CC',
     'Amm01_08': 'Electrification',
     'Amm01_05': 'Water electrolysis',
 }
 
 olefins_mapping = {
     'ICH01_16': 'Imports',  # include in plot, no legend
-    'ICH01_01': 'Conventional',
-    'ICH01_14': 'Conventional',
-    'ICH01_02': 'Carbon Capture',
+    'ICH01_01': 'Conventional (fossil)',
+    'ICH01_14': 'Conventional (fossil)',
+    'ICH01_02': 'Conventional (fossil) with CC',
     'ICH01_42': 'Conventional + Bio-based feedstock',
     'ICH01_03': 'Conventional + Bio-based feedstock with CC',
     'ICH01_05': 'Electrification',

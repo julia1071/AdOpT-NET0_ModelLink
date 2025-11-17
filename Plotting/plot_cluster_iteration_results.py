@@ -169,6 +169,19 @@ def save_separate_legend(categories, filename="legend_short"):
 
 
         plt.rcParams.update({'font.family': 'serif', 'font.size': 16})
+
+        # categories = {
+        #     "Conventional (fossil)": '#8C8B8B',
+        #     "Conventional (fossil) with CC": '#3E7EB0',
+        #     "Electrification (eSMR+MTO)": '#E9E46D',
+        #     "Water electrolysis": '#EABF37',
+        #     r"CO$_2$ utilization": '#E18826',
+        #     "Bio-based feedstock": '#84AA6F',
+        #     "Bio-based feedstock with CC": '#088A01',
+        #     "Plastic waste recycling": '#B475B2',
+        #     "Plastic waste recycling with CC": '#533A8C',
+        # }
+
         fig, ax = plt.subplots(figsize=(7.5, 1))  # Adjust as needed
 
         handles = [mpatches.Patch(color=color, label=label)
@@ -193,9 +206,9 @@ def save_separate_legend(categories, filename="legend_short"):
 
 def main():
     #Define cluster ambition and number of iteration
-    IESA_fossilphaseout = 1
+    IESA_fossilphaseout = 0
     nr_iterations = 2
-    flag_cluster_ambition = "Scope1-2"
+    flag_cluster_ambition = "Scope1-3"
     include_prod_costs = True
     separate = True
     intervals = ['2030', '2040', '2050']
@@ -222,8 +235,8 @@ def main():
 
 
     categories = {
-        "Conventional": '#8C8B8B',
-        "Carbon Capture": '#3E7EB0',
+        "Conventional (fossil)": '#8C8B8B',
+        "Conventional (fossil) with CC": '#3E7EB0',
         "Electrification": '#E9E46D',
         "Water electrolysis": '#EABF37',
         r"CO$_2$ utilization": '#E18826',
@@ -235,8 +248,8 @@ def main():
 
     combined_categories = {
         "Electrification + Bio-based feedstock": ("Electrification", "Bio-based feedstock"),
-        "Conventional + Bio-based feedstock": ("Conventional", "Bio-based feedstock"),
-        "Conventional + Bio-based feedstock with CC": ("Conventional", "Bio-based feedstock with CC"),
+        "Conventional + Bio-based feedstock": ("Conventional (fossil)", "Bio-based feedstock"),
+        "Conventional + Bio-based feedstock with CC": ("Conventional (fossil)", "Bio-based feedstock with CC"),
     }
 
     production_sum_olefins = pd.read_excel(data_to_excel_path1, index_col=0, header=[0, 1])
