@@ -208,7 +208,7 @@ def main():
     #Define cluster ambition and number of iteration
     IESA_fossilphaseout = 0
     nr_iterations = 2
-    flag_cluster_ambition = "Scope1-3"
+    flag_cluster_ambition = "LowAmbition"
     include_prod_costs = True
     separate = True
     intervals = ['2030', '2040', '2050']
