@@ -81,7 +81,7 @@ def get_results_cluster_technology_output_dict(adopt_hub):
                 if cfg.linking_operation and actual_tech_name in tech_ops_map:
                     total_cons = sum(tech_block.var_input_tot[t, "electricity"].value for t in set_t)
                     operation_tech = np.array([tech_block.var_input_tot[t, "electricity"].value for t in set_t])
-                    if total_cons > 0:
+                    if total_cons > 1e-5:
 
                         capacity_factor = operation_tech / total_cons
                         capacity_factor[capacity_factor < 1e-5] = 0

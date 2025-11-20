@@ -209,7 +209,7 @@ def fetch_and_process_data_production(
 
 def main():
     #Define cluster ambition and number of iteration
-    IESA_fossilphaseout = 1
+    IESA_fossilphaseout = 0
     nr_iterations = 2
     flag_cluster_ambition = "LowAmbition"
 
@@ -219,31 +219,31 @@ def main():
         basepath_results = os.path.join(datapath, "Raw_results", "Cluster_results", "N-FossilPhaseout") + flag_cluster_ambition
         # result_folder = basepath_results + "/Results_model_linking_20250910_15_09"  #scope 1-3
         # result_folder = basepath_results + "/Results_model_linking_20250912_04_01"  # scope 1-2
-        result_folder = basepath_results + "/Results_model_linking_20250912_22_04"  # low ambitions
+        # result_folder = basepath_results + "/Results_model_linking_20250912_22_04"  # low ambitions
         data_to_excel_path1 = os.path.join(datapath, "Plotting", "Results_excels",
                                            f"production_shares_olefins_{flag_cluster_ambition}_FPO.xlsx")
         data_to_excel_path2 = os.path.join(datapath, "Plotting", "Results_excels",
                                            f"production_shares_ammonia_{flag_cluster_ambition}_FPO.xlsx")
     else:
         basepath_results = os.path.join(basepath, "Raw_results", "Cluster_results", "N-PolicyPath") + flag_cluster_ambition
-        # result_folder = basepath_results + "/Results_model_linking_20250905_09_38"  #scope 1-3
-        result_folder = basepath_results + "/Results_model_linking_20250906_11_16"  # scope 1-2
-        # result_folder = basepath_results + "/Results_model_linking_20250907_05_27"    #low ambitions
+        # result_folder = basepath_results + "/Results_model_linking_20251112_10_21"  #scope 1-3
+        # result_folder = basepath_results + "/Results_model_linking_20251118_17_40"  # scope 1-2
+        result_folder = basepath_results + "/Results_model_linking_20251119_08_51"    #low ambitions
         data_to_excel_path1 = os.path.join(datapath, "Plotting", "Results_excels",
                                            f"production_shares_olefins_{flag_cluster_ambition}.xlsx")
         data_to_excel_path2 = os.path.join(datapath, "Plotting", "Results_excels",
                                            f"production_shares_ammonia_{flag_cluster_ambition}.xlsx")
 
     tec_mapping = {
-        "CrackerFurnace": ("Olefin", "Conventional", "olefins", 0.439),
+        "CrackerFurnace": ("Olefin", "Conventional (fossil)", "olefins", 0.439),
         "CrackerFurnace_bio": ("Olefin", "Conventional + Bio-based feedstock", "olefins", 0.439),
-        "CrackerFurnace_CC": ("Olefin", "Carbon Capture", "olefins", 0.439),
+        "CrackerFurnace_CC": ("Olefin", "Conventional (fossil) with CC", "olefins", 0.439),
         "CrackerFurnace_CC_bio": ("Olefin", "Conventional + Bio-based feedstock with CC", "olefins", 0.439),
         "CrackerFurnace_Electric": ("Olefin", "Electrification", "olefins", 0.439),
         "CrackerFurnace_Electric_bio": ("Olefin", "Electrification + Bio-based", "olefins", 0.439),
-        "SteamReformer": ("Ammonia", "Conventional", "HBfeed", 0.168),
+        "SteamReformer": ("Ammonia", "Conventional (fossil)", "HBfeed", 0.168),
         "SteamReformer_bio": ("Ammonia", "Conventional + Bio-based feedstock", "HBfeed", 0.168),
-        "SteamReformer_CC": ("Ammonia", "Carbon Capture", "HBfeed", 0.168),
+        "SteamReformer_CC": ("Ammonia", "Conventional (fossil) with CC", "HBfeed", 0.168),
         "SteamReformer_CC_bio": ("Ammonia", "Conventional + Bio-based feedstock with CC", "HBfeed", 0.168),
         "WGS_m": ("Ammonia", "Electrification", "hydrogen", 0.168),
         "WGS_m_bio": ("Ammonia", "Electrification + Bio-based feedstock", "hydrogen", 0.168),
@@ -261,8 +261,8 @@ def main():
     }
 
     categories = {
-        "Conventional": '#8C8B8B',
-        "Carbon Capture": '#3E7EB0',
+        "Conventional (fossil)": '#8C8B8B',
+        "Conventional (fossil) with CC": '#3E7EB0',
         "Electrification": '#E9E46D',
         "Water electrolysis": '#EABF37',
         r"CO$_2$ utilization": '#E18826',
@@ -274,8 +274,8 @@ def main():
 
     combined_categories = {
         "Electrification + Bio-based feedstock": ("Electrification", "Bio-based feedstock"),
-        "Conventional + Bio-based feedstock": ("Conventional", "Bio-based feedstock"),
-        "Conventional + Bio-based feedstock with CC": ("Conventional", "Bio-based feedstock with CC"),
+        "Conventional + Bio-based feedstock": ("Conventional (fossil)", "Bio-based feedstock"),
+        "Conventional + Bio-based feedstock with CC": ("Conventional (fossil)", "Bio-based feedstock with CC"),
     }
 
     fetch_and_process_data_production(result_folder, data_to_excel_path1, data_to_excel_path2,

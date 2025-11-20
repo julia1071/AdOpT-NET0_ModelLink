@@ -10,7 +10,7 @@ from adopt_net0 import extract_datasets_from_h5group
 basepath_plots = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 #options
-IESA_fossilphaseout = 1
+IESA_fossilphaseout = 0
 nr_iterations = 2
 ambition = "LowAmbition"
 location = "Zeeland"
@@ -24,9 +24,10 @@ if IESA_fossilphaseout:
     data_to_excel_path = os.path.join(basepath_plots, "Plotting", "Results_excels", f"result_data_long_{ambition}_FPO.xlsx")
 else:
     basepath_results = os.path.join(basepath_plots, "Raw_results", "Cluster_results", "N-PolicyPath") + ambition
-    # result_folder = basepath_results + "/Results_model_linking_20250905_09_38"  #scope 1-3
-    result_folder = basepath_results + "/Results_model_linking_20250906_11_16"    #scope 1-2
-    # result_folder = basepath_results + "/Results_model_linking_20250907_05_27"    #low ambitions
+    # result_folder = basepath_results + "/Results_model_linking_20251112_10_21"  # scope 1-3
+    # result_folder = basepath_results + "/Results_model_linking_20251118_17_40"    #scope 1-2
+    result_folder = basepath_results + "/Results_model_linking_20251119_08_51"    #low ambitions
+    basepath_plots = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     data_to_excel_path = os.path.join(basepath_plots, "Plotting", "Results_excels", f"result_data_long_{ambition}.xlsx")
 
 
