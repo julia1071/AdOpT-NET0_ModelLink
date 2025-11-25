@@ -7,7 +7,7 @@ from pathlib import Path
 from adopt_net0 import extract_datasets_from_h5group
 
 #options
-IESA_fossilphaseout = 0
+IESA_fossilphaseout = 1
 nr_iterations = 2
 ambition = "LowAmbition"
 location = "Zeeland"
@@ -15,9 +15,9 @@ location = "Zeeland"
 # Define paths
 if IESA_fossilphaseout:
     basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/IESA_Scope3/" + ambition
-    result_folder = basepath_results + "/Results_model_linking_20251116_14_55"  #scope 1-3
-    # result_folder = basepath_results + "/Results_model_linking_20250912_04_01"  # scope 1-2
-    # result_folder = basepath_results + "/Results_model_linking_20250912_22_04"    #low ambitions
+    # result_folder = basepath_results + "/Results_model_linking_20251116_14_55"  #scope 1-3
+    # result_folder = basepath_results + "/Results_model_linking_20251124_11_02"  # scope 1-2
+    result_folder = basepath_results + "/Results_model_linking_20251125_04_25"    #low ambitions
     basepath_plots = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     data_to_excel_path = os.path.join(basepath_plots, "Plotting", "Results_excels", f"result_data_long_{ambition}_FPO.xlsx")
 else:

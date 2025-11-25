@@ -173,7 +173,7 @@ def save_separate_legend(categories, filename="legend_short"):
         # categories = {
         #     "Conventional (fossil)": '#8C8B8B',
         #     "Conventional (fossil) with CC": '#3E7EB0',
-        #     "Electrification (eSMR+MTO)": '#E9E46D',
+        #     "Electrification (eSMR)": '#E9E46D',
         #     "Water electrolysis": '#EABF37',
         #     r"CO$_2$ utilization": '#E18826',
         #     "Bio-based feedstock": '#84AA6F',
@@ -206,7 +206,7 @@ def save_separate_legend(categories, filename="legend_short"):
 
 def main():
     #Define cluster ambition and number of iteration
-    IESA_fossilphaseout = 0
+    IESA_fossilphaseout = 1
     nr_iterations = 2
     flag_cluster_ambition = "LowAmbition"
     include_prod_costs = True

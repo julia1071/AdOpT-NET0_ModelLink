@@ -206,7 +206,7 @@ def fetch_and_process_data_production(
 
 def main():
     #Define cluster ambition and number of iteration
-    IESA_fossilphaseout = 0
+    IESA_fossilphaseout = 1
     nr_iterations = 2
     flag_cluster_ambition = "LowAmbition"
 
@@ -214,9 +214,9 @@ def main():
     datapath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     if IESA_fossilphaseout:
         basepath_results = "Z:/AdOpt_NET0/AdOpt_results/Model_Linking/IESA_Scope3/" + flag_cluster_ambition
-        result_folder = basepath_results + "/Results_model_linking_20251116_14_55"  #scope 1-3
-        # result_folder = basepath_results + "/Results_model_linking_20250912_04_01"  # scope 1-2
-        # result_folder = basepath_results + "/Results_model_linking_20250912_22_04"  # low ambitions
+        # result_folder = basepath_results + "/Results_model_linking_20251116_14_55"  #scope 1-3
+        # result_folder = basepath_results + "/Results_model_linking_20251124_11_02"  # scope 1-2
+        result_folder = basepath_results + "/Results_model_linking_20251125_04_25"  # low ambitions
         data_to_excel_path1 = os.path.join(datapath, "Plotting", "Results_excels",
                                            f"production_shares_olefins_{flag_cluster_ambition}_FPO.xlsx")
         data_to_excel_path2 = os.path.join(datapath, "Plotting", "Results_excels",
