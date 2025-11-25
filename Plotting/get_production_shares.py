@@ -216,19 +216,19 @@ def main():
     # Add basepath
     datapath = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     if IESA_fossilphaseout:
-        basepath_results = os.path.join(datapath, "Raw_results", "Cluster_results", "N-FossilPhaseout") + flag_cluster_ambition
-        # result_folder = basepath_results + "/Results_model_linking_20250910_15_09"  #scope 1-3
-        # result_folder = basepath_results + "/Results_model_linking_20250912_04_01"  # scope 1-2
-        # result_folder = basepath_results + "/Results_model_linking_20250912_22_04"  # low ambitions
+        basepath_results = os.path.join(datapath, "Raw_results", "Cluster_results", "N-DownstreamAbatement") + flag_cluster_ambition
+        # result_folder = basepath_results + "/Results_model_linking_20251116_14_55"  #scope 1-3
+        # result_folder = basepath_results + "/Results_model_linking_20251124_11_02"  # scope 1-2
+        result_folder = basepath_results + "/Results_model_linking_20251125_04_25"  # low ambitions
         data_to_excel_path1 = os.path.join(datapath, "Plotting", "Results_excels",
                                            f"production_shares_olefins_{flag_cluster_ambition}_FPO.xlsx")
         data_to_excel_path2 = os.path.join(datapath, "Plotting", "Results_excels",
                                            f"production_shares_ammonia_{flag_cluster_ambition}_FPO.xlsx")
     else:
         basepath_results = os.path.join(basepath, "Raw_results", "Cluster_results", "N-PolicyPath") + flag_cluster_ambition
-        # result_folder = basepath_results + "/Results_model_linking_20251112_10_21"  #scope 1-3
-        # result_folder = basepath_results + "/Results_model_linking_20251118_17_40"  # scope 1-2
-        result_folder = basepath_results + "/Results_model_linking_20251119_08_51"    #low ambitions
+        # result_folder = basepath_results + "/Results_model_linking_20251112_10_21"  # scope 1-3
+        # result_folder = basepath_results + "/Results_model_linking_20251118_17_40"    #scope 1-2
+        result_folder = basepath_results + "/Results_model_linking_20251119_08_51"  # low ambitions
         data_to_excel_path1 = os.path.join(datapath, "Plotting", "Results_excels",
                                            f"production_shares_olefins_{flag_cluster_ambition}.xlsx")
         data_to_excel_path2 = os.path.join(datapath, "Plotting", "Results_excels",
